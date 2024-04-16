@@ -1,0 +1,147 @@
+---
+pageClass: "rule-details"
+sidebarDepth: 0
+title: "math/indent"
+description: "enforce consistent indentation"
+since: "v0.1.0"
+---
+
+# math/indent
+
+> enforce consistent indentation
+
+- :gear: This rule is included in `"plugin:math/standard"`.
+- :wrench: The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some of the problems reported by this rule.
+
+## :book: Rule Details
+
+This rule reports enforces a consistent indentation style. The default style is 2 spaces.
+
+<eslint-code-block fix>
+
+<!-- eslint-skip -->
+
+```js
+# eslint math/indent: 'error'
+
+# ✓ GOOD
+"good" = [
+  1,
+  2
+]
+
+# ✗ BAD
+"bad" = [
+1,
+    2
+]
+```
+
+</eslint-code-block>
+
+## :wrench: Options
+
+```yaml
+math/indent:
+  - error
+  - 2 # number of spaces or "tab"
+  - subTables: 0
+    keyValuePairs: 0
+```
+
+- First Option
+  - Number option ... The number of spaces used for indentation.
+  - `"tab"` ... Use tabs for indentation.
+- Second Option
+  - `subTables` ... The multiplier of indentation for sub-tables. Default is `0`.
+  - `keyValuePairs` ... The multiplier of indentation for key/value pairs. Default is `0`.
+
+<eslint-code-block fix>
+
+<!-- eslint-skip -->
+
+```math
+# ✓ GOOD
+# eslint math/indent: [error, 2, { subTables: 1, keyValuePairs: 1 }]
+
+# Taken from https://math.io/
+
+# This is a Math document
+
+title = "Math Example"
+
+[owner]
+  name = "Tom Preston-Werner"
+  dob = 1979-05-27T07:32:00-08:00
+
+[database]
+  enabled = true
+  ports = [ 8001, 8001, 8002 ]
+  data = [ ["delta", "phi"], [3.14] ]
+  temp_targets = { cpu = 79.5, case = 72.0 }
+
+[servers]
+
+  [servers.alpha]
+    ip = "10.0.0.1"
+    role = "frontend"
+
+  [servers.beta]
+    ip = "10.0.0.2"
+    role = "backend"
+```
+
+</eslint-code-block>
+
+<eslint-code-block fix>
+
+<!-- eslint-skip -->
+
+```math
+# ✗ BAD
+# eslint math/indent: [error, 2, { subTables: 1, keyValuePairs: 1 }]
+
+# Taken from https://math.io/
+
+# This is a Math document
+
+title = "Math Example"
+
+[owner]
+name = "Tom Preston-Werner"
+dob = 1979-05-27T07:32:00-08:00
+
+[database]
+enabled = true
+ports = [ 8001, 8001, 8002 ]
+data = [ ["delta", "phi"], [3.14] ]
+temp_targets = { cpu = 79.5, case = 72.0 }
+
+[servers]
+
+[servers.alpha]
+ip = "10.0.0.1"
+role = "frontend"
+
+[servers.beta]
+ip = "10.0.0.2"
+role = "backend"
+```
+
+</eslint-code-block>
+
+## :couple: Related rules
+
+- [indent]
+
+[indent]: https://eslint.org/docs/rules/indent
+
+## :rocket: Version
+
+This rule was introduced in eslint-plugin-math v0.1.0
+
+## :mag: Implementation
+
+- [Rule source](https://github.com/ota-meshi/eslint-plugin-math/blob/main/src/rules/indent.ts)
+- [Test source](https://github.com/ota-meshi/eslint-plugin-math/blob/main/tests/src/rules/indent.ts)
+- [Test fixture sources](https://github.com/ota-meshi/eslint-plugin-math/tree/main/tests/fixtures/rules/indent)
