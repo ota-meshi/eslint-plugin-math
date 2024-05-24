@@ -1,6 +1,6 @@
 # Introduction
 
-[eslint-plugin-math](https://www.npmjs.com/package/eslint-plugin-math) is ESLint plugin related to [Math] namespace object.
+[eslint-plugin-math](https://www.npmjs.com/package/eslint-plugin-math) is ESLint plugin related to [Math] object and [Number].
 
 [![NPM license](https://img.shields.io/npm/l/eslint-plugin-math.svg)](https://www.npmjs.com/package/eslint-plugin-math)
 [![NPM version](https://img.shields.io/npm/v/eslint-plugin-math.svg)](https://www.npmjs.com/package/eslint-plugin-math)
@@ -13,7 +13,7 @@
 
 ## :name_badge: Features
 
-ESLint plugin related to [Math] namespace object.
+ESLint plugin related to [Math] object and [Number].
 
 - You can check your code in real-time using the ESLint editor integrations.
 
@@ -45,3 +45,4 @@ Please use GitHub's Issues/PRs.
 See the [LICENSE](https://github.com/ota-meshi/eslint-plugin-math/blob/main/LICENSE) file for license rights and limitations (MIT).
 
 [Math]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math
+[Number]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number

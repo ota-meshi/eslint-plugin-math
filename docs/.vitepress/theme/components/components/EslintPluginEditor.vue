@@ -73,6 +73,7 @@ export default {
     config() {
       return {
         globals: {
+          console: false,
           // ES2015 globals
           ArrayBuffer: false,
           DataView: false,
@@ -128,9 +129,6 @@ export default {
       validate: false,
     });
     monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-      validate: false,
-    });
-    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
       validate: false,
     });
 

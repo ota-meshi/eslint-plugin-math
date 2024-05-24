@@ -1,6 +1,6 @@
 # Introduction
 
-[eslint-plugin-math](https://www.npmjs.com/package/eslint-plugin-math) is ESLint plugin related to [Math] namespace object.
+[eslint-plugin-math](https://www.npmjs.com/package/eslint-plugin-math) is ESLint plugin related to [Math] object and [Number].
 
 [![NPM license](https://img.shields.io/npm/l/eslint-plugin-math.svg)](https://www.npmjs.com/package/eslint-plugin-math)
 [![NPM version](https://img.shields.io/npm/v/eslint-plugin-math.svg)](https://www.npmjs.com/package/eslint-plugin-math)
@@ -13,7 +13,7 @@
 
 ## :name_badge: Features
 
-ESLint plugin related to [Math] namespace object.
+ESLint plugin related to [Math] object and [Number].
 
 - You can check your code in real-time using the ESLint editor integrations.
 
@@ -33,8 +33,8 @@ npm install --save-dev eslint eslint-plugin-math
 
 > **Requirements**
 >
-> - ESLint v6.0.0 and above
-> - Node.js v12.22.x, v14.17.x, v16.x and above
+> - ESLint v8.57.0 and above
+> - Node.js v18.x, v20.x and above
 
 <!--DOCS_IGNORE_END-->
 
@@ -56,7 +56,7 @@ import eslintPluginMath from 'eslint-plugin-math';
 export default [
   // add more generic rule sets here, such as:
   // js.configs.recommended,
-  ...eslintPluginMath.configs['flat/recommended'],
+  eslintPluginMath.configs.recommended,
   {
     rules: {
       // override/add rules settings here, such as:
@@ -68,7 +68,7 @@ export default [
 
 This plugin provides configs:
 
-- `*.configs['flat/recommended']` ... Above, plus rules to prevent errors or unintended behavior.
+- `*.configs.recommended` ... Recommended config provided by the plugin.
 
 See [the rule list](https://ota-meshi.github.io/eslint-plugin-math/rules/) to get the `rules` that this plugin provides.
 
@@ -83,7 +83,7 @@ module.exports = {
   extends: [
     // add more generic rulesets here, such as:
     // 'eslint:recommended',
-    'plugin:math/recommended'
+    'plugin:math/recommended-legacy'
   ],
   rules: {
     // override/add rules settings here, such as:
@@ -94,7 +94,7 @@ module.exports = {
 
 This plugin provides configs:
 
-- `plugin:math/recommended` ... Above, plus rules to prevent errors or unintended behavior.
+- `plugin:math/recommended` ... Recommended config provided by the plugin.
 
 See [the rule list](https://ota-meshi.github.io/eslint-plugin-math/rules/) to get the `rules` that this plugin provides.
 
@@ -112,9 +112,9 @@ The rules with the following star :star: are included in the configs.
 
 ### Math Rules
 
-| Rule ID                                                                         | Description                    | Fixable  | RECOMMENDED | STANDARD |
-| :------------------------------------------------------------------------------ | :----------------------------- | :------: | :---------: | :------: |
-| [math/indent](https://ota-meshi.github.io/eslint-plugin-math/rules/indent.html) | enforce consistent indentation | :wrench: |             |  :star:  |
+| Rule ID | Description | Fixable | RECOMMENDED | STANDARD |
+|:--------|:------------|:-------:|:-----------:|:--------:|
+
 
 <!--RULES_TABLE_END-->
 <!--RULES_SECTION_END-->
@@ -137,3 +137,4 @@ Please use GitHub's Issues/PRs.
 See the [LICENSE](LICENSE) file for license rights and limitations (MIT).
 
 [Math]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math
+[Number]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number

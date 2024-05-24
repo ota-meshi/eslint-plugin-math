@@ -8,8 +8,8 @@ npm install --save-dev eslint eslint-plugin-math
 
 ::: tip Requirements
 
-- ESLint v6.0.0 and above
-- Node.js v12.22.x, v14.17.x, v16.x and above
+- ESLint v8.57.0 and above
+- Node.js v18.x, v20.x and above
 :::
 
 ## :book: Usage
@@ -29,11 +29,11 @@ import eslintPluginMath from 'eslint-plugin-math';
 export default [
   // add more generic rule sets here, such as:
   // js.configs.recommended,
-  ...eslintPluginMath.configs['flat/recommended'],
+  eslintPluginMath.configs.recommended,
   {
     rules: {
       // override/add rules settings here, such as:
-    // 'math/rule-name': 'error'
+      // 'math/rule-name': 'error'
     }
   }
 ];
@@ -41,7 +41,7 @@ export default [
 
 This plugin provides configs:
 
-- `*.configs['flat/recommended']` ... Above, plus rules to prevent errors or unintended behavior.
+- `*.configs.recommended` ... Recommended config provided by the plugin.
 
 See [the rule list](../rules/index.md) to get the `rules` that this plugin provides.
 
@@ -56,7 +56,7 @@ module.exports = {
   extends: [
     // add more generic rulesets here, such as:
     // 'eslint:recommended',
-    'plugin:math/recommended'
+    'plugin:math/recommended-legacy'
   ],
   rules: {
     // override/add rules settings here, such as:
@@ -66,7 +66,8 @@ module.exports = {
 ```
 
 This plugin provides configs:
-- `plugin:math/recommended` ... Above, plus rules to prevent errors or unintended behavior.
+
+- `plugin:math/recommended` ... Recommended config provided by the plugin.
 
 See [the rule list](../rules/index.md) to get the `rules` that this plugin provides.
 

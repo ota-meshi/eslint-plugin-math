@@ -6,7 +6,6 @@ import eslint4b from "vite-plugin-eslint4b";
 import type { RuleModule } from "../../src/types.js";
 import { viteCommonjs } from "./vite-plugin.mjs";
 
-import "./build-system/build.js";
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function ruleToSidebarItem({
@@ -27,7 +26,7 @@ export default async (): Promise<UserConfig<DefaultTheme.Config>> => {
     base: "/eslint-plugin-math/",
     title: "eslint-plugin-math",
     outDir: path.join(dirname, "./dist/eslint-plugin-math"),
-    description: "ESLint plugin related to Math namespace object",
+    description: "ESLint plugin related to Math object and Number.",
     head: [],
 
     vite: {

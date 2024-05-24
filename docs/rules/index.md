@@ -13,4 +13,4 @@ The rules with the following star :star: are included in the `plugin:math/recomm
 
 | Rule ID | Description | Fixable | RECOMMENDED | STANDARD |
 |:--------|:------------|:-------:|:-----------:|:--------:|
-| [math/indent](./indent.md) | enforce consistent indentation | :wrench: |  | :star: |
+

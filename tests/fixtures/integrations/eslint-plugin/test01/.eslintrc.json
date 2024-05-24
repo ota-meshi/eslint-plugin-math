@@ -1,4 +1,4 @@
 {
     "root": true,
-    "extends": ["plugin:math/recommended"]
+    "extends": ["plugin:math/recommended-legacy"]
 }

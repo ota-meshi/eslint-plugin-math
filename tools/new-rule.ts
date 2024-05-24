@@ -23,19 +23,18 @@ const logger = console;
     `../tests/fixtures/rules/${ruleId}/`,
   );
   const docFile = path.resolve(__dirname, `../docs/rules/${ruleId}.md`);
-  try {
-    fs.mkdirSync(fixturesRoot);
-    fs.mkdirSync(path.resolve(fixturesRoot, "valid"));
-    fs.mkdirSync(path.resolve(fixturesRoot, "invalid"));
-  } catch {
-    // ignore
-  }
+
+  fs.mkdirSync(path.dirname(ruleFile), { recursive: true });
+  fs.mkdirSync(path.dirname(testFile), { recursive: true });
+  fs.mkdirSync(path.dirname(docFile), { recursive: true });
+  fs.mkdirSync(fixturesRoot, { recursive: true });
+  fs.mkdirSync(path.resolve(fixturesRoot, "valid"), { recursive: true });
+  fs.mkdirSync(path.resolve(fixturesRoot, "invalid"), { recursive: true });
 
   fs.writeFileSync(
     ruleFile,
     `
 import { createRule } from "../utils"
-import { getSourceCode } from "../utils/compat";
 
 export default createRule("${ruleId}", {
     meta: {
@@ -50,7 +49,7 @@ export default createRule("${ruleId}", {
         type: "",
     },
     create(context) {
-      const sourceCode = getSourceCode(context)
+      const sourceCode = context.sourceCode
 
         return {
           // ...
@@ -88,11 +87,11 @@ This rule reports ???.
 \`\`\`js
 /* eslint math/${ruleId}: 'error' */
 
-# ✓ GOOD
-"good" = "foo"
+/* ✓ GOOD */
+const a = Math.trunc(n);
 
-# ✗ BAD
-"bad" = "bar"
+/* ✗ BAD */
+const b = n >= 0 ? Math.floor(n) : Math.ceil(n);
 \`\`\`
 
 </eslint-code-block>
@@ -108,8 +107,6 @@ Nothing.
     "opt"
   ]
 \`\`\`
-
-Same as [${ruleId}] rule option. See [here](https://eslint.org/docs/rules/${ruleId}#options) for details.
 
 - 
 

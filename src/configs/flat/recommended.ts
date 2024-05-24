@@ -1,13 +1,13 @@
 // IMPORTANT!
 // This file has been automatically generated,
 // in order to update its content execute "npm run update"
-import type { Linter } from "eslint";
-import base from "./base";
-export default [
-  ...base,
-  {
-    rules: {
-      // eslint-plugin-math rules
-    },
+import type { ESLint, Linter } from "eslint";
+export const plugins = {
+  get math(): ESLint.Plugin {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- ignore
+    return require("../../index.js");
   },
-] satisfies Linter.FlatConfig[];
+};
+export const rules: Linter.RulesRecord = {
+  // eslint-plugin-math rules
+};

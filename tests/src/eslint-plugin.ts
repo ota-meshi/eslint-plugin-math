@@ -1,7 +1,7 @@
 import path from "path";
 import assert from "assert";
 import { getLegacyESLint } from "eslint-compat-utils/eslint";
-import plugin from "../../src/index";
+import * as plugin from "../../src/index";
 
 // eslint-disable-next-line @typescript-eslint/naming-convention -- Class name
 const ESLint = getLegacyESLint();

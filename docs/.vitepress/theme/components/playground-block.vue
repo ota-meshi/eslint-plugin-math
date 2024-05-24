@@ -44,45 +44,9 @@ import { deserializeState, serializeState } from "./state";
 import { DEFAULT_RULES_CONFIG, getRule } from "./rules";
 
 const DEFAULT_CODE = `
-Math .X=                    "ESLINT"
-KEY=                            1234
-"QUO    TED".'K E Y S' ="STR    VAL"
-[TBL            .A.B            .C ]
-D.O.            TTE.            D=42
-ARR=            [123            ,45,
-67e8            ,90,            0.12
-,0xF            ,0o7            ,42]
-[[AR            .RA.            Y ]]
-[[T.            ABL.            E ]]
-B.O.            O.L=            true
-H ={            A=1,            B=2}
-Try . It                    =  "Now"
-
-# -------------------------
-
-# This is a Math document
-
-title = "Math Example"
-
-[owner]
-name = "Tom Preston-Werner"
-dob = 1979-05-27T07:32:00-08:00
-
-[database]
-enabled = true
-ports = [ 8001, 8001, 8002 ]
-data = [ ["delta", "phi"], [3.14] ]
-temp_targets = { cpu = 79.5, case = 72.0 }
-
-[servers]
-
-[servers.alpha]
-ip = "10.0.0.1"
-role = "frontend"
-
-[servers.beta]
-ip = "10.0.0.2"
-role = "backend"
+const n = 1234.5;
+const a = n >= 0 ? Math.floor(n) : Math.ceil(n);
+console.log(a);
 `;
 
 export default {
