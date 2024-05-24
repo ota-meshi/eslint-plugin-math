@@ -5,7 +5,7 @@ import type { ESLint, Linter } from "eslint";
 export const plugins = {
   get math(): ESLint.Plugin {
     // eslint-disable-next-line @typescript-eslint/no-require-imports -- ignore
-    return require("../../index.js");
+    return require("../../index");
   },
 };
 export const rules: Linter.RulesRecord = {

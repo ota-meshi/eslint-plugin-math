@@ -31,14 +31,14 @@ jobs:
         run: npm install
       - name: Test
         run: npm test
-  test-with-eslint9:
+  test-with-eslint8:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
       - name: Install Target Packages
         run: |+
-          npm i -D eslint@^9.0.0-0 -f
+          npm i -D eslint@^8 -f
           npx rimraf node_modules
           npm install -f
       - name: Test

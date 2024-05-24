@@ -15,8 +15,6 @@
 
 ESLint plugin related to [Math] object and [Number].
 
-- You can check your code in real-time using the ESLint editor integrations.
-
 You can check on the [Online DEMO](https://ota-meshi.github.io/eslint-plugin-math/playground/).
 
 <!--DOCS_IGNORE_START-->
@@ -94,7 +92,7 @@ module.exports = {
 
 This plugin provides configs:
 
-- `plugin:math/recommended` ... Recommended config provided by the plugin.
+- `plugin:math/recommended-legacy` ... Recommended config provided by the plugin.
 
 See [the rule list](https://ota-meshi.github.io/eslint-plugin-math/rules/) to get the `rules` that this plugin provides.
 

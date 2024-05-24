@@ -15,8 +15,6 @@
 
 ESLint plugin related to [Math] object and [Number].
 
-- You can check your code in real-time using the ESLint editor integrations.
-
 You can check on the [Online DEMO](./playground/).
 
 ## :book: Usage

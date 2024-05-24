@@ -67,7 +67,7 @@ module.exports = {
 
 This plugin provides configs:
 
-- `plugin:math/recommended` ... Recommended config provided by the plugin.
+- `plugin:math/recommended-legacy` ... Recommended config provided by the plugin.
 
 See [the rule list](../rules/index.md) to get the `rules` that this plugin provides.
 
