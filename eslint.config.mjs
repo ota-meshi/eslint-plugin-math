@@ -51,6 +51,7 @@ export default [
       "no-lone-blocks": "off",
       "no-unused-vars": "off",
       "no-shadow": "off",
+      yoda: "off",
     },
   },
   {
