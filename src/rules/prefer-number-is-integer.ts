@@ -3,6 +3,7 @@ import { createRule } from "../utils";
 import type { TransformingToNumberIsInteger } from "../utils/number";
 import { getInfoForTransformingToNumberIsInteger } from "../utils/number";
 import type { Rule } from "eslint";
+import { existComment } from "../utils/ast";
 
 export default createRule("prefer-number-is-integer", {
   meta: {
@@ -35,10 +36,7 @@ export default createRule("prefer-number-is-integer", {
         sourceCode,
       );
       if (!transform) return;
-      const hasComment = sourceCode.commentsExistBetween(
-        sourceCode.getFirstToken(node),
-        sourceCode.getLastToken(node),
-      );
+      const hasComment = existComment(node, sourceCode);
 
       const fix = (fixer: Rule.RuleFixer) => {
         return fixer.replaceText(

@@ -7,6 +7,7 @@
 
 import type { TSESTree } from "@typescript-eslint/types";
 
+export type Comment = TSESTree.Comment;
 export type Node = TSESTree.Node;
 export type Program = TSESTree.Program;
 export type Expression = TSESTree.Expression;

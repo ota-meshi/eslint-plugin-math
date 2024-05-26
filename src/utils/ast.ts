@@ -1,5 +1,78 @@
 import type { TSESTree } from "@typescript-eslint/types";
+import { findVariable, getPropertyName } from "@eslint-community/eslint-utils";
 import type { AST, SourceCode } from "eslint";
+
+/**
+ * Checks whether the given node has a comment.
+ */
+export function existComment(
+  node: TSESTree.Node,
+  sourceCode: SourceCode,
+): boolean {
+  return sourceCode.commentsExistBetween(
+    sourceCode.getFirstToken(node)!,
+    sourceCode.getLastToken(node)!,
+  );
+}
+/**
+ * Checks whether the given range has a comment.
+ */
+export function existCommentBetween(
+  range: [number, number],
+  sourceCode: SourceCode,
+): boolean {
+  const left = sourceCode.getNodeByRangeIndex(range[0])!;
+  const right = sourceCode.getNodeByRangeIndex(range[1])!;
+  if (left.range[0] === range[0] && right.range[1] === range[1]) {
+    return sourceCode.commentsExistBetween(
+      sourceCode.getFirstToken(left)!,
+      sourceCode.getLastToken(right)!,
+    );
+  }
+  let token: AST.Token | TSESTree.Comment | null =
+    sourceCode.getFirstToken(left);
+  while (token && token.range[1] <= range[1]) {
+    if (
+      (range[0] <= token.range[0] && token.type === "Line") ||
+      token.type === "Block"
+    )
+      return true;
+    token = sourceCode.getTokenAfter(token, { includeComments: true });
+  }
+  return false;
+}
+
+/**
+ * Checks whether the given node is a global object.
+ */
+export function isGlobalObject(
+  node: TSESTree.Expression,
+  name: keyof typeof globalThis,
+  sourceCode: SourceCode,
+): node is TSESTree.Identifier {
+  if (node.type !== "Identifier" || node.name !== name) return false;
+  const variable = findVariable(sourceCode.getScope(node), node);
+  if (variable && variable.defs.length > 0) return false; // Not a global
+  return true;
+}
+
+/**
+ * Checks whether the given node is a global object method call.
+ */
+export function isGlobalObjectMethodCall<N extends keyof typeof globalThis>(
+  node: TSESTree.Node,
+  name: N,
+  method: keyof (typeof globalThis)[N],
+  sourceCode: SourceCode,
+): node is TSESTree.CallExpression {
+  if (node.type !== "CallExpression") return false;
+  const { callee } = node;
+  return (
+    callee.type === "MemberExpression" &&
+    isGlobalObject(callee.object, name, sourceCode) &&
+    getPropertyName(callee) === method
+  );
+}
 
 /**
  * Checks whether or not the tokens of two given nodes are same.
@@ -28,4 +101,14 @@ export function equalTokens(
       return false;
   }
   return true;
+}
+
+/**
+ * Checks whether the given node is a Literal with the given value.
+ */
+export function isLiteral<V extends TSESTree.Literal["value"]>(
+  node: TSESTree.Expression,
+  value: V,
+): node is TSESTree.Literal & { value: V } {
+  return node.type === "Literal" && node.value === value;
 }
