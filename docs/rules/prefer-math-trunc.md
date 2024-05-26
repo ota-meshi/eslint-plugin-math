@@ -3,13 +3,13 @@ pageClass: "rule-details"
 sidebarDepth: 0
 title: "math/prefer-math-trunc"
 description: "enforce use of Math.trunc() over other truncations"
+since: "v0.1.0"
 ---
 
 # math/prefer-math-trunc
 
 > enforce use of Math.trunc() over other truncations
 
-- :exclamation: <badge text="This rule has not been released yet." vertical="middle" type="error"> **_This rule has not been released yet._** </badge>
 - :gear: This rule is included in `"plugin:math/recommended"`.
 - :wrench: The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some of the problems reported by this rule.
 - :bulb: Some problems reported by this rule are manually fixable by editor [suggestions](https://eslint.org/docs/developer-guide/working-with-rules#providing-suggestions).
@@ -49,6 +49,10 @@ if (n >= 0) {
 ## :wrench: Options
 
 Nothing.
+
+## :rocket: Version
+
+This rule was introduced in eslint-plugin-math v0.1.0
 
 ## :mag: Implementation
 
