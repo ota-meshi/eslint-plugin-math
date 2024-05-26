@@ -45,7 +45,14 @@ import { DEFAULT_RULES_CONFIG, getRule } from "./rules/index";
 
 const DEFAULT_CODE = `
 const n = 1234.5;
-const a = n >= 0 ? Math.floor(n) : Math.ceil(n);
+let a = n >= 0 ? Math.floor(n) : Math.ceil(n);
+console.log(a);
+
+if (n >= 0) {
+  a = Math.floor(n);
+} else {
+  a = Math.ceil(n);
+}
 console.log(a);
 `;
 
