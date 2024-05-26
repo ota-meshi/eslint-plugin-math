@@ -2,13 +2,13 @@
 pageClass: "rule-details"
 sidebarDepth: 0
 title: "math/prefer-math-trunc"
-description: "enforce use of Math.trunc() over other truncations"
+description: "enforce the use of Math.trunc() instead of other truncations"
 since: "v0.1.0"
 ---
 
 # math/prefer-math-trunc
 
-> enforce use of Math.trunc() over other truncations
+> enforce the use of Math.trunc() instead of other truncations
 
 - :gear: This rule is included in `"plugin:math/recommended"`.
 - :wrench: The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some of the problems reported by this rule.
@@ -16,7 +16,7 @@ since: "v0.1.0"
 
 ## :book: Rule Details
 
-This rule aims to enforce use of `Math.trunc()` over other truncations.
+This rule aims to enforce the use of `Math.trunc()` instead of other truncations.
 
 <eslint-code-block fix>
 

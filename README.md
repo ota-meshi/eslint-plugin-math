@@ -112,7 +112,8 @@ The rules with the following star :star: are included in the configs.
 
 | Rule ID | Description | Fixable | RECOMMENDED | STANDARD |
 |:--------|:------------|:-------:|:-----------:|:--------:|
-| [math/prefer-math-trunc](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-trunc.html) | enforce use of Math.trunc() over other truncations | :wrench: | :star: |  |
+| [math/prefer-math-trunc](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-trunc.html) | enforce the use of Math.trunc() instead of other truncations | :wrench: | :star: |  |
+| [math/prefer-number-is-integer](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-is-integer.html) | enforce the use of Number.isInteger() instead of other checking ways | :wrench: | :star: |  |
 
 <!--RULES_TABLE_END-->
 <!--RULES_SECTION_END-->

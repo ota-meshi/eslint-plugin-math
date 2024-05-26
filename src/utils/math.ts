@@ -13,11 +13,11 @@ export type MathMethodInfo<M extends MathMethod> = {
 
 export type TransformingToMathTrunc =
   | (MathMethodInfo<"trunc"> & {
-      type: "bitwise";
+      from: "bitwise";
       node: TSESTree.UnaryExpression | TSESTree.BinaryExpression;
     })
   | (MathMethodInfo<"trunc"> & {
-      type: "conditional";
+      from: "conditional";
     });
 /**
  * Returns information if the given expression can be transformed to Math.trunc().
@@ -33,7 +33,7 @@ export function getInfoForTransformingToMathTrunc(
       return null;
     // ~~n
     return {
-      type: "bitwise",
+      from: "bitwise",
       method: "trunc",
       node,
       argument: argument.argument,
@@ -49,7 +49,7 @@ export function getInfoForTransformingToMathTrunc(
     ) {
       if (right.type !== "Literal" || right.value !== 0) return null;
       // n | 0, n ^ 0, n >> 0
-      return { type: "bitwise", method: "trunc", node, argument: left };
+      return { from: "bitwise", method: "trunc", node, argument: left };
     }
     if (node.operator === "&") {
       if (
@@ -61,7 +61,7 @@ export function getInfoForTransformingToMathTrunc(
       )
         return null;
       // n & -1
-      return { type: "bitwise", method: "trunc", node, argument: left };
+      return { from: "bitwise", method: "trunc", node, argument: left };
     }
     return null;
   }
@@ -77,7 +77,7 @@ export function getInfoForTransformingToMathTrunc(
     if (!equalNodeTokens(conditional.argument, ceil.argument, sourceCode))
       return null;
     return {
-      type: "conditional",
+      from: "conditional",
       method: "trunc",
       node,
       argument: conditional.argument,

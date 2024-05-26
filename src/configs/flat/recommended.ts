@@ -11,4 +11,5 @@ export const plugins = {
 export const rules: Linter.RulesRecord = {
   // eslint-plugin-math rules
   "math/prefer-math-trunc": "error",
+  "math/prefer-number-is-integer": "error",
 };

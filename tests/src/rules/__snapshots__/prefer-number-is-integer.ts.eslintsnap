@@ -1,0 +1,140 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: prefer-number-is-integer >> invalid
+Filename: prefer-number-is-integer/invalid/comment-input.js
+
+Code:
+  1 | /*prefer-number-is-integer/invalid/comment-input.js*/
+  2 | x = Math.floor(n) /* x */ === n;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+  3 | x = Math.ceil(n) /* x */ === n;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~ [2]
+  4 | x = Math.trunc(n) /* x */ === n;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~ [3]
+  5 |
+
+Output: unchanged
+
+[1] Can use 'Number.isInteger()' instead of 'Math.floor(n) === n'.
+    Suggestions:
+      - Replace using 'Number.isInteger()'.
+        Output:
+          1 | /*prefer-number-is-integer/invalid/comment-input.js*/
+          2 | x = Number.isInteger(n);
+          3 | x = Math.ceil(n) /* x */ === n;
+          4 | x = Math.trunc(n) /* x */ === n;
+          5 |
+[2] Can use 'Number.isInteger()' instead of 'Math.ceil(n) === n'.
+    Suggestions:
+      - Replace using 'Number.isInteger()'.
+        Output:
+          1 | /*prefer-number-is-integer/invalid/comment-input.js*/
+          2 | x = Math.floor(n) /* x */ === n;
+          3 | x = Number.isInteger(n);
+          4 | x = Math.trunc(n) /* x */ === n;
+          5 |
+[3] Can use 'Number.isInteger()' instead of 'Math.trunc(n) === n'.
+    Suggestions:
+      - Replace using 'Number.isInteger()'.
+        Output:
+          1 | /*prefer-number-is-integer/invalid/comment-input.js*/
+          2 | x = Math.floor(n) /* x */ === n;
+          3 | x = Math.ceil(n) /* x */ === n;
+          4 | x = Number.isInteger(n);
+          5 |
+---
+
+
+Test: prefer-number-is-integer >> invalid
+Filename: prefer-number-is-integer/invalid/example-input.js
+
+Code:
+  1 | /*prefer-number-is-integer/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = Number.isInteger(n);
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = Math.floor(n) === n;
+    |     ^~~~~~~~~~~~~~~~~~~ [1]
+  7 | x = Math.ceil(n) === n;
+    |     ^~~~~~~~~~~~~~~~~~ [2]
+  8 | x = Math.trunc(n) === n;
+    |     ^~~~~~~~~~~~~~~~~~~ [3]
+  9 |
+
+Output:
+  1 | /*prefer-number-is-integer/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = Number.isInteger(n);
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = Number.isInteger(n);
+  7 | x = Number.isInteger(n);
+  8 | x = Number.isInteger(n);
+  9 |
+
+[1] Can use 'Number.isInteger()' instead of 'Math.floor(n) === n'.
+[2] Can use 'Number.isInteger()' instead of 'Math.ceil(n) === n'.
+[3] Can use 'Number.isInteger()' instead of 'Math.trunc(n) === n'.
+---
+
+
+Test: prefer-number-is-integer >> invalid
+Filename: prefer-number-is-integer/invalid/math-trunc-like-input.js
+
+Code:
+  1 | /*prefer-number-is-integer/invalid/math-trunc-like-input.js*/
+  2 | x = ~~n === n;
+    |     ^~~~~~~~~ [1]
+  3 | x = (n & -1) === n;
+    |     ^~~~~~~~~~~~~~ [2]
+  4 | x = (n | 0) === n;
+    |     ^~~~~~~~~~~~~ [3]
+  5 | x = (n ^ 0) === n;
+    |     ^~~~~~~~~~~~~ [4]
+  6 | x = n >> 0 === n;
+    |     ^~~~~~~~~~~~ [5]
+  7 |
+
+Output:
+  1 | /*prefer-number-is-integer/invalid/math-trunc-like-input.js*/
+  2 | x = Number.isInteger(n);
+  3 | x = Number.isInteger(n);
+  4 | x = Number.isInteger(n);
+  5 | x = Number.isInteger(n);
+  6 | x = Number.isInteger(n);
+  7 |
+
+[1] Can use 'Number.isInteger()' instead of 'Math.trunc(n) === n' like expression.
+[2] Can use 'Number.isInteger()' instead of 'Math.trunc(n) === n' like expression.
+[3] Can use 'Number.isInteger()' instead of 'Math.trunc(n) === n' like expression.
+[4] Can use 'Number.isInteger()' instead of 'Math.trunc(n) === n' like expression.
+[5] Can use 'Number.isInteger()' instead of 'Math.trunc(n) === n' like expression.
+---
+
+
+Test: prefer-number-is-integer >> invalid
+Filename: prefer-number-is-integer/invalid/not-input.js
+
+Code:
+  1 | /*prefer-number-is-integer/invalid/not-input.js*/
+  2 | x = Math.floor(n) !== n;
+    |     ^~~~~~~~~~~~~~~~~~~ [1]
+  3 | x = Math.ceil(n) !== n;
+    |     ^~~~~~~~~~~~~~~~~~ [2]
+  4 | x = Math.trunc(n) !== n;
+    |     ^~~~~~~~~~~~~~~~~~~ [3]
+  5 |
+
+Output:
+  1 | /*prefer-number-is-integer/invalid/not-input.js*/
+  2 | x = !Number.isInteger(n);
+  3 | x = !Number.isInteger(n);
+  4 | x = !Number.isInteger(n);
+  5 |
+
+[1] Can use '!Number.isInteger()' instead of 'Math.floor(n) !== n'.
+[2] Can use '!Number.isInteger()' instead of 'Math.ceil(n) !== n'.
+[3] Can use '!Number.isInteger()' instead of 'Math.trunc(n) !== n'.
+---
