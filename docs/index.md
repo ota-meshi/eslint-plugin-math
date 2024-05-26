@@ -9,7 +9,7 @@
 [![NPM downloads](https://img.shields.io/npm/dm/eslint-plugin-math.svg)](http://www.npmtrends.com/eslint-plugin-math)
 [![NPM downloads](https://img.shields.io/npm/dy/eslint-plugin-math.svg)](http://www.npmtrends.com/eslint-plugin-math)
 [![NPM downloads](https://img.shields.io/npm/dt/eslint-plugin-math.svg)](http://www.npmtrends.com/eslint-plugin-math)
-[![Build Status](https://github.com/ota-meshi/eslint-plugin-math/workflows/CI/badge.svg?branch=main)](https://github.com/ota-meshi/eslint-plugin-math/actions?query=workflow%3ACI)
+[![Build Status](https://github.com/ota-meshi/eslint-plugin-math/actions/workflows/NodeCI.yml/badge.svg?branch=main)](https://github.com/ota-meshi/eslint-plugin-math/actions/workflows/NodeCI.yml)
 
 ## :name_badge: Features
 
