@@ -94,7 +94,7 @@ export function getInfoForIsNegative(node: TSESTree.Expression): null | {
   return null;
 }
 /**
- * Checks whether the given node is a zero.
+ * Checks whether the given node is a `0`.
  */
 export function isZero(node: TSESTree.Expression): boolean {
   return (
@@ -106,13 +106,13 @@ export function isZero(node: TSESTree.Expression): boolean {
   );
 }
 /**
- * Checks whether the given node is a 1.
+ * Checks whether the given node is a `1`.
  */
 export function isOne(node: TSESTree.Expression): boolean {
   return node.type === "Literal" && node.value === 1;
 }
 /**
- * Checks whether the given node is a -1.
+ * Checks whether the given node is a `-1`.
  */
 export function isMinusOne(node: TSESTree.Expression): boolean {
   return (
@@ -150,12 +150,13 @@ export function getInfoForTransformingToNumberIsInteger(
             argument: toInt.argument,
           };
         }
-        if (isZero(a) && isModuloOne(b)) {
+        if (isZero(b) && isModuloOne(a)) {
+          // n % 1 === 0
           return {
             from: "modulo",
             method,
             node,
-            argument: b.left,
+            argument: a.left,
           };
         }
       }
@@ -170,6 +171,7 @@ export function getInfoForTransformingToNumberIsInteger(
           parent.type === "DoWhileStatement") &&
         parent.test === node
       ) {
+        // if (n % 1) { ... }
         return {
           from: "modulo",
           method: "!isInteger",
@@ -184,6 +186,7 @@ export function getInfoForTransformingToNumberIsInteger(
     if (node.operator !== "!") return null;
     const argument = node.argument as TSESTree.Expression; /* Maybe type bug */
     if (!isModuloOne(argument)) return null;
+    // !(n % 1)
     return {
       from: "modulo",
       method: "isInteger",
@@ -192,8 +195,11 @@ export function getInfoForTransformingToNumberIsInteger(
     };
   }
   if (node.type === "CallExpression") {
+    if (node.callee.type !== "Identifier" || node.callee.name !== "Boolean")
+      return null;
     const argument = node.arguments.length > 0 ? node.arguments[0] : null;
     if (!argument || !isModuloOne(argument)) return null;
+    // Boolean(n % 1)
     return {
       from: "modulo",
       method: "!isInteger",
@@ -204,7 +210,7 @@ export function getInfoForTransformingToNumberIsInteger(
   return null;
 
   /**
-   * Checks whether the given node is a modulo one.
+   * Checks whether the given node is a `n % 1`.
    */
   function isModuloOne(
     expr: TSESTree.Expression | TSESTree.SpreadElement,
