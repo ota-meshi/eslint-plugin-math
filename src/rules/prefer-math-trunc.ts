@@ -12,7 +12,8 @@ import type { Rule } from "eslint";
 export default createRule("prefer-math-trunc", {
   meta: {
     docs: {
-      description: "enforce use of Math.trunc() over other truncations",
+      description:
+        "enforce the use of Math.trunc() instead of other truncations",
       categories: ["recommended"],
     },
     fixable: "code",
@@ -56,11 +57,11 @@ export default createRule("prefer-math-trunc", {
       context.report({
         node,
         messageId:
-          transform.type === "bitwise"
+          transform.from === "bitwise"
             ? "canUseTruncInsteadOfBitwise"
             : "canUseTruncInsteadOfConditional",
         data:
-          transform.type === "bitwise"
+          transform.from === "bitwise"
             ? {
                 expression:
                   transform.node.type === "UnaryExpression"

@@ -13,4 +13,5 @@ The rules with the following star :star: are included in the `plugin:math/recomm
 
 | Rule ID | Description | Fixable | RECOMMENDED | STANDARD |
 |:--------|:------------|:-------:|:-----------:|:--------:|
-| [math/prefer-math-trunc](./prefer-math-trunc.md) | enforce use of Math.trunc() over other truncations | :wrench: | :star: |  |
+| [math/prefer-math-trunc](./prefer-math-trunc.md) | enforce the use of Math.trunc() instead of other truncations | :wrench: | :star: |  |
+| [math/prefer-number-is-integer](./prefer-number-is-integer.md) | enforce the use of Number.isInteger() instead of other checking ways | :wrench: | :star: |  |

@@ -5,4 +5,5 @@ export const plugins = ["math"];
 export const rules = {
   // eslint-plugin-math rules
   "math/prefer-math-trunc": "error",
+  "math/prefer-number-is-integer": "error",
 };
