@@ -128,3 +128,14 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Repo
+/typings/eslint/lib
+/lib
+
+# docs
+/docs/assets
+/docs/**/*.html
+/docs/.vitepress/.temp
+/docs/.vitepress/cache
+/docs/.vitepress/build-system/shim
