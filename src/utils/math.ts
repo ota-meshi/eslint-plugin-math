@@ -1,7 +1,6 @@
 import type { TSESTree } from "@typescript-eslint/types";
-import { findVariable, getPropertyName } from "@eslint-community/eslint-utils";
 import type { SourceCode } from "eslint";
-import { equalNodeTokens, equalTokens } from "./ast";
+import { equalNodeTokens, equalTokens, isGlobalObjectMethodCall } from "./ast";
 import {
   getInfoForIsNegative,
   getInfoForIsPositive,
@@ -264,21 +263,15 @@ export function getInfoForMathCeil(
 }
 
 /**
- * Returns information if the given expression is Math[name]().
+ * Returns information if the given expression is Math[method]().
  */
 function getInfoForMathX<M extends MathMethod>(
   node: TSESTree.Expression,
   method: M,
   sourceCode: SourceCode,
 ): null | MathMethodInfo<M> {
-  if (node.type !== "CallExpression") return null;
-  const { callee, arguments: args } = node;
-  if (callee.type !== "MemberExpression") return null;
-  const { object } = callee;
-  if (object.type !== "Identifier" || object.name !== "Math") return null;
-  const variable = findVariable(sourceCode.getScope(node), object);
-  if (variable && variable.defs.length > 0) return null; // Not a global Math object
-  if (getPropertyName(callee) !== method) return null;
+  if (!isGlobalObjectMethodCall(node, "Math", method, sourceCode)) return null;
+  const { arguments: args } = node;
   if (args.length < 1) return null;
   const argument = args[0];
   if (argument.type === "SpreadElement") return null;

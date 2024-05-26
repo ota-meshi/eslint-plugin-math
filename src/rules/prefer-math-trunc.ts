@@ -8,6 +8,7 @@ import {
   getInfoForTransformingToMathTrunc,
 } from "../utils/math";
 import type { Rule } from "eslint";
+import { existComment, existCommentBetween } from "../utils/ast";
 
 export default createRule("prefer-math-trunc", {
   meta: {
@@ -42,10 +43,7 @@ export default createRule("prefer-math-trunc", {
       const transform = getInfoForTransformingToMathTrunc(node, sourceCode);
       if (!transform) return;
       reportedNodes.add(node);
-      const hasComment = sourceCode.commentsExistBetween(
-        sourceCode.getFirstToken(node),
-        sourceCode.getLastToken(node),
-      );
+      const hasComment = existComment(node, sourceCode);
 
       const fix = (fixer: Rule.RuleFixer) => {
         return fixer.replaceText(
@@ -92,17 +90,14 @@ export default createRule("prefer-math-trunc", {
         const hasCommentOrShadowed =
           (item.block.type === "BlockStatement" &&
             hasShadowedVariable(item.block)) ||
-          sourceCode.commentsExistBetween(
-            sourceCode.getFirstToken(info.node),
-            sourceCode.getFirstToken(item.block),
+          existCommentBetween(
+            [info.node.range[0], item.block.range[0]],
+            sourceCode,
           ) ||
-          sourceCode.commentsExistBetween(
-            sourceCode.getFirstToken(item.node),
-            sourceCode.getLastToken(item.node),
-          ) ||
-          sourceCode.commentsExistBetween(
-            sourceCode.getLastToken(item.block),
-            sourceCode.getLastToken(info.node),
+          existComment(item.node, sourceCode) ||
+          existCommentBetween(
+            [item.block.range[1], info.node.range[1]],
+            sourceCode,
           );
 
         const fix = function* (fixer: Rule.RuleFixer) {

@@ -6,7 +6,7 @@ import {
   getInfoForMathTrunc,
   getInfoForTransformingToMathTrunc,
 } from "./math";
-import { equalNodeTokens } from "./ast";
+import { equalNodeTokens, isGlobalObject, isLiteral } from "./ast";
 
 export type NumberMethod = "isInteger" | "!isInteger";
 export type NumberMethodInfo<M extends NumberMethod> = {
@@ -98,29 +98,27 @@ export function getInfoForIsNegative(node: TSESTree.Expression): null | {
  */
 export function isZero(node: TSESTree.Expression): boolean {
   return (
-    (node.type === "Literal" && node.value === 0) ||
+    isLiteral(node, 0) ||
     (node.type === "UnaryExpression" &&
       node.operator === "-" &&
-      node.argument.type === "Literal" &&
-      node.argument.value === 0)
+      isLiteral(node.argument, 0))
   );
 }
 /**
  * Checks whether the given node is a `1`.
  */
 export function isOne(node: TSESTree.Expression): boolean {
-  return node.type === "Literal" && node.value === 1;
+  return isLiteral(node, 1);
 }
 /**
  * Checks whether the given node is a `-1`.
  */
 export function isMinusOne(node: TSESTree.Expression): boolean {
   return (
-    (node.type === "Literal" && node.value === -1) ||
+    isLiteral(node, -1) ||
     (node.type === "UnaryExpression" &&
       node.operator === "-" &&
-      node.argument.type === "Literal" &&
-      node.argument.value === 1)
+      isLiteral(node.argument, 1))
   );
 }
 
@@ -195,8 +193,7 @@ export function getInfoForTransformingToNumberIsInteger(
     };
   }
   if (node.type === "CallExpression") {
-    if (node.callee.type !== "Identifier" || node.callee.name !== "Boolean")
-      return null;
+    if (!isGlobalObject(node.callee, "Boolean", sourceCode)) return null;
     const argument = node.arguments.length > 0 ? node.arguments[0] : null;
     if (!argument || !isModuloOne(argument)) return null;
     // Boolean(n % 1)
@@ -208,20 +205,6 @@ export function getInfoForTransformingToNumberIsInteger(
     };
   }
   return null;
-
-  /**
-   * Checks whether the given node is a `n % 1`.
-   */
-  function isModuloOne(
-    expr: TSESTree.Expression | TSESTree.SpreadElement,
-  ): expr is TSESTree.BinaryExpression & { left: TSESTree.Expression } {
-    return (
-      expr.type === "BinaryExpression" &&
-      expr.operator === "%" &&
-      isOne(expr.right) &&
-      expr.left.type !== "PrivateIdentifier"
-    );
-  }
 
   /**
    * Get way to convert to an integer.
@@ -237,4 +220,18 @@ export function getInfoForTransformingToNumberIsInteger(
     if (truncLike) return { ...truncLike, type: "truncLike" as const };
     return null;
   }
+}
+
+/**
+ * Checks whether the given node is a `n % 1`.
+ */
+function isModuloOne(
+  node: TSESTree.Expression | TSESTree.SpreadElement,
+): node is TSESTree.BinaryExpression & { left: TSESTree.Expression } {
+  return (
+    node.type === "BinaryExpression" &&
+    node.operator === "%" &&
+    isOne(node.right) &&
+    node.left.type !== "PrivateIdentifier"
+  );
 }
