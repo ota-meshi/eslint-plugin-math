@@ -18,6 +18,7 @@
 <script>
 import EslintEditor from "@ota-meshi/site-kit-eslint-editor-vue";
 import { loadMonacoEditor } from "@ota-meshi/site-kit-monaco-editor";
+import globals from "globals";
 import { Linter } from "eslint";
 import { rules } from "../../../../../src/utils/rules";
 
@@ -52,16 +53,11 @@ export default {
       type: String,
       default: "a.js",
     },
-    parser: {
-      type: String,
-      default: "espree",
-    },
   },
   emits: ["update:code", "change"],
 
   data() {
     return {
-      espree: null,
       format: {
         insertSpaces: true,
         tabSize: 2,
@@ -72,58 +68,32 @@ export default {
   computed: {
     config() {
       return {
-        globals: {
-          console: false,
-          // ES2015 globals
-          ArrayBuffer: false,
-          DataView: false,
-          Float32Array: false,
-          Float64Array: false,
-          Int16Array: false,
-          Int32Array: false,
-          Int8Array: false,
-          Map: false,
-          Promise: false,
-          Proxy: false,
-          Reflect: false,
-          Set: false,
-          Symbol: false,
-          Uint16Array: false,
-          Uint32Array: false,
-          Uint8Array: false,
-          Uint8ClampedArray: false,
-          WeakMap: false,
-          WeakSet: false,
-          // ES2017 globals
-          Atomics: false,
-          SharedArrayBuffer: false,
+        plugins: {
+          math: {
+            rules: rules.reduce((obj, r) => {
+              obj[r.meta.docs.ruleName] = r;
+              return obj;
+            }, {}),
+          },
         },
         rules: this.rules,
-        parser: this.parser,
-        parserOptions: {
-          parser: this.espree,
-          sourceType: "module",
-          ecmaVersion: "latest",
+        languageOptions: {
+          globals: {
+            ...globals.builtin,
+            ...globals.browser,
+            ...globals.es2020,
+            ...globals.es2021,
+          },
         },
       };
     },
     linter() {
       const linter = new Linter();
-
-      for (const k of Object.keys(rules)) {
-        const rule = rules[k];
-        linter.defineRule(rule.meta.docs.ruleId, rule);
-      }
-
       return linter;
     },
   },
 
   async mounted() {
-    // Load parser asynchronously.
-    const [espree] = await Promise.all([import("espree")]);
-    this.espree = espree;
-
     const monaco = await loadMonacoEditor();
     monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
       validate: false,

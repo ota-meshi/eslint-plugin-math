@@ -91,16 +91,12 @@ class DocFile {
       } else {
         notes.push("- :warning: This rule was **deprecated**.");
       }
-    } else {
-      if (categories && categories.length) {
-        const presets = [];
-        for (const cat of categories.sort()) {
-          presets.push(`\`"plugin:math/${cat}"\``);
-        }
-        notes.push(
-          `- :gear: This rule is included in ${formatItems(presets)}.`,
-        );
+    } else if (categories && categories.length) {
+      const presets = [];
+      for (const cat of categories.sort()) {
+        presets.push(`\`"plugin:math/${cat}"\``);
       }
+      notes.push(`- :gear: This rule is included in ${formatItems(presets)}.`);
     }
     if (fixable) {
       notes.push(

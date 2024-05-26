@@ -19,3 +19,4 @@ const rules = ruleList.reduce(
 );
 
 export { meta, configs, rules };
+export default { meta, configs, rules };

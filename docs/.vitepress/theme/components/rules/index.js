@@ -1,7 +1,7 @@
-import { Linter } from "eslint";
-import { rules } from "../../../../../src/utils/rules.ts";
+import { builtinRules } from "eslint/use-at-your-own-risk";
+import { rules } from "../../../../../src/utils/rules";
 
-const coreRules = Object.fromEntries(new Linter().getRules());
+const coreRules = Object.fromEntries(builtinRules);
 
 const CATEGORY_TITLES = {
   math: "eslint-plugin-math",

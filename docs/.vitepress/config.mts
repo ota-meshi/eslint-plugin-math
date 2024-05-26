@@ -4,7 +4,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import eslint4b from "vite-plugin-eslint4b";
 import type { RuleModule } from "../../src/types.js";
-import { viteCommonjs } from "./vite-plugin.mjs";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -20,8 +19,9 @@ function ruleToSidebarItem({
 }
 
 export default async (): Promise<UserConfig<DefaultTheme.Config>> => {
-  const a = "../../lib/utils/rules.js";
-  const { rules } = (await import(a)) as { rules: RuleModule[] };
+  const { rules } = (await import("../../src/utils/rules.js")) as {
+    rules: RuleModule[];
+  };
   return defineConfig({
     base: "/eslint-plugin-math/",
     title: "eslint-plugin-math",
@@ -30,7 +30,7 @@ export default async (): Promise<UserConfig<DefaultTheme.Config>> => {
     head: [],
 
     vite: {
-      plugins: [viteCommonjs(), eslint4b()],
+      plugins: [eslint4b()],
       define: {
         "process.env.NODE_DEBUG": "false",
       },

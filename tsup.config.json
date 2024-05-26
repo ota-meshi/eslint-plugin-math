@@ -1,0 +1,9 @@
+[
+  {
+    "clean": true,
+    "dts": true,
+    "outDir": "lib",
+    "entry": ["src/index.ts"],
+    "format": ["esm", "cjs"]
+  }
+]

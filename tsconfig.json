@@ -29,7 +29,8 @@
     "tests/utils/**/*",
     "tools/**/*",
     "docs/.vitepress/**/*",
-    "typings/**/*"
+    "typings/**/*",
+    "tsup.config.ts"
   ],
   "exclude": ["lib/**/*"]
 }
