@@ -2,7 +2,12 @@ import type { TSESTree } from "@typescript-eslint/types";
 import { findVariable, getPropertyName } from "@eslint-community/eslint-utils";
 import type { SourceCode } from "eslint";
 import { equalNodeTokens, equalTokens } from "./ast";
-import { getInfoForIsNegative, getInfoForIsPositive } from "./number";
+import {
+  getInfoForIsNegative,
+  getInfoForIsPositive,
+  isMinusOne,
+  isZero,
+} from "./number";
 
 export type MathMethod = "floor" | "ceil" | "trunc";
 export type MathMethodInfo<M extends MathMethod> = {
@@ -47,19 +52,12 @@ export function getInfoForTransformingToMathTrunc(
       node.operator === "^" ||
       node.operator === ">>"
     ) {
-      if (right.type !== "Literal" || right.value !== 0) return null;
+      if (!isZero(right)) return null;
       // n | 0, n ^ 0, n >> 0
       return { from: "bitwise", method: "trunc", node, argument: left };
     }
     if (node.operator === "&") {
-      if (
-        (right.type !== "Literal" || right.value !== -1) &&
-        (right.type !== "UnaryExpression" ||
-          right.operator !== "-" ||
-          right.argument.type !== "Literal" ||
-          right.argument.value !== 1)
-      )
-        return null;
+      if (!isMinusOne(right)) return null;
       // n & -1
       return { from: "bitwise", method: "trunc", node, argument: left };
     }

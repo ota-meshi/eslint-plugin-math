@@ -31,6 +31,13 @@ export type TransformingToNumberIsInteger =
   | (NumberMethodInfo<"isInteger" | "!isInteger"> & {
       from: "floor";
       node: TSESTree.BinaryExpression;
+    })
+  | (NumberMethodInfo<"isInteger" | "!isInteger"> & {
+      from: "modulo";
+      node:
+        | TSESTree.BinaryExpression
+        | TSESTree.UnaryExpression
+        | TSESTree.CallExpression;
     });
 /**
  * Returns information if the condition checks whether the given expression is a positive number (or zero).
@@ -42,7 +49,7 @@ export function getInfoForIsPositive(node: TSESTree.Expression): null | {
   const { left, right, operator } = node;
   if (left.type === "PrivateIdentifier") return null;
   if (operator === ">" || operator === ">=") {
-    return right.type === "Literal" && right.value === 0
+    return isZero(right)
       ? {
           // n > 0, n >= 0
           argument: left,
@@ -50,7 +57,7 @@ export function getInfoForIsPositive(node: TSESTree.Expression): null | {
       : null;
   }
   if (operator === "<" || operator === "<=") {
-    return left.type === "Literal" && left.value === 0
+    return isZero(left)
       ? {
           // 0 < n, 0 <= n
           argument: right,
@@ -69,7 +76,7 @@ export function getInfoForIsNegative(node: TSESTree.Expression): null | {
   const { left, right, operator } = node;
   if (left.type === "PrivateIdentifier") return null;
   if (operator === "<" || operator === "<=") {
-    return right.type === "Literal" && right.value === 0
+    return isZero(right)
       ? {
           // n < 0, n <= 0
           argument: left,
@@ -77,7 +84,7 @@ export function getInfoForIsNegative(node: TSESTree.Expression): null | {
       : null;
   }
   if (operator === ">" || operator === ">=") {
-    return left.type === "Literal" && left.value === 0
+    return isZero(left)
       ? {
           // 0 > n, 0 >= n
           argument: right,
@@ -85,6 +92,36 @@ export function getInfoForIsNegative(node: TSESTree.Expression): null | {
       : null;
   }
   return null;
+}
+/**
+ * Checks whether the given node is a zero.
+ */
+export function isZero(node: TSESTree.Expression): boolean {
+  return (
+    (node.type === "Literal" && node.value === 0) ||
+    (node.type === "UnaryExpression" &&
+      node.operator === "-" &&
+      node.argument.type === "Literal" &&
+      node.argument.value === 0)
+  );
+}
+/**
+ * Checks whether the given node is a 1.
+ */
+export function isOne(node: TSESTree.Expression): boolean {
+  return node.type === "Literal" && node.value === 1;
+}
+/**
+ * Checks whether the given node is a -1.
+ */
+export function isMinusOne(node: TSESTree.Expression): boolean {
+  return (
+    (node.type === "Literal" && node.value === -1) ||
+    (node.type === "UnaryExpression" &&
+      node.operator === "-" &&
+      node.argument.type === "Literal" &&
+      node.argument.value === 1)
+  );
 }
 
 /**
@@ -95,46 +132,102 @@ export function getInfoForTransformingToNumberIsInteger(
   sourceCode: SourceCode,
 ): null | TransformingToNumberIsInteger {
   if (node.type === "BinaryExpression") {
-    const { left, right } = node;
+    const { left, right, operator } = node;
     if (left.type === "PrivateIdentifier") return null;
-    const method =
-      node.operator === "==="
-        ? "isInteger"
-        : node.operator === "!=="
-          ? "!isInteger"
-          : null;
-    if (method == null) return null;
-
-    for (const [a, b] of [
-      [left, right],
-      [right, left],
-    ]) {
-      const toInt = getToIntegerWay(a);
-      if (toInt) {
-        if (!equalNodeTokens(toInt.argument, b, sourceCode)) continue;
+    if (operator === "===" || operator === "!==") {
+      const method = operator === "!==" ? "!isInteger" : "isInteger";
+      for (const [a, b] of [
+        [left, right],
+        [right, left],
+      ]) {
+        const toInt = getToIntegerWay(a);
+        if (toInt) {
+          if (!equalNodeTokens(toInt.argument, b, sourceCode)) continue;
+          return {
+            from: toInt.type,
+            method,
+            node,
+            argument: toInt.argument,
+          };
+        }
+        if (isZero(a) && isModuloOne(b)) {
+          return {
+            from: "modulo",
+            method,
+            node,
+            argument: b.left,
+          };
+        }
+      }
+    }
+    if (isModuloOne(node)) {
+      const parent = node.parent;
+      if (
+        (parent.type === "ConditionalExpression" ||
+          parent.type === "IfStatement" ||
+          parent.type === "ForStatement" ||
+          parent.type === "WhileStatement" ||
+          parent.type === "DoWhileStatement") &&
+        parent.test === node
+      ) {
         return {
-          from: toInt.type,
-          method,
+          from: "modulo",
+          method: "!isInteger",
           node,
-          argument: toInt.argument,
+          argument: left,
         };
       }
     }
     return null;
   }
+  if (node.type === "UnaryExpression") {
+    if (node.operator !== "!") return null;
+    const argument = node.argument as TSESTree.Expression; /* Maybe type bug */
+    if (!isModuloOne(argument)) return null;
+    return {
+      from: "modulo",
+      method: "isInteger",
+      node,
+      argument: argument.left,
+    };
+  }
+  if (node.type === "CallExpression") {
+    const argument = node.arguments.length > 0 ? node.arguments[0] : null;
+    if (!argument || !isModuloOne(argument)) return null;
+    return {
+      from: "modulo",
+      method: "!isInteger",
+      node,
+      argument: argument.left,
+    };
+  }
   return null;
+
+  /**
+   * Checks whether the given node is a modulo one.
+   */
+  function isModuloOne(
+    expr: TSESTree.Expression | TSESTree.SpreadElement,
+  ): expr is TSESTree.BinaryExpression & { left: TSESTree.Expression } {
+    return (
+      expr.type === "BinaryExpression" &&
+      expr.operator === "%" &&
+      isOne(expr.right) &&
+      expr.left.type !== "PrivateIdentifier"
+    );
+  }
 
   /**
    * Get way to convert to an integer.
    */
-  function getToIntegerWay(expr: TSESTree.Expression) {
-    const trunc = getInfoForMathTrunc(expr, sourceCode);
+  function getToIntegerWay(a: TSESTree.Expression) {
+    const trunc = getInfoForMathTrunc(a, sourceCode);
     if (trunc) return { ...trunc, type: "trunc" as const };
-    const floor = getInfoForMathFloor(expr, sourceCode);
+    const floor = getInfoForMathFloor(a, sourceCode);
     if (floor) return { ...floor, type: "floor" as const };
-    const ceil = getInfoForMathCeil(expr, sourceCode);
+    const ceil = getInfoForMathCeil(a, sourceCode);
     if (ceil) return { ...ceil, type: "ceil" as const };
-    const truncLike = getInfoForTransformingToMathTrunc(expr, sourceCode);
+    const truncLike = getInfoForTransformingToMathTrunc(a, sourceCode);
     if (truncLike) return { ...truncLike, type: "truncLike" as const };
     return null;
   }

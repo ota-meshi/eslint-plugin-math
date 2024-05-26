@@ -19,6 +19,19 @@ export default [
     },
   },
   {
+    files: ["**/*.ts", "**/*.mts"],
+    rules: {
+      "@typescript-eslint/switch-exhaustiveness-check": [
+        "error",
+        {
+          allowDefaultCaseForExhaustiveSwitch: false,
+          requireDefaultForNonUnion: true,
+        },
+      ],
+      "default-case": "off",
+    },
+  },
+  {
     files: ["**/*.md", "*.md"].flatMap((pattern) => [
       `${pattern}/*.js`,
       `${pattern}/*.mjs`,
@@ -52,6 +65,7 @@ export default [
       "no-unused-vars": "off",
       "no-shadow": "off",
       yoda: "off",
+      "no-empty": "off",
     },
   },
   {
