@@ -44,11 +44,21 @@ export default [
     },
   },
   {
+    files: ["tests/fixtures/**/*.js"],
+    rules: {
+      "jsdoc/require-jsdoc": "off",
+      "no-undef": "off",
+      "no-lone-blocks": "off",
+      "no-unused-vars": "off",
+      "no-shadow": "off",
+      yoda: "off",
+    },
+  },
+  {
     ignores: [
       ".nyc_output/",
       "coverage/",
       "node_modules/",
-      "tests/fixtures/**/*.js",
       "lib/",
       "!.github/",
       "!.vscode/",
