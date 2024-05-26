@@ -115,6 +115,74 @@ Output:
 
 
 Test: prefer-number-is-integer >> invalid
+Filename: prefer-number-is-integer/invalid/modulo-input.js
+
+Code:
+  1 | /*prefer-number-is-integer/invalid/modulo-input.js*/
+  2 | z = n % 1 ? a : b;
+    |     ^~~~~ [1]
+  3 | x = !(n % 1);
+    |     ^~~~~~~~ [2]
+  4 | x = n % 1 === 0;
+    |     ^~~~~~~~~~~ [3]
+  5 | x = n % 1 !== 0;
+    |     ^~~~~~~~~~~ [4]
+  6 | x = Boolean(n % 1);
+    |     ^~~~~~~~~~~~~~ [5]
+  7 |
+  8 | if (n % 1) {
+    |     ^~~~~ [6]
+  9 |   // do something
+ 10 | }
+ 11 | while (n % 1) {
+    |        ^~~~~ [7]
+ 12 |   // do something
+ 13 | }
+ 14 | do {
+ 15 |   // do something
+ 16 | } while (n % 1);
+    |          ^~~~~ [8]
+ 17 | for (; n % 1; ) {
+    |        ^~~~~ [9]
+ 18 |   // do something
+ 19 | }
+ 20 |
+
+Output:
+  1 | /*prefer-number-is-integer/invalid/modulo-input.js*/
+  2 | z = !Number.isInteger(n) ? a : b;
+  3 | x = Number.isInteger(n);
+  4 | x = Number.isInteger(n);
+  5 | x = !Number.isInteger(n);
+  6 | x = !Number.isInteger(n);
+  7 |
+  8 | if (!Number.isInteger(n)) {
+  9 |   // do something
+ 10 | }
+ 11 | while (!Number.isInteger(n)) {
+ 12 |   // do something
+ 13 | }
+ 14 | do {
+ 15 |   // do something
+ 16 | } while (!Number.isInteger(n));
+ 17 | for (; !Number.isInteger(n); ) {
+ 18 |   // do something
+ 19 | }
+ 20 |
+
+[1] Can use '!Number.isInteger()' instead of 'n % 1 === 0'.
+[2] Can use 'Number.isInteger()' instead of 'n % 1 !== 0'.
+[3] Can use 'Number.isInteger()' instead of 'n % 1 !== 0'.
+[4] Can use '!Number.isInteger()' instead of 'n % 1 === 0'.
+[5] Can use '!Number.isInteger()' instead of 'n % 1 === 0'.
+[6] Can use '!Number.isInteger()' instead of 'n % 1 === 0'.
+[7] Can use '!Number.isInteger()' instead of 'n % 1 === 0'.
+[8] Can use '!Number.isInteger()' instead of 'n % 1 === 0'.
+[9] Can use '!Number.isInteger()' instead of 'n % 1 === 0'.
+---
+
+
+Test: prefer-number-is-integer >> invalid
 Filename: prefer-number-is-integer/invalid/not-input.js
 
 Code:
