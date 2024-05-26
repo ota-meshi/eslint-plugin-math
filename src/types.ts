@@ -1,5 +1,6 @@
 /* eslint @typescript-eslint/naming-convention: off, @typescript-eslint/no-explicit-any: off -- for type */
 import type { Rule } from "eslint";
+// eslint-disable-next-line n/no-extraneous-import -- OK
 import type { JSONSchema4 } from "json-schema";
 
 export interface RuleModule extends Rule.RuleModule {

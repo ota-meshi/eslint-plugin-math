@@ -27,8 +27,12 @@ describe("`recommended` config", () => {
         message: m.message,
       })),
       [
-        // {
-        // },
+        {
+          line: 1,
+          message:
+            "Can use 'Math.trunc()', instead of branching on value and using 'Math.floor()' / 'Math.ceil()'.",
+          ruleId: "math/prefer-math-trunc",
+        },
       ],
     );
   });
@@ -49,8 +53,12 @@ describe("`recommended` config", () => {
         message: m.message,
       })),
       [
-        // {
-        // },
+        {
+          line: 1,
+          message:
+            "Can use 'Math.trunc()', instead of branching on value and using 'Math.floor()' / 'Math.ceil()'.",
+          ruleId: "math/prefer-math-trunc",
+        },
       ],
     );
   });

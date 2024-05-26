@@ -10,4 +10,5 @@ export const plugins = {
 };
 export const rules: Linter.RulesRecord = {
   // eslint-plugin-math rules
+  "math/prefer-math-trunc": "error",
 };

@@ -33,7 +33,7 @@ const logger = console;
 
   fs.writeFileSync(
     ruleFile,
-    `
+    `import type { TSESTree } from "@typescript-eslint/types";
 import { createRule } from "../utils"
 
 export default createRule("${ruleId}", {
@@ -60,11 +60,11 @@ export default createRule("${ruleId}", {
   );
   fs.writeFileSync(
     testFile,
-    `import { RuleTester } from "../test-lib/eslint-compat"
+    `import { SnapshotRuleTester } from "eslint-snapshot-rule-tester";
 import rule from "../../../src/rules/${ruleId}"
 import { loadTestCases } from "../../utils/utils"
 
-const tester = new RuleTester()
+const tester = new SnapshotRuleTester()
 
 tester.run("${ruleId}", rule as any, loadTestCases("${ruleId}"))
 `,
@@ -116,9 +116,9 @@ Nothing.
 
 ## :couple: Related rules
 
-- [${ruleId}]
+- [xxx]
 
-[${ruleId}]: https://eslint.org/docs/rules/${ruleId}
+[xxx]: https://xxx
 
 `,
   );

@@ -14,9 +14,9 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
-    // "paths": {
-    //     "*": ["typings/*"]
-    // },
+    "paths": {
+      "*": ["typings/*"]
+    },
     "esModuleInterop": true,
     "outDir": "lib",
     "resolveJsonModule": true,
@@ -28,8 +28,8 @@
     "tests/src/**/*",
     "tests/utils/**/*",
     "tools/**/*",
-    "docs/.vitepress/**/*"
-    // "typings/**/*"
+    "docs/.vitepress/**/*",
+    "typings/**/*"
   ],
   "exclude": ["lib/**/*"]
 }

@@ -1,10 +1,6 @@
 import fs from "fs";
 import path from "path";
 import type { RuleTester } from "eslint";
-import { Linter } from "eslint";
-// eslint-disable-next-line @typescript-eslint/no-require-imports -- tests
-import plugin = require("../../src/index");
-import { applyFixes } from "./apply-fixer";
 
 /**
  * Prevents leading spaces in a multiline template literal from appearing in the resulting string
@@ -80,36 +76,9 @@ export function loadTestCases(
     getConfig(ruleName, inputFile),
   );
 
-  const fixable = plugin.rules[ruleName].meta.fixable != null;
-
-  const invalid = listupInput(invalidFixtureRoot).map((inputFile) => {
-    const config = getConfig(ruleName, inputFile);
-    const errorFile = inputFile.replace(/input\.(?:js|ts)$/u, "errors.json");
-    const outputFile = inputFile.replace(
-      /input\.(?:js|ts)$/u,
-      isTs(inputFile) ? "output.ts" : "output.js",
-    );
-    let errors;
-    try {
-      errors = fs.readFileSync(errorFile, "utf8");
-    } catch (_e) {
-      writeFixtures(ruleName, inputFile);
-      errors = fs.readFileSync(errorFile, "utf8");
-    }
-    config.errors = JSON.parse(errors);
-    if (fixable) {
-      let output;
-      try {
-        output = fs.readFileSync(outputFile, "utf8");
-      } catch (_e) {
-        writeFixtures(ruleName, inputFile);
-        output = fs.readFileSync(outputFile, "utf8");
-      }
-      config.output = output === config.code ? null : output;
-    }
-
-    return config;
-  });
+  const invalid = listupInput(invalidFixtureRoot).map((inputFile) =>
+    getConfig(ruleName, inputFile),
+  );
 
   if (additionals) {
     if (additionals.valid) {
@@ -154,78 +123,6 @@ function* itrListupInput(rootDir: string): IterableIterator<string> {
   }
 }
 
-function writeFixtures(
-  ruleName: string,
-  inputFile: string,
-  { force }: { force?: boolean } = {},
-) {
-  const linter = getLinter(ruleName);
-  const errorFile = inputFile.replace(/input\.(?:js|ts)$/u, "errors.json");
-  const outputFile = inputFile.replace(
-    /input\.(?:js|ts)$/u,
-    isTs(inputFile) ? "output.ts" : "output.js",
-  );
-
-  const config = getConfig(ruleName, inputFile);
-
-  const result = linter.verify(
-    config.code,
-    {
-      rules: {
-        [ruleName]: ["error", ...(config.options || [])],
-      },
-      ...({
-        languageOptions: {},
-      } as any),
-    },
-    config.filename,
-  );
-  if (force || !fs.existsSync(errorFile)) {
-    fs.writeFileSync(
-      errorFile,
-      `${JSON.stringify(
-        result.map((m) => ({
-          message: m.message,
-          line: m.line,
-          column: m.column,
-        })),
-        null,
-        2,
-      )}\n`,
-      "utf8",
-    );
-  }
-
-  if (force || !fs.existsSync(outputFile)) {
-    const output = applyFixes(config.code, result).output;
-
-    if (plugin.rules[ruleName].meta.fixable != null) {
-      fs.writeFileSync(outputFile, output, "utf8");
-    }
-  }
-}
-
-// function verify(
-//     linter: Linter,
-//     code: string,
-//     config: Linter.Config,
-//     filename: string,
-// ): Linter.LintMessage[] {
-//     try {
-//         return linter.verify(code, config, filename)
-//     } catch (e) {
-//         console.error(`@ ${filename}`)
-//         throw e
-//     }
-// }
-
-function getLinter(ruleName: string) {
-  const linter = new Linter();
-  linter.defineRule(ruleName, plugin.rules[ruleName]);
-
-  return linter;
-}
-
 function getConfig(ruleName: string, inputFile: string) {
   const filename = inputFile.slice(inputFile.indexOf(ruleName));
   const code0 = fs.readFileSync(inputFile, "utf8");
@@ -247,7 +144,7 @@ function getConfig(ruleName: string, inputFile: string) {
   // inline config
   const configStr = /^\/\*(.*?)\*\//u.exec(code0);
   if (!configStr) {
-    fs.writeFileSync(inputFile, `# {}\n${code0}`, "utf8");
+    fs.writeFileSync(inputFile, `/* {} */\n${code0}`, "utf8");
     throw new Error("missing config");
   } else {
     code = code0.replace(/^\/\*(.*?)\*\//u, `/*${filename}*/`);
@@ -259,8 +156,4 @@ function getConfig(ruleName: string, inputFile: string) {
   }
 
   return Object.assign({}, config, { code, filename });
-}
-
-function isTs(fileName: string) {
-  return fileName.endsWith(".ts");
 }

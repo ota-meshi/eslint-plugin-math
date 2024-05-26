@@ -1,0 +1,149 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: prefer-math-trunc >> invalid
+Filename: prefer-math-trunc/invalid/conditional-input.js
+
+Code:
+  1 | /*prefer-math-trunc/invalid/conditional-input.js*/
+  2 | x = n >= 0 ? Math.floor(n) : Math.ceil(n);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+  3 | x = n > 0 ? Math.floor(n) : Math.ceil(n);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [2]
+  4 | x = n < 0 ? Math.ceil(n) : Math.floor(n);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [3]
+  5 | x = n < 0 ? Math.ceil(n) : Math.floor(n);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [4]
+  6 |
+
+Output:
+  1 | /*prefer-math-trunc/invalid/conditional-input.js*/
+  2 | x = Math.trunc(n);
+  3 | x = Math.trunc(n);
+  4 | x = Math.trunc(n);
+  5 | x = Math.trunc(n);
+  6 |
+
+[1] Can use 'Math.trunc()', instead of branching on value and using 'Math.floor()' / 'Math.ceil()'.
+[2] Can use 'Math.trunc()', instead of branching on value and using 'Math.floor()' / 'Math.ceil()'.
+[3] Can use 'Math.trunc()', instead of branching on value and using 'Math.floor()' / 'Math.ceil()'.
+[4] Can use 'Math.trunc()', instead of branching on value and using 'Math.floor()' / 'Math.ceil()'.
+---
+
+
+Test: prefer-math-trunc >> invalid
+Filename: prefer-math-trunc/invalid/example-input.js
+
+Code:
+  1 | /*prefer-math-trunc/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = Math.trunc(n);
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = n >= 0 ? Math.floor(n) : Math.ceil(n);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+  7 | // Not strictly equivalent to Math.trunc(n).
+  8 | x = ~~n;
+    |     ^~~ [2]
+  9 | x = n & -1;
+    |     ^~~~~~ [3]
+ 10 | x = n | 0;
+    |     ^~~~~ [4]
+ 11 | x = n ^ 0;
+    |     ^~~~~ [5]
+ 12 | x = n >> 0;
+    |     ^~~~~~ [6]
+ 13 |
+
+Output:
+  1 | /*prefer-math-trunc/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = Math.trunc(n);
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = Math.trunc(n);
+  7 | // Not strictly equivalent to Math.trunc(n).
+  8 | x = Math.trunc(n);
+  9 | x = Math.trunc(n);
+ 10 | x = Math.trunc(n);
+ 11 | x = Math.trunc(n);
+ 12 | x = Math.trunc(n);
+ 13 |
+
+[1] Can use 'Math.trunc()', instead of branching on value and using 'Math.floor()' / 'Math.ceil()'.
+[2] Can use 'Math.trunc()' instead of '~~n'.
+[3] Can use 'Math.trunc()' instead of 'n & -1'.
+[4] Can use 'Math.trunc()' instead of 'n | 0'.
+[5] Can use 'Math.trunc()' instead of 'n ^ 0'.
+[6] Can use 'Math.trunc()' instead of 'n >> 0'.
+---
+
+
+Test: prefer-math-trunc >> invalid
+Filename: prefer-math-trunc/invalid/if-input.js
+
+Code:
+  1 | /*prefer-math-trunc/invalid/if-input.js*/
+  2 | if (n >= 0) {
+    | ^~~~~~~~~~~~~\ [1]
+  3 |     x = Math.floor(n);
+    | ~~~~~~~~~~~~~~~~~~~~~~\ [1]
+  4 | } else {
+    | ~~~~~~~~\ [1]
+  5 |     x = Math.ceil(n);
+    | ~~~~~~~~~~~~~~~~~~~~~\ [1]
+  6 | }
+    | ~ [1]
+  7 | if (n > 0) {
+    | ^~~~~~~~~~~~\ [2]
+  8 |     x = Math.floor(n);
+    | ~~~~~~~~~~~~~~~~~~~~~~\ [2]
+  9 | } else {
+    | ~~~~~~~~\ [2]
+ 10 |     x = Math.ceil(n);
+    | ~~~~~~~~~~~~~~~~~~~~~\ [2]
+ 11 | }
+    | ~ [2]
+ 12 | if (n <= 0) {
+    | ^~~~~~~~~~~~~\ [3]
+ 13 |     x = Math.ceil(n);
+    | ~~~~~~~~~~~~~~~~~~~~~\ [3]
+ 14 | } else {
+    | ~~~~~~~~\ [3]
+ 15 |     x = Math.floor(n);
+    | ~~~~~~~~~~~~~~~~~~~~~~\ [3]
+ 16 | }
+    | ~ [3]
+ 17 | if (n < 0) {
+    | ^~~~~~~~~~~~\ [4]
+ 18 |     x = Math.ceil(n);
+    | ~~~~~~~~~~~~~~~~~~~~~\ [4]
+ 19 | } else {
+    | ~~~~~~~~\ [4]
+ 20 |     x = Math.floor(n);
+    | ~~~~~~~~~~~~~~~~~~~~~~\ [4]
+ 21 | }
+    | ~ [4]
+ 22 |
+
+Output:
+  1 | /*prefer-math-trunc/invalid/if-input.js*/
+  2 |
+  3 |     x = Math.trunc(n);
+  4 |
+  5 |
+  6 |     x = Math.trunc(n);
+  7 |
+  8 |
+  9 |     x = Math.trunc(n);
+ 10 |
+ 11 |
+ 12 |     x = Math.trunc(n);
+ 13 |
+ 14 |
+
+[1] Can use 'Math.trunc()', instead of branching on value and using 'Math.floor()' / 'Math.ceil()'.
+[2] Can use 'Math.trunc()', instead of branching on value and using 'Math.floor()' / 'Math.ceil()'.
+[3] Can use 'Math.trunc()', instead of branching on value and using 'Math.floor()' / 'Math.ceil()'.
+[4] Can use 'Math.trunc()', instead of branching on value and using 'Math.floor()' / 'Math.ceil()'.
+---

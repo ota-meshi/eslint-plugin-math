@@ -20,12 +20,11 @@ module.exports = {
     "plugin:@ota-meshi/+prettier",
   ],
   rules: {
-    "eslint-comments/no-unused-disable": "error",
-    "require-jsdoc": "error",
     "no-warning-comments": "warn",
     "no-lonely-if": "off",
     "new-cap": "off",
     "no-shadow": "off",
+    "func-style": "off",
     "jsonc/object-curly-spacing": "off",
     "jsonc/array-element-newline": "off",
     "jsonc/object-property-newline": "off",
@@ -37,6 +36,33 @@ module.exports = {
       { object: "context", property: "getCwd" },
       { object: "context", property: "getScope" },
       { object: "context", property: "parserServices" },
+    ],
+    complexity: "off",
+    "n/no-extraneous-import": [
+      "error",
+      {
+        allowModules: [
+          "@typescript-eslint/types",
+          "@typescript-eslint/scope-manager",
+        ],
+      },
+    ],
+    "@typescript-eslint/no-restricted-imports": [
+      "error",
+      {
+        paths: [
+          {
+            name: "@typescript-eslint/scope-manager",
+            message: "Please don't use @typescript-eslint/scope-manager value.",
+            allowTypeImports: true,
+          },
+          {
+            name: "@typescript-eslint/types",
+            message: "Please don't use @typescript-eslint/types value.",
+            allowTypeImports: true,
+          },
+        ],
+      },
     ],
   },
   overrides: [
@@ -79,7 +105,6 @@ module.exports = {
             format: ["camelCase", "PascalCase", "UPPER_CASE"],
           },
         ],
-        "@typescript-eslint/no-non-null-assertion": "off",
       },
     },
     {
@@ -100,7 +125,8 @@ module.exports = {
         project: require.resolve("./tsconfig.json"),
       },
       rules: {
-        "require-jsdoc": "off",
+        "jsdoc/require-jsdoc": "off",
+        "n/no-extraneous-import": "off",
         "no-console": "off",
         "@typescript-eslint/no-misused-promises": "off",
       },
@@ -124,7 +150,8 @@ module.exports = {
         window: true,
       },
       rules: {
-        "require-jsdoc": "off",
+        "jsdoc/require-jsdoc": "off",
+        "n/no-extraneous-import": "off",
         "n/file-extension-in-import": "off",
       },
     },

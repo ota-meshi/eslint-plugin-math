@@ -1,6 +1,6 @@
 /* eslint @typescript-eslint/no-explicit-any: off -- util */
 import type { Rule } from "eslint";
-import type { PartialRuleModule, RuleModule } from "src/types";
+import type { PartialRuleModule, RuleModule } from "../types";
 
 /**
  * Define the rule.

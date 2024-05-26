@@ -102,6 +102,7 @@ export const DEFAULT_RULES_CONFIG = allRules.reduce((c, r) => {
 
 export { allRules as rules };
 
+/** Get the rule info from the given ruleId */
 export function getRule(ruleId) {
   if (!ruleId) {
     return null;

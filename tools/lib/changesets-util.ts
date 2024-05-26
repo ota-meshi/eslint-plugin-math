@@ -1,3 +1,4 @@
+// eslint-disable-next-line n/no-extraneous-import -- ok
 import getReleasePlan from "@changesets/get-release-plan";
 import path from "path";
 
