@@ -30,12 +30,12 @@ x = Math.trunc(n);
 
 /* ✗ BAD */
 x = n >= 0 ? Math.floor(n) : Math.ceil(n);
-// Not strictly equivalent to Math.trunc(n).
-x = ~~n;
-x = n & -1;
-x = n | 0;
-x = n ^ 0;
-x = n >> 0;
+
+x = ~~n;    // Same as `Math.trunc(n)` if `-(2 ** 31) - 1 < n < (2 ** 31)`.
+x = n & -1; // Same as `Math.trunc(n)` if `-(2 ** 31) - 1 < n < (2 ** 31)`.
+x = n | 0;  // Same as `Math.trunc(n)` if `-(2 ** 31) - 1 < n < (2 ** 31)`.
+x = n ^ 0;  // Same as `Math.trunc(n)` if `-(2 ** 31) - 1 < n < (2 ** 31)`.
+x = n >> 0; // Same as `Math.trunc(n)` if `-(2 ** 31) - 1 < n < (2 ** 31)`.
 
 if (n >= 0) {
     x = Math.floor(n);
