@@ -25,3 +25,21 @@ Output:
 
 [1] Can use 'Number.MAX_SAFE_INTEGER'.
 ---
+
+
+Test: prefer-number-max-safe-integer >> invalid
+Filename: prefer-number-max-safe-integer/invalid/expression-input.js
+
+Code:
+  1 | /*prefer-number-max-safe-integer/invalid/expression-input.js*/
+  2 | x = 2 ** 53 - 1;
+    |     ^~~~~~~~~~~ [1]
+  3 |
+
+Output:
+  1 | /*prefer-number-max-safe-integer/invalid/expression-input.js*/
+  2 | x = Number.MAX_SAFE_INTEGER;
+  3 |
+
+[1] Can use 'Number.MAX_SAFE_INTEGER'.
+---

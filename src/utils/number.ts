@@ -89,6 +89,22 @@ export function isOne(node: TSESTree.Expression): boolean {
   return isLiteral(node, 1);
 }
 /**
+ * Checks whether the given node is a `2`.
+ */
+export function isTwo(
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+): boolean {
+  return isLiteral(node, 2);
+}
+/**
+ * Checks whether the given node is a `53`.
+ */
+export function isFiftyThree(
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+): boolean {
+  return isLiteral(node, 53);
+}
+/**
  * Checks whether the given node is a `-1`.
  */
 export function isMinusOne(node: TSESTree.Expression): boolean {
@@ -136,7 +152,17 @@ export function isMaxSafeInteger(
 ): boolean {
   return (
     isLiteral(node, Number.MAX_SAFE_INTEGER) ||
-    isGlobalObjectProperty(node, "Number", "MAX_SAFE_INTEGER", sourceCode)
+    isGlobalObjectProperty(node, "Number", "MAX_SAFE_INTEGER", sourceCode) ||
+    // 2 ** 53 - 1
+    (node.type === "BinaryExpression" &&
+      // 2 ** 53
+      node.left.type === "BinaryExpression" &&
+      isTwo(node.left.left) &&
+      node.left.operator === "**" &&
+      isFiftyThree(node.left.right) &&
+      // - 1
+      node.operator === "-" &&
+      isOne(node.right))
   );
 }
 /**
