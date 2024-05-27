@@ -138,7 +138,7 @@ function getConfig(ruleName: string, inputFile: string) {
     config = JSON.parse(fs.readFileSync(configFile, "utf8"));
   }
   if (config && typeof config === "object") {
-    code = `/* ${filename}\n${code0} */`;
+    code = `/* ${filename} */\n${code0}`;
     return Object.assign({}, config, { code, filename });
   }
   // inline config

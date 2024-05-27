@@ -13,7 +13,11 @@ The rules with the following star :star: are included in the `plugin:math/recomm
 
 | Rule ID | Description | Fixable | RECOMMENDED | STANDARD |
 |:--------|:------------|:-------:|:-----------:|:--------:|
+| [math/abs](./abs.md) | enforce the conversion to absolute values to be the method you prefer | :wrench: |  |  |
 | [math/prefer-math-cbrt](./prefer-math-cbrt.md) | enforce the use of Math.cbrt() instead of other cube root calculations | :wrench: | :star: |  |
 | [math/prefer-math-sqrt](./prefer-math-sqrt.md) | enforce the use of Math.sqrt() instead of other square root calculations | :wrench: | :star: |  |
 | [math/prefer-math-trunc](./prefer-math-trunc.md) | enforce the use of Math.trunc() instead of other truncations | :wrench: | :star: |  |
 | [math/prefer-number-is-integer](./prefer-number-is-integer.md) | enforce the use of Number.isInteger() instead of other checking ways | :wrench: | :star: |  |
+| [math/prefer-number-is-safe-integer](./prefer-number-is-safe-integer.md) | enforce the use of Number.isSafeInteger() instead of other checking ways | :wrench: | :star: |  |
+| [math/prefer-number-max-safe-integer](./prefer-number-max-safe-integer.md) | enforce the use of Number.MAX_SAFE_INTEGER instead of other ways | :wrench: | :star: |  |
+| [math/prefer-number-min-safe-integer](./prefer-number-min-safe-integer.md) | enforce the use of Number.MIN_SAFE_INTEGER instead of other ways | :wrench: | :star: |  |
