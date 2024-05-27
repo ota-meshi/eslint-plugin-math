@@ -3,13 +3,13 @@ pageClass: "rule-details"
 sidebarDepth: 0
 title: "math/abs"
 description: "enforce the conversion to absolute values to be the method you prefer"
+since: "v0.3.0"
 ---
 
 # math/abs
 
 > enforce the conversion to absolute values to be the method you prefer
 
-- :exclamation: <badge text="This rule has not been released yet." vertical="middle" type="error"> **_This rule has not been released yet._** </badge>
 - :wrench: The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some of the problems reported by this rule.
 - :bulb: Some problems reported by this rule are manually fixable by editor [suggestions](https://eslint.org/docs/developer-guide/working-with-rules#providing-suggestions).
 
@@ -70,6 +70,10 @@ x = n < 0 ? n * -1 : n;
 ## :books: Further reading
 
 - [MDN - Math.abs()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/abs)
+
+## :rocket: Version
+
+This rule was introduced in eslint-plugin-math v0.3.0
 
 ## :mag: Implementation
 
