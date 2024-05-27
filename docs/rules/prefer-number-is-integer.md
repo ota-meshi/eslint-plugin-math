@@ -32,8 +32,10 @@ x = Number.isInteger(n);
 x = Math.floor(n) === n;
 x = Math.ceil(n) === n;
 x = Math.trunc(n) === n;
+x = Math.round(n) === n;
 
 z = n % 1 ? a : b;
+x = parseInt(n, 10) === n;
 ```
 
 </eslint-code-block>

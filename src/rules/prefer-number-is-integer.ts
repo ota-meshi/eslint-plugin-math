@@ -76,6 +76,10 @@ export default createRule("prefer-number-is-integer", {
           return info.method !== "!isInteger"
             ? "'Math.ceil(n) === n'"
             : "'Math.ceil(n) !== n'";
+        case "round":
+          return info.method !== "!isInteger"
+            ? "'Math.round(n) === n'"
+            : "'Math.round(n) !== n'";
         case "truncLike":
           return info.method !== "!isInteger"
             ? "'Math.trunc(n) === n' like expression"
@@ -84,6 +88,10 @@ export default createRule("prefer-number-is-integer", {
           return info.method !== "!isInteger"
             ? "'n % 1 !== 0'"
             : "'n % 1 === 0'";
+        case "parseInt":
+          return info.method !== "!isInteger"
+            ? "'parseInt(n) === n'"
+            : "'parseInt(n) !== n'";
       }
       return "";
     }

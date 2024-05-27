@@ -8,7 +8,7 @@ import {
   isZero,
 } from "./number";
 
-export type MathMethod = "floor" | "ceil" | "trunc";
+export type MathMethod = "floor" | "ceil" | "trunc" | "round";
 export type MathMethodInfo<M extends MathMethod> = {
   method: M;
   node: TSESTree.Expression;
@@ -260,6 +260,15 @@ export function getInfoForMathCeil(
   sourceCode: SourceCode,
 ): null | MathMethodInfo<"ceil"> {
   return getInfoForMathX(node, "ceil", sourceCode);
+}
+/**
+ * Returns information if the given expression is Math.round().
+ */
+export function getInfoForMathRound(
+  node: TSESTree.Expression,
+  sourceCode: SourceCode,
+): null | MathMethodInfo<"round"> {
+  return getInfoForMathX(node, "round", sourceCode);
 }
 
 /**
