@@ -23,7 +23,7 @@ This rule aims to enforces the use of Number.MIN_SAFE_INTEGER instead of other w
 <!-- eslint-skip -->
 
 ```js
-/* eslint math/prefer-number-max-safe-integer: 'error' */
+/* eslint math/prefer-number-min-safe-integer: 'error' */
 
 /* ✓ GOOD */
 x = Number.MIN_SAFE_INTEGER;
