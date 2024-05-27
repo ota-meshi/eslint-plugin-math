@@ -1,0 +1,123 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: prefer-number-is-safe-integer >> invalid
+Filename: prefer-number-is-safe-integer/invalid/example-input.js
+
+Code:
+  1 | /*prefer-number-is-safe-integer/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = Number.isSafeInteger(n);
+  4 |
+  5 | /* ✗ BAD */
+  6 | x =
+  7 |   Number.isInteger(n) &&
+    |   ^~~~~~~~~~~~~~~~~~~~~~\ [1]
+  8 |   Number.MIN_SAFE_INTEGER <= n &&
+    | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\ [1]
+  9 |   n <= Number.MAX_SAFE_INTEGER;
+    | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+ 10 | x = Number.isInteger(n) && Math.abs(n) <= Number.MAX_SAFE_INTEGER;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [2]
+ 11 | x = Number.isInteger(n) && Math.abs(n) <= 0x1fffffffffffff;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [3]
+ 12 |
+
+Output:
+  1 | /*prefer-number-is-safe-integer/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = Number.isSafeInteger(n);
+  4 |
+  5 | /* ✗ BAD */
+  6 | x =
+  7 |   Number.isSafeInteger(n);
+  8 | x = Number.isSafeInteger(n);
+  9 | x = Number.isSafeInteger(n);
+ 10 |
+
+[1] Can use 'Number.isSafeInteger()' instead of 'Number.isInteger(n) && Math.abs(n) <= Number.MAX_SAFE_INTEGER'.
+[2] Can use 'Number.isSafeInteger()' instead of 'Number.isInteger(n) && Math.abs(n) <= Number.MAX_SAFE_INTEGER'.
+[3] Can use 'Number.isSafeInteger()' instead of 'Number.isInteger(n) && Math.abs(n) <= Number.MAX_SAFE_INTEGER'.
+---
+
+
+Test: prefer-number-is-safe-integer >> invalid
+Filename: prefer-number-is-safe-integer/invalid/like-input.js
+
+Code:
+  1 | /*prefer-number-is-safe-integer/invalid/like-input.js*/
+  2 | x =
+  3 |   Math.floor(n) === n &&
+    |   ^~~~~~~~~~~~~~~~~~~~~~\ [1]
+  4 |   Number.MIN_SAFE_INTEGER <= n &&
+    | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\ [1]
+  5 |   n <= Number.MAX_SAFE_INTEGER;
+    | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+  6 | x = Math.floor(n) === n && Math.abs(n) <= Number.MAX_SAFE_INTEGER;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [2]
+  7 | x = Math.floor(n) === n && Math.abs(n) <= 0x1fffffffffffff;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [3]
+  8 | x =
+  9 |   Math.floor(n) !== n ||
+    |   ^~~~~~~~~~~~~~~~~~~~~~\ [4]
+ 10 |   Number.MIN_SAFE_INTEGER > n ||
+    | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\ [4]
+ 11 |   n > Number.MAX_SAFE_INTEGER;
+    | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [4]
+ 12 | x = Math.floor(n) !== n || Math.abs(n) > Number.MAX_SAFE_INTEGER;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [5]
+ 13 | x = Math.floor(n) !== n || Math.abs(n) > 0x1fffffffffffff;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [6]
+ 14 |
+
+Output:
+  1 | /*prefer-number-is-safe-integer/invalid/like-input.js*/
+  2 | x =
+  3 |   Number.isSafeInteger(n);
+  4 | x = Number.isSafeInteger(n);
+  5 | x = Number.isSafeInteger(n);
+  6 | x =
+  7 |   !Number.isSafeInteger(n);
+  8 | x = !Number.isSafeInteger(n);
+  9 | x = !Number.isSafeInteger(n);
+ 10 |
+
+[1] Can use 'Number.isSafeInteger()' instead of 'Number.isInteger(n) && Math.abs(n) <= Number.MAX_SAFE_INTEGER' like expression.
+[2] Can use 'Number.isSafeInteger()' instead of 'Number.isInteger(n) && Math.abs(n) <= Number.MAX_SAFE_INTEGER' like expression.
+[3] Can use 'Number.isSafeInteger()' instead of 'Number.isInteger(n) && Math.abs(n) <= Number.MAX_SAFE_INTEGER' like expression.
+[4] Can use '!Number.isSafeInteger()' instead of '!Number.isInteger(n) || Math.abs(n) > Number.MAX_SAFE_INTEGER' like expression.
+[5] Can use '!Number.isSafeInteger()' instead of '!Number.isInteger(n) || Math.abs(n) > Number.MAX_SAFE_INTEGER' like expression.
+[6] Can use '!Number.isSafeInteger()' instead of '!Number.isInteger(n) || Math.abs(n) > Number.MAX_SAFE_INTEGER' like expression.
+---
+
+
+Test: prefer-number-is-safe-integer >> invalid
+Filename: prefer-number-is-safe-integer/invalid/not-input.js
+
+Code:
+  1 | /*prefer-number-is-safe-integer/invalid/not-input.js*/
+  2 | x =
+  3 |   !Number.isInteger(n) ||
+    |   ^~~~~~~~~~~~~~~~~~~~~~~\ [1]
+  4 |   Number.MIN_SAFE_INTEGER > n ||
+    | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\ [1]
+  5 |   n > Number.MAX_SAFE_INTEGER;
+    | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+  6 | x = !Number.isInteger(n) || Math.abs(n) > Number.MAX_SAFE_INTEGER;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [2]
+  7 | x = !Number.isInteger(n) || Math.abs(n) > 0x1fffffffffffff;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [3]
+  8 |
+
+Output:
+  1 | /*prefer-number-is-safe-integer/invalid/not-input.js*/
+  2 | x =
+  3 |   !Number.isSafeInteger(n);
+  4 | x = !Number.isSafeInteger(n);
+  5 | x = !Number.isSafeInteger(n);
+  6 |
+
+[1] Can use '!Number.isSafeInteger()' instead of '!Number.isInteger(n) || Math.abs(n) > Number.MAX_SAFE_INTEGER'.
+[2] Can use '!Number.isSafeInteger()' instead of '!Number.isInteger(n) || Math.abs(n) > Number.MAX_SAFE_INTEGER'.
+[3] Can use '!Number.isSafeInteger()' instead of '!Number.isInteger(n) || Math.abs(n) > Number.MAX_SAFE_INTEGER'.
+---

@@ -56,7 +56,6 @@ export function isGlobalObject(
   if (variable && variable.defs.length > 0) return false; // Not a global
   return true;
 }
-
 /**
  * Checks whether the given node is a global object method call.
  */
@@ -68,10 +67,21 @@ export function isGlobalObjectMethodCall<N extends keyof typeof globalThis>(
 ): node is TSESTree.CallExpression {
   if (node.type !== "CallExpression") return false;
   const { callee } = node;
+  return isGlobalObjectProperty(callee, name, method, sourceCode);
+}
+/**
+ * Checks whether the given node is a global object property.
+ */
+export function isGlobalObjectProperty<N extends keyof typeof globalThis>(
+  node: TSESTree.Node,
+  name: N,
+  property: keyof (typeof globalThis)[N],
+  sourceCode: SourceCode,
+): node is TSESTree.CallExpression {
   return (
-    callee.type === "MemberExpression" &&
-    isGlobalObject(callee.object, name, sourceCode) &&
-    getPropertyName(callee) === method
+    node.type === "MemberExpression" &&
+    isGlobalObject(node.object, name, sourceCode) &&
+    getPropertyName(node) === property
   );
 }
 /**
@@ -94,10 +104,28 @@ export function equalNodeTokens(
   a: TSESTree.Node,
   b: TSESTree.Node,
   sourceCode: SourceCode,
+): boolean;
+export function equalNodeTokens(
+  a: TSESTree.Node,
+  b: TSESTree.Node,
+  c: TSESTree.Node,
+  sourceCode: SourceCode,
+): boolean;
+/**
+ * Checks whether or not the tokens of two given nodes are same.
+ */
+export function equalNodeTokens(
+  a: TSESTree.Node,
+  b: TSESTree.Node,
+  c: TSESTree.Node | SourceCode,
+  d?: SourceCode,
 ): boolean {
+  const sourceCode = d ?? (c as SourceCode);
   const tokensA = sourceCode.getTokens(a);
   const tokensB = sourceCode.getTokens(b);
-  return equalTokens(tokensA, tokensB);
+  if (!equalTokens(tokensA, tokensB)) return false;
+  if (!d) return true;
+  return equalTokens(tokensA, sourceCode.getTokens(c as TSESTree.Node));
 }
 
 /**

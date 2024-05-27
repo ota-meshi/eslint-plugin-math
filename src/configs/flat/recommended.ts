@@ -14,4 +14,5 @@ export const rules: Linter.RulesRecord = {
   "math/prefer-math-sqrt": "error",
   "math/prefer-math-trunc": "error",
   "math/prefer-number-is-integer": "error",
+  "math/prefer-number-is-safe-integer": "error",
 };

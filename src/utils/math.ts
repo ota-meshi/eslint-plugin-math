@@ -4,6 +4,7 @@ import { equalNodeTokens, equalTokens, isGlobalObjectMethodCall } from "./ast";
 import {
   getInfoForIsNegative,
   getInfoForIsPositive,
+  getInfoForToNegative,
   isHalf,
   isMinusOne,
   isOneThird,
@@ -72,9 +73,14 @@ export function getInfoForTransformingToMathTrunc(
     if (floor === null) return null;
     const ceil = getInfoForMathCeil(conditional.whenNegative, sourceCode);
     if (ceil === null) return null;
-    if (!equalNodeTokens(conditional.argument, floor.argument, sourceCode))
-      return null;
-    if (!equalNodeTokens(conditional.argument, ceil.argument, sourceCode))
+    if (
+      !equalNodeTokens(
+        conditional.argument,
+        floor.argument,
+        ceil.argument,
+        sourceCode,
+      )
+    )
       return null;
     return {
       from: "conditional",
@@ -278,6 +284,64 @@ export function getInfoForTransformingToMathSqrt(
   }
   return null;
 }
+export type TransformingToMathAbs = MathMethodInfo<"abs"> & {
+  from: "multiply" | "minus";
+  node: TSESTree.ConditionalExpression;
+};
+/**
+ * Returns information if the given expression can be transformed to Math.abs().
+ * However, note that the conversion may fail in the case of BigInt.
+ */
+export function getInfoForTransformingToMathAbs(
+  node: TSESTree.Expression,
+  sourceCode: SourceCode,
+): null | TransformingToMathAbs {
+  if (node.type === "ConditionalExpression") {
+    const parsed = parseConditionalExpression(node);
+    if (parsed) {
+      const { argument, whenPositive, whenNegative } = parsed;
+      const neg = getInfoForToNegative(whenNegative);
+      if (
+        neg &&
+        equalNodeTokens(argument, neg.argument, whenPositive, sourceCode)
+      ) {
+        // n >= 0 ? n : -n, n >= 0 ? n : -1 * n
+        return {
+          from: neg.from,
+          method: "abs",
+          node,
+          argument,
+        };
+      }
+      return null;
+    }
+  }
+  return null;
+
+  /**
+   * Parses the given conditional expression.
+   */
+  function parseConditionalExpression(c: TSESTree.ConditionalExpression) {
+    const { test, consequent, alternate } = c;
+    const positive = getInfoForIsPositive(test);
+    if (positive) {
+      return {
+        argument: positive.argument,
+        whenPositive: consequent,
+        whenNegative: alternate,
+      };
+    }
+    const negative = getInfoForIsNegative(test);
+    if (negative) {
+      return {
+        argument: negative.argument,
+        whenPositive: alternate,
+        whenNegative: consequent,
+      };
+    }
+    return null;
+  }
+}
 
 export type TransformingToMathCbrt =
   | (MathMethodInfo<"cbrt"> & {
@@ -354,6 +418,33 @@ export function getInfoForMathRound(
   sourceCode: SourceCode,
 ): null | MathMethodInfo<"round"> {
   return getInfoForMathX(node, "round", sourceCode);
+}
+/**
+ * Returns information if the given expression is Math.abs().
+ */
+export function getInfoForMathAbs(
+  node: TSESTree.Expression,
+  sourceCode: SourceCode,
+): null | MathMethodInfo<"abs"> {
+  return getInfoForMathX(node, "abs", sourceCode);
+}
+
+/**
+ * Returns information if the given expression is a Math.abs() expression or such an expression.
+ */
+export function getInfoForMathAbsOrLike(
+  node: TSESTree.Expression,
+  sourceCode: SourceCode,
+):
+  | (MathMethodInfo<"abs"> & {
+      from: "abs";
+    })
+  | TransformingToMathAbs
+  | null {
+  const is = getInfoForMathAbs(node, sourceCode);
+  return is
+    ? { ...is, from: "abs" }
+    : getInfoForTransformingToMathAbs(node, sourceCode);
 }
 
 /**

@@ -6,10 +6,12 @@ import preferMathCbrt from "../rules/prefer-math-cbrt";
 import preferMathSqrt from "../rules/prefer-math-sqrt";
 import preferMathTrunc from "../rules/prefer-math-trunc";
 import preferNumberIsInteger from "../rules/prefer-number-is-integer";
+import preferNumberIsSafeInteger from "../rules/prefer-number-is-safe-integer";
 
 export const rules = [
   preferMathCbrt,
   preferMathSqrt,
   preferMathTrunc,
   preferNumberIsInteger,
+  preferNumberIsSafeInteger,
 ] as RuleModule[];

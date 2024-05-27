@@ -17,3 +17,4 @@ The rules with the following star :star: are included in the `plugin:math/recomm
 | [math/prefer-math-sqrt](./prefer-math-sqrt.md) | enforce the use of Math.sqrt() instead of other square root calculations | :wrench: | :star: |  |
 | [math/prefer-math-trunc](./prefer-math-trunc.md) | enforce the use of Math.trunc() instead of other truncations | :wrench: | :star: |  |
 | [math/prefer-number-is-integer](./prefer-number-is-integer.md) | enforce the use of Number.isInteger() instead of other checking ways | :wrench: | :star: |  |
+| [math/prefer-number-is-safe-integer](./prefer-number-is-safe-integer.md) | enforce the use of Number.isSafeInteger() instead of other checking ways | :wrench: | :star: |  |
