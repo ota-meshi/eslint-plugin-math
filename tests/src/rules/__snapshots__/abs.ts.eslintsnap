@@ -1,0 +1,61 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: abs >> invalid
+Filename: abs/invalid/abs/example-input.js
+Options:
+  - prefer: Math.abs
+
+Code:
+  1 | /* abs/invalid/abs/example-input.js */
+  2 | /* ✓ GOOD */
+  3 | x = Math.abs(n);
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = n < 0 ? n * -1 : n;
+    |     ^~~~~~~~~~~~~~~~~~ [1]
+  7 |
+
+Output:
+  1 | /* abs/invalid/abs/example-input.js */
+  2 | /* ✓ GOOD */
+  3 | x = Math.abs(n);
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = Math.abs(n);
+  7 |
+
+[1] Can use 'Math.abs()' instead of n < 0 ? n * -1 : n.
+---
+
+
+Test: abs >> invalid
+Filename: abs/invalid/expression/example-input.js
+Options:
+  - prefer: expression
+
+Code:
+  1 | /* abs/invalid/expression/example-input.js */
+  2 | /* ✓ GOOD */
+  3 | x = n < 0 ? -n : n;
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = Math.abs(n);
+    |     ^~~~~~~~~~~ [1]
+  7 | x = n < 0 ? n * -1 : n;
+    |     ^~~~~~~~~~~~~~~~~~ [2]
+  8 |
+
+Output:
+  1 | /* abs/invalid/expression/example-input.js */
+  2 | /* ✓ GOOD */
+  3 | x = n < 0 ? -n : n;
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = n < 0 ? -n : n;
+  7 | x = n < 0 ? -n : n;
+  8 |
+
+[1] Can use 'n < 0 ? -n : n' instead of Math.abs().
+[2] Can use 'n < 0 ? -n : n' instead of n < 0 ? n * -1 : n.
+---

@@ -441,9 +441,9 @@ export function getInfoForMathAbsOrLike(
     })
   | TransformingToMathAbs
   | null {
-  const is = getInfoForMathAbs(node, sourceCode);
-  return is
-    ? { ...is, from: "abs" }
+  const abs = getInfoForMathAbs(node, sourceCode);
+  return abs
+    ? { ...abs, from: "abs" }
     : getInfoForTransformingToMathAbs(node, sourceCode);
 }
 
