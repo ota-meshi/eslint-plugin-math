@@ -6,6 +6,7 @@ import {
   getInfoForIsPositive,
   isHalf,
   isMinusOne,
+  isOneThird,
   isZero,
 } from "./number";
 import type { ExtractFunctionKeys } from "./type";
@@ -80,46 +81,6 @@ export function getInfoForTransformingToMathTrunc(
       method: "trunc",
       node,
       argument: conditional.argument,
-    };
-  }
-  return null;
-}
-
-export type TransformingToMathSqrt =
-  | (MathMethodInfo<"sqrt"> & {
-      from: "exponentiation";
-      node: TSESTree.BinaryExpression;
-    })
-  | (MathMethodInfo<"sqrt"> & {
-      from: "pow";
-      node: TSESTree.CallExpression;
-    });
-/**
- * Returns information if the given expression can be transformed to Math.sqrt().
- */
-export function getInfoForTransformingToMathSqrt(
-  node: TSESTree.Expression,
-  sourceCode: SourceCode,
-): null | TransformingToMathSqrt {
-  if (node.type === "BinaryExpression") {
-    const { left, right } = node;
-    if (left.type === "PrivateIdentifier") return null;
-    if (node.operator === "**") {
-      if (!isHalf(right)) return null;
-      // n ** (1/2)
-      return { from: "exponentiation", method: "sqrt", node, argument: left };
-    }
-    return null;
-  }
-  if (isGlobalObjectMethodCall(node, "Math", "pow", sourceCode)) {
-    if (node.arguments.length < 2) return null;
-    const [argument, exponent] = node.arguments;
-    if (argument.type === "SpreadElement" || !isHalf(exponent)) return null;
-    return {
-      from: "pow",
-      method: "sqrt",
-      node,
-      argument,
     };
   }
   return null;
@@ -275,6 +236,88 @@ export function* extractTransformingToMathTruncStatements(
       yield* getBranches(node.parent, argument, targetMethod);
     }
   }
+}
+
+export type TransformingToMathSqrt =
+  | (MathMethodInfo<"sqrt"> & {
+      from: "exponentiation";
+      node: TSESTree.BinaryExpression;
+    })
+  | (MathMethodInfo<"sqrt"> & {
+      from: "pow";
+      node: TSESTree.CallExpression;
+    });
+/**
+ * Returns information if the given expression can be transformed to Math.sqrt().
+ */
+export function getInfoForTransformingToMathSqrt(
+  node: TSESTree.Expression,
+  sourceCode: SourceCode,
+): null | TransformingToMathSqrt {
+  if (node.type === "BinaryExpression") {
+    const { left, right } = node;
+    if (left.type === "PrivateIdentifier") return null;
+    if (node.operator === "**") {
+      if (!isHalf(right)) return null;
+      // n ** (1/2)
+      return { from: "exponentiation", method: "sqrt", node, argument: left };
+    }
+    return null;
+  }
+  if (isGlobalObjectMethodCall(node, "Math", "pow", sourceCode)) {
+    if (node.arguments.length < 2) return null;
+    const [argument, exponent] = node.arguments;
+    if (argument.type === "SpreadElement" || !isHalf(exponent)) return null;
+    // Math.pow(n, 1/2)
+    return {
+      from: "pow",
+      method: "sqrt",
+      node,
+      argument,
+    };
+  }
+  return null;
+}
+
+export type TransformingToMathCbrt =
+  | (MathMethodInfo<"cbrt"> & {
+      from: "exponentiation";
+      node: TSESTree.BinaryExpression;
+    })
+  | (MathMethodInfo<"cbrt"> & {
+      from: "pow";
+      node: TSESTree.CallExpression;
+    });
+/**
+ * Returns information if the given expression can be transformed to Math.cbrt().
+ */
+export function getInfoForTransformingToMathCbrt(
+  node: TSESTree.Expression,
+  sourceCode: SourceCode,
+): null | TransformingToMathCbrt {
+  if (node.type === "BinaryExpression") {
+    const { left, right } = node;
+    if (left.type === "PrivateIdentifier") return null;
+    if (node.operator === "**") {
+      if (!isOneThird(right)) return null;
+      // n ** (1/3)
+      return { from: "exponentiation", method: "cbrt", node, argument: left };
+    }
+    return null;
+  }
+  if (isGlobalObjectMethodCall(node, "Math", "pow", sourceCode)) {
+    if (node.arguments.length < 2) return null;
+    const [argument, exponent] = node.arguments;
+    if (argument.type === "SpreadElement" || !isOneThird(exponent)) return null;
+    // Math.pow(n, 1/3)
+    return {
+      from: "pow",
+      method: "cbrt",
+      node,
+      argument,
+    };
+  }
+  return null;
 }
 /**
  * Returns information if the given expression is Math.trunc().

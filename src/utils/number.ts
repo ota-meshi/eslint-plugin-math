@@ -160,6 +160,21 @@ export function isHalf(
 }
 
 /**
+ * Checks whether the given node is a `1/3`.
+ */
+export function isOneThird(
+  node: TSESTree.Expression | TSESTree.SpreadElement,
+): boolean {
+  return (
+    isLiteral(node, 1 / 3) ||
+    (node.type === "BinaryExpression" &&
+      node.operator === "/" &&
+      isLiteral(node.left, 1) &&
+      isLiteral(node.right, 3))
+  );
+}
+
+/**
  * Returns information if the given expression can be transformed to Number.isInteger().
  */
 export function getInfoForTransformingToNumberIsInteger(

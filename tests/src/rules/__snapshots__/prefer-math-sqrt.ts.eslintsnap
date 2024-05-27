@@ -32,8 +32,8 @@ Output:
   9 | x = Math.sqrt(n);
  10 |
 
-[1] Can use 'Math.sqrt()', instead of 'Math.pow(n, 1 / 2)'.
-[2] Can use 'Math.sqrt()', instead of 'Math.pow(n, 1 / 2)'.
+[1] Can use 'Math.sqrt()' instead of 'Math.pow(n, 1 / 2)'.
+[2] Can use 'Math.sqrt()' instead of 'Math.pow(n, 1 / 2)'.
 [3] Can use 'Math.sqrt()' instead of 'n ** (1 / 2)'.
 [4] Can use 'Math.sqrt()' instead of 'n ** (1 / 2)'.
 ---

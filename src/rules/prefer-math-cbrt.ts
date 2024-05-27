@@ -1,25 +1,25 @@
 import type { TSESTree } from "@typescript-eslint/types";
 import { createRule } from "../utils";
-import { getInfoForTransformingToMathSqrt } from "../utils/math";
+import { getInfoForTransformingToMathCbrt } from "../utils/math";
 import { existComment } from "../utils/ast";
 import type { Rule } from "eslint";
 
-export default createRule("prefer-math-sqrt", {
+export default createRule("prefer-math-cbrt", {
   meta: {
     docs: {
       description:
-        "enforce the use of Math.sqrt() instead of other square root calculations",
+        "enforce the use of Math.cbrt() instead of other cube root calculations",
       categories: ["recommended"],
     },
     fixable: "code",
     hasSuggestions: true,
     schema: [],
     messages: {
-      canUseSqrtInsteadOfExponentiation:
-        "Can use 'Math.sqrt()' instead of 'n ** (1 / 2)'.",
-      canUseSqrtInsteadOfMathPow:
-        "Can use 'Math.sqrt()' instead of 'Math.pow(n, 1 / 2)'.",
-      replace: "Replace using 'Math.sqrt()'.",
+      canUseCbrtInsteadOfExponentiation:
+        "Can use 'Math.cbrt()' instead of 'n ** (1 / 3)'.",
+      canUseCbrtInsteadOfMathPow:
+        "Can use 'Math.cbrt()' instead of 'Math.pow(n, 1 / 3)'.",
+      replace: "Replace using 'Math.cbrt()'.",
     },
     type: "suggestion",
   },
@@ -27,17 +27,17 @@ export default createRule("prefer-math-sqrt", {
     const sourceCode = context.sourceCode;
 
     /**
-     * Verify if the given node can be converted to Math.sqrt().
+     * Verify if the given node can be converted to Math.cbrt().
      */
     function verifyForExpression(node: TSESTree.Expression) {
-      const transform = getInfoForTransformingToMathSqrt(node, sourceCode);
+      const transform = getInfoForTransformingToMathCbrt(node, sourceCode);
       if (!transform) return;
       const hasComment = existComment(node, sourceCode);
 
       const fix = (fixer: Rule.RuleFixer) => {
         return fixer.replaceText(
           node,
-          `Math.sqrt(${sourceCode.getText(transform.argument)})`,
+          `Math.cbrt(${sourceCode.getText(transform.argument)})`,
         );
       };
 
@@ -45,8 +45,8 @@ export default createRule("prefer-math-sqrt", {
         node,
         messageId:
           transform.from === "exponentiation"
-            ? "canUseSqrtInsteadOfExponentiation"
-            : "canUseSqrtInsteadOfMathPow",
+            ? "canUseCbrtInsteadOfExponentiation"
+            : "canUseCbrtInsteadOfMathPow",
         fix: !hasComment ? fix : null,
         suggest: hasComment ? [{ messageId: "replace", fix }] : null,
       });
