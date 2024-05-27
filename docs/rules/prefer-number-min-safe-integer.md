@@ -16,7 +16,7 @@ since: "v0.3.0"
 
 ## :book: Rule Details
 
-This rule aims to enforces the use of Number.MIN_SAFE_INTEGER instead of other ways.
+This rule aims to enforces the use of `Number.MIN_SAFE_INTEGER` instead of other ways.
 
 <eslint-code-block fix>
 
