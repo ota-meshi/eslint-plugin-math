@@ -1,0 +1,39 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: prefer-math-sqrt >> invalid
+Filename: prefer-math-sqrt/invalid/example-input.js
+
+Code:
+  1 | /*prefer-math-sqrt/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = Math.sqrt(n);
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = Math.pow(n, 1 / 2);
+    |     ^~~~~~~~~~~~~~~~~~ [1]
+  7 | x = Math.pow(n, 0.5);
+    |     ^~~~~~~~~~~~~~~~ [2]
+  8 | x = n ** (1 / 2);
+    |     ^~~~~~~~~~~~ [3]
+  9 | x = n ** 0.5;
+    |     ^~~~~~~~ [4]
+ 10 |
+
+Output:
+  1 | /*prefer-math-sqrt/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = Math.sqrt(n);
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = Math.sqrt(n);
+  7 | x = Math.sqrt(n);
+  8 | x = Math.sqrt(n);
+  9 | x = Math.sqrt(n);
+ 10 |
+
+[1] Can use 'Math.sqrt()' instead of 'Math.pow(n, 1 / 2)'.
+[2] Can use 'Math.sqrt()' instead of 'Math.pow(n, 1 / 2)'.
+[3] Can use 'Math.sqrt()' instead of 'n ** (1 / 2)'.
+[4] Can use 'Math.sqrt()' instead of 'n ** (1 / 2)'.
+---

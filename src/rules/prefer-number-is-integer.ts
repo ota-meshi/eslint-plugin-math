@@ -41,16 +41,13 @@ export default createRule("prefer-number-is-integer", {
       const fix = (fixer: Rule.RuleFixer) => {
         return fixer.replaceText(
           node,
-          `${transform.method !== "!isInteger" ? "" : "!"}Number.isInteger(${sourceCode.getText(transform.argument)})`,
+          `${transform.not ? "!" : ""}Number.isInteger(${sourceCode.getText(transform.argument)})`,
         );
       };
 
       context.report({
         node,
-        messageId:
-          transform.method !== "!isInteger"
-            ? "canUseIsInteger"
-            : "canUseNotIsInteger",
+        messageId: !transform.not ? "canUseIsInteger" : "canUseNotIsInteger",
         data: {
           expression: getMessageExpression(transform),
         },
@@ -65,33 +62,21 @@ export default createRule("prefer-number-is-integer", {
     function getMessageExpression(info: TransformingToNumberIsInteger): string {
       switch (info.from) {
         case "trunc":
-          return info.method !== "!isInteger"
-            ? "'Math.trunc(n) === n'"
-            : "'Math.trunc(n) !== n'";
+          return !info.not ? "'Math.trunc(n) === n'" : "'Math.trunc(n) !== n'";
         case "floor":
-          return info.method !== "!isInteger"
-            ? "'Math.floor(n) === n'"
-            : "'Math.floor(n) !== n'";
+          return !info.not ? "'Math.floor(n) === n'" : "'Math.floor(n) !== n'";
         case "ceil":
-          return info.method !== "!isInteger"
-            ? "'Math.ceil(n) === n'"
-            : "'Math.ceil(n) !== n'";
+          return !info.not ? "'Math.ceil(n) === n'" : "'Math.ceil(n) !== n'";
         case "round":
-          return info.method !== "!isInteger"
-            ? "'Math.round(n) === n'"
-            : "'Math.round(n) !== n'";
+          return !info.not ? "'Math.round(n) === n'" : "'Math.round(n) !== n'";
         case "truncLike":
-          return info.method !== "!isInteger"
+          return !info.not
             ? "'Math.trunc(n) === n' like expression"
             : "'Math.trunc(n) !== n' like expression";
         case "modulo":
-          return info.method !== "!isInteger"
-            ? "'n % 1 !== 0'"
-            : "'n % 1 === 0'";
+          return !info.not ? "'n % 1 !== 0'" : "'n % 1 === 0'";
         case "parseInt":
-          return info.method !== "!isInteger"
-            ? "'parseInt(n) === n'"
-            : "'parseInt(n) !== n'";
+          return !info.not ? "'parseInt(n) === n'" : "'parseInt(n) !== n'";
       }
       return "";
     }

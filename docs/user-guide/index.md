@@ -33,7 +33,7 @@ export default [
   {
     rules: {
       // override/add rules settings here, such as:
-      // 'math/rule-name': 'error'
+      // 'math/prefer-math-trunc': 'error'
     }
   }
 ];
@@ -60,7 +60,7 @@ module.exports = {
   ],
   rules: {
     // override/add rules settings here, such as:
-    // 'math/rule-name': 'error'
+    // 'math/prefer-math-trunc': 'error'
   }
 }
 ```

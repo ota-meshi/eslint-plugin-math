@@ -1,6 +1,7 @@
 import type { TSESTree } from "@typescript-eslint/types";
 import { findVariable, getPropertyName } from "@eslint-community/eslint-utils";
 import type { AST, SourceCode } from "eslint";
+import type { ExtractFunctionKeys } from "./type";
 
 /**
  * Checks whether the given node has a comment.
@@ -62,7 +63,7 @@ export function isGlobalObject(
 export function isGlobalObjectMethodCall<N extends keyof typeof globalThis>(
   node: TSESTree.Node,
   name: N,
-  method: keyof (typeof globalThis)[N],
+  method: ExtractFunctionKeys<(typeof globalThis)[N]>,
   sourceCode: SourceCode,
 ): node is TSESTree.CallExpression {
   if (node.type !== "CallExpression") return false;
@@ -78,7 +79,7 @@ export function isGlobalObjectMethodCall<N extends keyof typeof globalThis>(
  */
 export function isGlobalMethodCall(
   node: TSESTree.Node,
-  name: keyof typeof globalThis,
+  name: ExtractFunctionKeys<typeof globalThis>,
   sourceCode: SourceCode,
 ): node is TSESTree.CallExpression {
   if (node.type !== "CallExpression") return false;
@@ -119,7 +120,10 @@ export function equalTokens(
  * Checks whether the given node is a Literal with the given value.
  */
 export function isLiteral<V extends TSESTree.Literal["value"]>(
-  node: TSESTree.Expression | TSESTree.SpreadElement,
+  node:
+    | TSESTree.Expression
+    | TSESTree.SpreadElement
+    | TSESTree.PrivateIdentifier,
   value: V,
 ): node is TSESTree.Literal & { value: V } {
   return node.type === "Literal" && node.value === value;
