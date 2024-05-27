@@ -2,6 +2,62 @@
 
 
 Test: prefer-math-trunc >> invalid
+Filename: prefer-math-trunc/invalid/bitwise-input.js
+
+Code:
+  1 | /*prefer-math-trunc/invalid/bitwise-input.js*/
+  2 | x = ~~n;
+    |     ^~~ [1]
+  3 | x = n & -1;
+    |     ^~~~~~ [2]
+  4 | x = n | 0;
+    |     ^~~~~ [3]
+  5 | x = n ^ 0;
+    |     ^~~~~ [4]
+  6 | x = n >> 0;
+    |     ^~~~~~ [5]
+  7 | x = n << 0;
+    |     ^~~~~~ [6]
+  8 |
+  9 | x = -1 & n;
+    |     ^~~~~~ [7]
+ 10 | x = 0 | n;
+    |     ^~~~~ [8]
+ 11 | x = 0 ^ n;
+    |     ^~~~~ [9]
+ 12 | x = 0 >> n;
+ 13 | x = 0 << n;
+ 14 |
+
+Output:
+  1 | /*prefer-math-trunc/invalid/bitwise-input.js*/
+  2 | x = Math.trunc(n);
+  3 | x = Math.trunc(n);
+  4 | x = Math.trunc(n);
+  5 | x = Math.trunc(n);
+  6 | x = Math.trunc(n);
+  7 | x = Math.trunc(n);
+  8 |
+  9 | x = Math.trunc(n);
+ 10 | x = Math.trunc(n);
+ 11 | x = Math.trunc(n);
+ 12 | x = 0 >> n;
+ 13 | x = 0 << n;
+ 14 |
+
+[1] Can use 'Math.trunc()' instead of '~~n'.
+[2] Can use 'Math.trunc()' instead of 'n & -1'.
+[3] Can use 'Math.trunc()' instead of 'n | 0'.
+[4] Can use 'Math.trunc()' instead of 'n ^ 0'.
+[5] Can use 'Math.trunc()' instead of 'n >> 0'.
+[6] Can use 'Math.trunc()' instead of 'n << 0'.
+[7] Can use 'Math.trunc()' instead of 'n & n'.
+[8] Can use 'Math.trunc()' instead of 'n | n'.
+[9] Can use 'Math.trunc()' instead of 'n ^ n'.
+---
+
+
+Test: prefer-math-trunc >> invalid
 Filename: prefer-math-trunc/invalid/comment-input.js
 
 Code:
