@@ -1,0 +1,27 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: prefer-number-max-safe-integer >> invalid
+Filename: prefer-number-max-safe-integer/invalid/example-input.js
+
+Code:
+  1 | /*prefer-number-max-safe-integer/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = Number.MAX_SAFE_INTEGER;
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = 0x1fffffffffffff;
+    |     ^~~~~~~~~~~~~~~~ [1]
+  7 |
+
+Output:
+  1 | /*prefer-number-max-safe-integer/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = Number.MAX_SAFE_INTEGER;
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = Number.MAX_SAFE_INTEGER;
+  7 |
+
+[1] Can use 'Number.MAX_SAFE_INTEGER'.
+---
