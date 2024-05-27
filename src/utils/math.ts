@@ -49,19 +49,34 @@ export function getInfoForTransformingToMathTrunc(
   if (node.type === "BinaryExpression") {
     const { left, right } = node;
     if (left.type === "PrivateIdentifier") return null;
-    if (
-      node.operator === "|" ||
-      node.operator === "^" ||
-      node.operator === ">>"
-    ) {
-      if (!isZero(right)) return null;
-      // n | 0, n ^ 0, n >> 0
-      return { from: "bitwise", method: "trunc", node, argument: left };
+    if (node.operator === "|" || node.operator === "^") {
+      if (isZero(right)) {
+        // n | 0, n ^ 0, n >> 0, n << 0
+        return { from: "bitwise", method: "trunc", node, argument: left };
+      }
+      if (isZero(left)) {
+        // 0 | n, 0 ^ n, 0 >> n
+        return { from: "bitwise", method: "trunc", node, argument: right };
+      }
+      return null;
+    }
+    if (node.operator === ">>" || node.operator === "<<") {
+      if (isZero(right)) {
+        // n >> 0, n << 0
+        return { from: "bitwise", method: "trunc", node, argument: left };
+      }
+      return null;
     }
     if (node.operator === "&") {
-      if (!isMinusOne(right)) return null;
-      // n & -1
-      return { from: "bitwise", method: "trunc", node, argument: left };
+      if (isMinusOne(right)) {
+        // n & -1
+        return { from: "bitwise", method: "trunc", node, argument: left };
+      }
+      if (isMinusOne(left)) {
+        // -1 & n
+        return { from: "bitwise", method: "trunc", node, argument: right };
+      }
+      return null;
     }
     return null;
   }
