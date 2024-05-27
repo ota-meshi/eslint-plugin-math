@@ -14,8 +14,9 @@ import {
   isGlobalObjectMethodCall,
   isLiteral,
 } from "./ast";
+import type { ExtractFunctionKeys } from "./type";
 
-export type NumberMethod = "isInteger" | "!isInteger";
+export type NumberMethod = ExtractFunctionKeys<typeof Number>;
 export type NumberMethodInfo<M extends NumberMethod> = {
   method: M;
   node: TSESTree.Expression;
@@ -23,36 +24,43 @@ export type NumberMethodInfo<M extends NumberMethod> = {
 };
 
 export type TransformingToNumberIsInteger =
-  | (NumberMethodInfo<"isInteger" | "!isInteger"> & {
+  | (NumberMethodInfo<"isInteger"> & {
       from: "trunc";
       node: TSESTree.BinaryExpression;
+      not: boolean;
     })
-  | (NumberMethodInfo<"isInteger" | "!isInteger"> & {
+  | (NumberMethodInfo<"isInteger"> & {
       from: "truncLike";
       node: TSESTree.BinaryExpression;
+      not: boolean;
     })
-  | (NumberMethodInfo<"isInteger" | "!isInteger"> & {
+  | (NumberMethodInfo<"isInteger"> & {
       from: "ceil";
       node: TSESTree.BinaryExpression;
+      not: boolean;
     })
-  | (NumberMethodInfo<"isInteger" | "!isInteger"> & {
+  | (NumberMethodInfo<"isInteger"> & {
       from: "floor";
       node: TSESTree.BinaryExpression;
+      not: boolean;
     })
-  | (NumberMethodInfo<"isInteger" | "!isInteger"> & {
+  | (NumberMethodInfo<"isInteger"> & {
       from: "round";
       node: TSESTree.BinaryExpression;
+      not: boolean;
     })
-  | (NumberMethodInfo<"isInteger" | "!isInteger"> & {
+  | (NumberMethodInfo<"isInteger"> & {
       from: "modulo";
       node:
         | TSESTree.BinaryExpression
         | TSESTree.UnaryExpression
         | TSESTree.CallExpression;
+      not: boolean;
     })
-  | (NumberMethodInfo<"isInteger" | "!isInteger"> & {
+  | (NumberMethodInfo<"isInteger"> & {
       from: "parseInt";
       node: TSESTree.BinaryExpression;
+      not: boolean;
     });
 /**
  * Returns information if the condition checks whether the given expression is a positive number (or zero).
@@ -136,6 +144,20 @@ export function isMinusOne(node: TSESTree.Expression): boolean {
       isLiteral(node.argument, 1))
   );
 }
+/**
+ * Checks whether the given node is a `1/2`.
+ */
+export function isHalf(
+  node: TSESTree.Expression | TSESTree.SpreadElement,
+): boolean {
+  return (
+    isLiteral(node, 0.5) ||
+    (node.type === "BinaryExpression" &&
+      node.operator === "/" &&
+      isLiteral(node.left, 1) &&
+      isLiteral(node.right, 2))
+  );
+}
 
 /**
  * Returns information if the given expression can be transformed to Number.isInteger().
@@ -148,7 +170,7 @@ export function getInfoForTransformingToNumberIsInteger(
     const { left, right, operator } = node;
     if (left.type === "PrivateIdentifier") return null;
     if (operator === "===" || operator === "!==") {
-      const method = operator === "!==" ? "!isInteger" : "isInteger";
+      const not = operator === "!==";
       for (const [a, b] of [
         [left, right],
         [right, left],
@@ -158,7 +180,8 @@ export function getInfoForTransformingToNumberIsInteger(
           if (!equalNodeTokens(toInt.argument, b, sourceCode)) continue;
           return {
             from: toInt.type,
-            method,
+            method: "isInteger",
+            not,
             node,
             argument: toInt.argument,
           };
@@ -167,7 +190,8 @@ export function getInfoForTransformingToNumberIsInteger(
           // n % 1 === 0
           return {
             from: "modulo",
-            method,
+            method: "isInteger",
+            not,
             node,
             argument: a.left,
           };
@@ -187,7 +211,8 @@ export function getInfoForTransformingToNumberIsInteger(
         // if (n % 1) { ... }
         return {
           from: "modulo",
-          method: "!isInteger",
+          method: "isInteger",
+          not: true,
           node,
           argument: left,
         };
@@ -203,6 +228,7 @@ export function getInfoForTransformingToNumberIsInteger(
     return {
       from: "modulo",
       method: "isInteger",
+      not: false,
       node,
       argument: argument.left,
     };
@@ -214,7 +240,8 @@ export function getInfoForTransformingToNumberIsInteger(
     // Boolean(n % 1)
     return {
       from: "modulo",
-      method: "!isInteger",
+      method: "isInteger",
+      not: true,
       node,
       argument: argument.left,
     };

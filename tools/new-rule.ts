@@ -88,10 +88,10 @@ This rule reports ???.
 /* eslint math/${ruleId}: 'error' */
 
 /* ✓ GOOD */
-const a = Math.trunc(n);
+x = Math.trunc(n);
 
 /* ✗ BAD */
-const b = n >= 0 ? Math.floor(n) : Math.ceil(n);
+x = n >= 0 ? Math.floor(n) : Math.ceil(n);
 \`\`\`
 
 </eslint-code-block>

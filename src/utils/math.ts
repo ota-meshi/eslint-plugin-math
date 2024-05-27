@@ -4,11 +4,13 @@ import { equalNodeTokens, equalTokens, isGlobalObjectMethodCall } from "./ast";
 import {
   getInfoForIsNegative,
   getInfoForIsPositive,
+  isHalf,
   isMinusOne,
   isZero,
 } from "./number";
+import type { ExtractFunctionKeys } from "./type";
 
-export type MathMethod = "floor" | "ceil" | "trunc" | "round";
+export type MathMethod = ExtractFunctionKeys<typeof Math>;
 export type MathMethodInfo<M extends MathMethod> = {
   method: M;
   node: TSESTree.Expression;
@@ -78,6 +80,46 @@ export function getInfoForTransformingToMathTrunc(
       method: "trunc",
       node,
       argument: conditional.argument,
+    };
+  }
+  return null;
+}
+
+export type TransformingToMathSqrt =
+  | (MathMethodInfo<"sqrt"> & {
+      from: "exponentiation";
+      node: TSESTree.BinaryExpression;
+    })
+  | (MathMethodInfo<"sqrt"> & {
+      from: "pow";
+      node: TSESTree.CallExpression;
+    });
+/**
+ * Returns information if the given expression can be transformed to Math.sqrt().
+ */
+export function getInfoForTransformingToMathSqrt(
+  node: TSESTree.Expression,
+  sourceCode: SourceCode,
+): null | TransformingToMathSqrt {
+  if (node.type === "BinaryExpression") {
+    const { left, right } = node;
+    if (left.type === "PrivateIdentifier") return null;
+    if (node.operator === "**") {
+      if (!isHalf(right)) return null;
+      // n ** (1/2)
+      return { from: "exponentiation", method: "sqrt", node, argument: left };
+    }
+    return null;
+  }
+  if (isGlobalObjectMethodCall(node, "Math", "pow", sourceCode)) {
+    if (node.arguments.length < 2) return null;
+    const [argument, exponent] = node.arguments;
+    if (argument.type === "SpreadElement" || !isHalf(exponent)) return null;
+    return {
+      from: "pow",
+      method: "sqrt",
+      node,
+      argument,
     };
   }
   return null;
