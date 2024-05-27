@@ -9,6 +9,7 @@ import preferMathTrunc from "../rules/prefer-math-trunc";
 import preferNumberIsInteger from "../rules/prefer-number-is-integer";
 import preferNumberIsSafeInteger from "../rules/prefer-number-is-safe-integer";
 import preferNumberMaxSafeInteger from "../rules/prefer-number-max-safe-integer";
+import preferNumberMinSafeInteger from "../rules/prefer-number-min-safe-integer";
 
 export const rules = [
   abs,
@@ -18,4 +19,5 @@ export const rules = [
   preferNumberIsInteger,
   preferNumberIsSafeInteger,
   preferNumberMaxSafeInteger,
+  preferNumberMinSafeInteger,
 ] as RuleModule[];

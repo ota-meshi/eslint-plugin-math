@@ -148,7 +148,10 @@ export function isMinSafeInteger(
 ): boolean {
   return (
     isLiteral(node, Number.MIN_SAFE_INTEGER) ||
-    isGlobalObjectProperty(node, "Number", "MIN_SAFE_INTEGER", sourceCode)
+    isGlobalObjectProperty(node, "Number", "MIN_SAFE_INTEGER", sourceCode) ||
+    (node.type === "UnaryExpression" &&
+      node.operator === "-" &&
+      isMaxSafeInteger(node.argument, sourceCode))
   );
 }
 /**

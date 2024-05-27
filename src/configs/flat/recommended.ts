@@ -16,4 +16,5 @@ export const rules: Linter.RulesRecord = {
   "math/prefer-number-is-integer": "error",
   "math/prefer-number-is-safe-integer": "error",
   "math/prefer-number-max-safe-integer": "error",
+  "math/prefer-number-min-safe-integer": "error",
 };
