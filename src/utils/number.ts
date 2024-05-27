@@ -3,10 +3,17 @@ import type { SourceCode } from "eslint";
 import {
   getInfoForMathCeil,
   getInfoForMathFloor,
+  getInfoForMathRound,
   getInfoForMathTrunc,
   getInfoForTransformingToMathTrunc,
 } from "./math";
-import { equalNodeTokens, isGlobalObject, isLiteral } from "./ast";
+import {
+  equalNodeTokens,
+  isGlobalMethodCall,
+  isGlobalObject,
+  isGlobalObjectMethodCall,
+  isLiteral,
+} from "./ast";
 
 export type NumberMethod = "isInteger" | "!isInteger";
 export type NumberMethodInfo<M extends NumberMethod> = {
@@ -33,11 +40,19 @@ export type TransformingToNumberIsInteger =
       node: TSESTree.BinaryExpression;
     })
   | (NumberMethodInfo<"isInteger" | "!isInteger"> & {
+      from: "round";
+      node: TSESTree.BinaryExpression;
+    })
+  | (NumberMethodInfo<"isInteger" | "!isInteger"> & {
       from: "modulo";
       node:
         | TSESTree.BinaryExpression
         | TSESTree.UnaryExpression
         | TSESTree.CallExpression;
+    })
+  | (NumberMethodInfo<"isInteger" | "!isInteger"> & {
+      from: "parseInt";
+      node: TSESTree.BinaryExpression;
     });
 /**
  * Returns information if the condition checks whether the given expression is a positive number (or zero).
@@ -216,8 +231,24 @@ export function getInfoForTransformingToNumberIsInteger(
     if (floor) return { ...floor, type: "floor" as const };
     const ceil = getInfoForMathCeil(a, sourceCode);
     if (ceil) return { ...ceil, type: "ceil" as const };
+    const round = getInfoForMathRound(a, sourceCode);
+    if (round) return { ...round, type: "round" as const };
     const truncLike = getInfoForTransformingToMathTrunc(a, sourceCode);
     if (truncLike) return { ...truncLike, type: "truncLike" as const };
+
+    if (
+      isGlobalMethodCall(a, "parseInt", sourceCode) ||
+      isGlobalObjectMethodCall(a, "Number", "parseInt", sourceCode)
+    ) {
+      if (a.arguments.length > 0 && a.arguments[0].type !== "SpreadElement") {
+        const argument = a.arguments[0];
+        if (a.arguments.length > 1 && !isLiteral(a.arguments[1], 10)) {
+          // parseInt(n, x), x is not 10
+          return null;
+        }
+        return { argument, type: "parseInt" as const };
+      }
+    }
     return null;
   }
 }

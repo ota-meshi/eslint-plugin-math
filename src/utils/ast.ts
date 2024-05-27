@@ -73,6 +73,18 @@ export function isGlobalObjectMethodCall<N extends keyof typeof globalThis>(
     getPropertyName(callee) === method
   );
 }
+/**
+ * Checks whether the given node is a global method call.
+ */
+export function isGlobalMethodCall(
+  node: TSESTree.Node,
+  name: keyof typeof globalThis,
+  sourceCode: SourceCode,
+): node is TSESTree.CallExpression {
+  if (node.type !== "CallExpression") return false;
+  const { callee } = node;
+  return isGlobalObject(callee, name, sourceCode);
+}
 
 /**
  * Checks whether or not the tokens of two given nodes are same.
@@ -107,7 +119,7 @@ export function equalTokens(
  * Checks whether the given node is a Literal with the given value.
  */
 export function isLiteral<V extends TSESTree.Literal["value"]>(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.SpreadElement,
   value: V,
 ): node is TSESTree.Literal & { value: V } {
   return node.type === "Literal" && node.value === value;

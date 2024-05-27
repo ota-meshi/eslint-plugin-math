@@ -61,7 +61,14 @@ Code:
     |     ^~~~~~~~~~~~~~~~~~ [2]
   8 | x = Math.trunc(n) === n;
     |     ^~~~~~~~~~~~~~~~~~~ [3]
-  9 |
+  9 | x = Math.round(n) === n;
+    |     ^~~~~~~~~~~~~~~~~~~ [4]
+ 10 |
+ 11 | x = parseInt(n, 10) === n;
+    |     ^~~~~~~~~~~~~~~~~~~~~ [5]
+ 12 | x = Number.parseInt(n, 10) === n;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~ [6]
+ 13 |
 
 Output:
   1 | /*prefer-number-is-integer/invalid/example-input.js*/
@@ -72,11 +79,18 @@ Output:
   6 | x = Number.isInteger(n);
   7 | x = Number.isInteger(n);
   8 | x = Number.isInteger(n);
-  9 |
+  9 | x = Number.isInteger(n);
+ 10 |
+ 11 | x = Number.isInteger(n);
+ 12 | x = Number.isInteger(n);
+ 13 |
 
 [1] Can use 'Number.isInteger()' instead of 'Math.floor(n) === n'.
 [2] Can use 'Number.isInteger()' instead of 'Math.ceil(n) === n'.
 [3] Can use 'Number.isInteger()' instead of 'Math.trunc(n) === n'.
+[4] Can use 'Number.isInteger()' instead of 'Math.round(n) === n'.
+[5] Can use 'Number.isInteger()' instead of 'parseInt(n) === n'.
+[6] Can use 'Number.isInteger()' instead of 'parseInt(n) === n'.
 ---
 
 
@@ -193,16 +207,30 @@ Code:
     |     ^~~~~~~~~~~~~~~~~~ [2]
   4 | x = Math.trunc(n) !== n;
     |     ^~~~~~~~~~~~~~~~~~~ [3]
-  5 |
+  5 | x = Math.round(n) !== n;
+    |     ^~~~~~~~~~~~~~~~~~~ [4]
+  6 |
+  7 | x = parseInt(n, 10) !== n;
+    |     ^~~~~~~~~~~~~~~~~~~~~ [5]
+  8 | x = Number.parseInt(n, 10) !== n;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~ [6]
+  9 |
 
 Output:
   1 | /*prefer-number-is-integer/invalid/not-input.js*/
   2 | x = !Number.isInteger(n);
   3 | x = !Number.isInteger(n);
   4 | x = !Number.isInteger(n);
-  5 |
+  5 | x = !Number.isInteger(n);
+  6 |
+  7 | x = !Number.isInteger(n);
+  8 | x = !Number.isInteger(n);
+  9 |
 
 [1] Can use '!Number.isInteger()' instead of 'Math.floor(n) !== n'.
 [2] Can use '!Number.isInteger()' instead of 'Math.ceil(n) !== n'.
 [3] Can use '!Number.isInteger()' instead of 'Math.trunc(n) !== n'.
+[4] Can use '!Number.isInteger()' instead of 'Math.round(n) !== n'.
+[5] Can use '!Number.isInteger()' instead of 'parseInt(n) !== n'.
+[6] Can use '!Number.isInteger()' instead of 'parseInt(n) !== n'.
 ---
