@@ -25,7 +25,7 @@ Output:
   7 | x = Number.isFinite(n);
   8 |
 
-[1] Can use 'Number.isFinite()' instead of 'typeof n === "number" && isFinite(n)'.
+[1] Can use 'Number.isFinite(n)' instead of 'typeof n === "number" && isFinite(n)'.
 ---
 
 
@@ -43,5 +43,5 @@ Output:
   2 | x = !Number.isFinite(n);
   3 |
 
-[1] Can use '!Number.isFinite()' instead of 'typeof n !== "number" || !isFinite(n)'.
+[1] Can use '!Number.isFinite(n)' instead of 'typeof n !== "number" || !isFinite(n)'.
 ---

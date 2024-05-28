@@ -16,9 +16,9 @@ export default createRule("prefer-math-cbrt", {
     schema: [],
     messages: {
       canUseCbrtInsteadOfExponentiation:
-        "Can use 'Math.cbrt()' instead of 'n ** (1 / 3)'.",
+        "Can use 'Math.cbrt(n)' instead of 'n ** (1 / 3)'.",
       canUseCbrtInsteadOfMathPow:
-        "Can use 'Math.cbrt()' instead of 'Math.pow(n, 1 / 3)'.",
+        "Can use 'Math.cbrt(n)' instead of 'Math.pow(n, 1 / 3)'.",
       replace: "Replace using 'Math.cbrt()'.",
     },
     type: "suggestion",

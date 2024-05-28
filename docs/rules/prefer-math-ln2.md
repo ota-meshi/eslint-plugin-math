@@ -16,7 +16,7 @@ description: "enforce the use of Math.LN2 instead of other ways"
 
 ## :book: Rule Details
 
-This rule aims to enforces the use of `Math.LN2` instead of other ways.
+This rule aims to enforce the use of `Math.LN2` instead of other ways.
 
 <eslint-code-block fix>
 

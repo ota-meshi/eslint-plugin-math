@@ -19,7 +19,7 @@ export default createRule("prefer-math-sqrt1-2", {
     hasSuggestions: true,
     schema: [],
     messages: {
-      canUseMathSqrt1_2: "Can use 'Math.SQRT1_2'.",
+      canUseMathSqrt1_2: "Can use 'Math.SQRT1_2' instead of '{{expression}}'.",
       replace: "Replace using 'Math.SQRT1_2'.",
     },
     type: "suggestion",
@@ -31,13 +31,19 @@ export default createRule("prefer-math-sqrt1-2", {
      * Verify if the given node can be converted to Math.SQRT1_2.
      */
     function verifyForExpression(node: TSESTree.Expression) {
+      let expression: string;
       const transform = getInfoForTransformingToMathSqrt(node, sourceCode);
       if (transform) {
         if (!isHalf(transform.argument)) return;
+        expression =
+          transform.from === "exponentiation"
+            ? "(1 / 2) ** (1 / 2)"
+            : "Math.pow(1 / 2, 1 / 2)";
       } else if (isGlobalObjectMethodCall(node, "Math", "sqrt", sourceCode)) {
         if (node.arguments.length < 1 || !isHalf(node.arguments[0])) return;
+        expression = "Math.sqrt(1 / 2)";
       } else if (isLiteral(node, Math.SQRT1_2)) {
-        // transform
+        expression = `${Math.SQRT1_2}`;
       } else {
         return;
       }
@@ -50,6 +56,7 @@ export default createRule("prefer-math-sqrt1-2", {
       context.report({
         node,
         messageId: "canUseMathSqrt1_2",
+        data: { expression },
         fix: !hasComment ? fix : null,
         suggest: hasComment ? [{ messageId: "replace", fix }] : null,
       });

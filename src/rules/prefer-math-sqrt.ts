@@ -16,9 +16,9 @@ export default createRule("prefer-math-sqrt", {
     schema: [],
     messages: {
       canUseSqrtInsteadOfExponentiation:
-        "Can use 'Math.sqrt()' instead of 'n ** (1 / 2)'.",
+        "Can use 'Math.sqrt(n)' instead of 'n ** (1 / 2)'.",
       canUseSqrtInsteadOfMathPow:
-        "Can use 'Math.sqrt()' instead of 'Math.pow(n, 1 / 2)'.",
+        "Can use 'Math.sqrt(n)' instead of 'Math.pow(n, 1 / 2)'.",
       replace: "Replace using 'Math.sqrt()'.",
     },
     type: "suggestion",

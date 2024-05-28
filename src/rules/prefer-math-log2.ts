@@ -1,25 +1,23 @@
 import type { TSESTree } from "@typescript-eslint/types";
 import { createRule } from "../utils";
-import type { TransformingToNumberIsFinite } from "../utils/number";
-import { getInfoForTransformingToNumberIsFinite } from "../utils/number";
+import type { TransformingToMathLog2 } from "../utils/math";
+import { getInfoForTransformingToMathLog2 } from "../utils/math";
 import { existComment } from "../utils/ast";
 import type { Rule } from "eslint";
 
-export default createRule("prefer-number-is-finite", {
+export default createRule("prefer-math-log2", {
   meta: {
     docs: {
       description:
-        "enforce the use of Number.isFinite() instead of other checking ways",
+        "enforce the use of Math.log2() instead of other calculation methods.",
       categories: ["recommended"],
     },
     fixable: "code",
     hasSuggestions: true,
     schema: [],
     messages: {
-      canUseIsFinite: "Can use 'Number.isFinite(n)' instead of {{expression}}.",
-      canUseNotIsFinite:
-        "Can use '!Number.isFinite(n)' instead of {{expression}}.",
-      replace: "Replace using 'Number.isFinite()'.",
+      canUseLog2: "Can use 'Math.log2(n)' instead of '{{expression}}'.",
+      replace: "Replace using 'Math.log2()'.",
     },
     type: "suggestion",
   },
@@ -30,23 +28,20 @@ export default createRule("prefer-number-is-finite", {
      * Verify if the given node can be converted to Number.isFinite().
      */
     function verifyForExpression(node: TSESTree.Expression) {
-      const transform = getInfoForTransformingToNumberIsFinite(
-        node,
-        sourceCode,
-      );
+      const transform = getInfoForTransformingToMathLog2(node, sourceCode);
       if (!transform) return;
       const hasComment = existComment(node, sourceCode);
 
       const fix = (fixer: Rule.RuleFixer) => {
         return fixer.replaceText(
           node,
-          `${transform.not ? "!" : ""}Number.isFinite(${sourceCode.getText(transform.argument)})`,
+          `Math.log2(${sourceCode.getText(transform.argument)})`,
         );
       };
 
       context.report({
         node,
-        messageId: !transform.not ? "canUseIsFinite" : "canUseNotIsFinite",
+        messageId: "canUseLog2",
         data: {
           expression: getMessageExpression(transform),
         },
@@ -58,12 +53,12 @@ export default createRule("prefer-number-is-finite", {
     /**
      * Get the expression text in the message for the given information.
      */
-    function getMessageExpression(info: TransformingToNumberIsFinite): string {
+    function getMessageExpression(info: TransformingToMathLog2): string {
       switch (info.from) {
-        case "global.isFinite":
-          return !info.not
-            ? "'typeof n === \"number\" && isFinite(n)'"
-            : "'typeof n !== \"number\" || !isFinite(n)'";
+        case "logWithLOG2E":
+          return `Math.log(n) * Math.LOG2E`;
+        case "logWithLN2":
+          return `Math.log(n) / Math.LN2`;
       }
       return "";
     }

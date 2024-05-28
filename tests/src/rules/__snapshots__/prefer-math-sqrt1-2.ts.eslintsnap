@@ -26,8 +26,8 @@ Output:
   7 | x = Math.SQRT1_2;
   8 |
 
-[1] Can use 'Math.SQRT1_2'.
-[2] Can use 'Math.SQRT1_2'.
+[1] Can use 'Math.SQRT1_2' instead of 'Math.sqrt(1 / 2)'.
+[2] Can use 'Math.SQRT1_2' instead of '(1 / 2) ** (1 / 2)'.
 ---
 
 
@@ -45,5 +45,5 @@ Output:
   2 | x = Math.SQRT1_2;
   3 |
 
-[1] Can use 'Math.SQRT1_2'.
+[1] Can use 'Math.SQRT1_2' instead of '0.7071067811865476'.
 ---

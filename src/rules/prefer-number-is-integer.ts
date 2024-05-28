@@ -17,9 +17,9 @@ export default createRule("prefer-number-is-integer", {
     schema: [],
     messages: {
       canUseIsInteger:
-        "Can use 'Number.isInteger()' instead of {{expression}}.",
+        "Can use 'Number.isInteger(n)' instead of {{expression}}.",
       canUseNotIsInteger:
-        "Can use '!Number.isInteger()' instead of {{expression}}.",
+        "Can use '!Number.isInteger(n)' instead of {{expression}}.",
       replace: "Replace using 'Number.isInteger()'.",
     },
     type: "suggestion",

@@ -1,0 +1,33 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: prefer-math-log2 >> invalid
+Filename: prefer-math-log2/invalid/example-input.js
+
+Code:
+  1 | /*prefer-math-log2/invalid/example-input.js*/
+  2 |
+  3 | /* ✓ GOOD */
+  4 | x = Math.log2(n);
+  5 |
+  6 | /* ✗ BAD */
+  7 | x = Math.log(n) * Math.LOG2E;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~ [1]
+  8 | x = Math.log(n) / Math.LN2;
+    |     ^~~~~~~~~~~~~~~~~~~~~~ [2]
+  9 |
+
+Output:
+  1 | /*prefer-math-log2/invalid/example-input.js*/
+  2 |
+  3 | /* ✓ GOOD */
+  4 | x = Math.log2(n);
+  5 |
+  6 | /* ✗ BAD */
+  7 | x = Math.log2(n);
+  8 | x = Math.log2(n);
+  9 |
+
+[1] Can use 'Math.log2(n)' instead of 'Math.log(n) * Math.LOG2E'.
+[2] Can use 'Math.log2(n)' instead of 'Math.log(n) / Math.LN2'.
+---
