@@ -7,20 +7,20 @@ import {
 } from "../utils/ast";
 import type { Rule } from "eslint";
 import { getInfoForTransformingToMathSqrt } from "../utils/math";
-import { isTwo } from "../utils/number";
+import { isHalf } from "../utils/number";
 
-export default createRule("prefer-math-sqrt2", {
+export default createRule("prefer-math-sqrt1-2", {
   meta: {
     docs: {
-      description: "enforce the use of Math.SQRT2 instead of other ways",
+      description: "enforce the use of Math.SQRT1_2 instead of other ways",
       categories: ["recommended"],
     },
     fixable: "code",
     hasSuggestions: true,
     schema: [],
     messages: {
-      canUseMathSqrt2: "Can use 'Math.SQRT2'.",
-      replace: "Replace using 'Math.SQRT2'.",
+      canUseMathSqrt1_2: "Can use 'Math.SQRT1_2'.",
+      replace: "Replace using 'Math.SQRT1_2'.",
     },
     type: "suggestion",
   },
@@ -28,15 +28,15 @@ export default createRule("prefer-math-sqrt2", {
     const sourceCode = context.sourceCode;
 
     /**
-     * Verify if the given node can be converted to Math.SQRT2.
+     * Verify if the given node can be converted to Math.SQRT1_2.
      */
     function verifyForExpression(node: TSESTree.Expression) {
       const transform = getInfoForTransformingToMathSqrt(node, sourceCode);
       if (transform) {
-        if (!isTwo(transform.argument)) return;
+        if (!isHalf(transform.argument)) return;
       } else if (isGlobalObjectMethodCall(node, "Math", "sqrt", sourceCode)) {
-        if (node.arguments.length < 1 || !isTwo(node.arguments[0])) return;
-      } else if (isLiteral(node, Math.SQRT2)) {
+        if (node.arguments.length < 1 || !isHalf(node.arguments[0])) return;
+      } else if (isLiteral(node, Math.SQRT1_2)) {
         // transform
       } else {
         return;
@@ -44,12 +44,12 @@ export default createRule("prefer-math-sqrt2", {
       const hasComment = existComment(node, sourceCode);
 
       const fix = (fixer: Rule.RuleFixer) => {
-        return fixer.replaceText(node, `Math.SQRT2`);
+        return fixer.replaceText(node, `Math.SQRT1_2`);
       };
 
       context.report({
         node,
-        messageId: "canUseMathSqrt2",
+        messageId: "canUseMathSqrt1_2",
         fix: !hasComment ? fix : null,
         suggest: hasComment ? [{ messageId: "replace", fix }] : null,
       });
