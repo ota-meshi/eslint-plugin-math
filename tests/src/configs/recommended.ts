@@ -30,7 +30,7 @@ describe("`recommended` config", () => {
         {
           line: 1,
           message:
-            "Can use 'Math.trunc(n)', instead of branching on value and using 'Math.floor()' / 'Math.ceil()'.",
+            "Can use 'Math.trunc(n)', instead of branching on value and using 'Math.floor(n)' / 'Math.ceil(n)'.",
           ruleId: "math/prefer-math-trunc",
         },
       ],
@@ -56,7 +56,7 @@ describe("`recommended` config", () => {
         {
           line: 1,
           message:
-            "Can use 'Math.trunc(n)', instead of branching on value and using 'Math.floor()' / 'Math.ceil()'.",
+            "Can use 'Math.trunc(n)', instead of branching on value and using 'Math.floor(n)' / 'Math.ceil(n)'.",
           ruleId: "math/prefer-math-trunc",
         },
       ],
