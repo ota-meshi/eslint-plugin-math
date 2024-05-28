@@ -1,13 +1,21 @@
 import type { TSESTree } from "@typescript-eslint/types";
 import type { SourceCode } from "eslint";
-import { equalNodeTokens, equalTokens, isGlobalObjectMethodCall } from "./ast";
+import {
+  equalNodeTokens,
+  equalTokens,
+  isGlobalObjectMethodCall,
+  isGlobalObjectProperty,
+  isLiteral,
+} from "./ast";
 import {
   getInfoForIsNegative,
   getInfoForIsPositive,
   getInfoForToNegative,
   isHalf,
   isMinusOne,
+  isOne,
   isOneThird,
+  isTwo,
   isZero,
 } from "./number";
 import type { ExtractFunctionKeys } from "./type";
@@ -17,6 +25,10 @@ export type MathMethodInfo<M extends MathMethod> = {
   method: M;
   node: TSESTree.Expression;
   argument: TSESTree.Expression;
+};
+export type MathPropertyInfo<M extends keyof typeof Math> = {
+  property: M;
+  node: TSESTree.Expression;
 };
 
 export type TransformingToMathTrunc =
@@ -394,6 +406,82 @@ export function getInfoForTransformingToMathCbrt(
       method: "cbrt",
       node,
       argument,
+    };
+  }
+  return null;
+}
+
+export type TransformingToMathLN2 =
+  // Math.log(2);
+  | (MathPropertyInfo<"LN2"> & {
+      from: "log";
+      node: TSESTree.CallExpression;
+      inverse: false;
+    })
+  // 1 / Math.LOG2E;
+  | (MathPropertyInfo<"LN2"> & {
+      from: "LOG2E";
+      node: TSESTree.BinaryExpression;
+      inverse: false;
+    })
+  // x / Math.LOG2E;
+  | (MathPropertyInfo<"LN2"> & {
+      from: "LOG2E";
+      node: TSESTree.Expression;
+      inverse: true;
+      parent: TSESTree.BinaryExpression;
+    })
+  // Literal
+  | (MathPropertyInfo<"LN2"> & {
+      from: "literal";
+      node: TSESTree.Literal;
+      inverse: false;
+    });
+/**
+ * Returns information if the given expression can be transformed to Math.LN2.
+ */
+export function getInfoForTransformingToMathLN2(
+  node: TSESTree.Expression,
+  sourceCode: SourceCode,
+): null | TransformingToMathLN2 {
+  if (isGlobalObjectMethodCall(node, "Math", "log", sourceCode)) {
+    if (node.arguments.length < 1) return null;
+    const [argument] = node.arguments;
+    if (!isTwo(argument)) return null;
+    return {
+      property: "LN2",
+      node,
+      from: "log",
+      inverse: false,
+    };
+  }
+  if (node.type === "BinaryExpression") {
+    if (node.operator !== "/") return null;
+    // TODO
+    if (!isGlobalObjectProperty(node.right, "Math", "LOG2E", sourceCode))
+      return null;
+    if (isOne(node.left)) {
+      return {
+        property: "LN2",
+        node,
+        from: "LOG2E",
+        inverse: false,
+      };
+    }
+    return {
+      property: "LN2",
+      node: node.right,
+      from: "LOG2E",
+      inverse: true,
+      parent: node,
+    };
+  }
+  if (isLiteral(node, Math.LN2)) {
+    return {
+      from: "literal",
+      node,
+      property: "LN2",
+      inverse: false,
     };
   }
   return null;

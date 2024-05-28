@@ -11,6 +11,7 @@ export const plugins = {
 export const rules: Linter.RulesRecord = {
   // eslint-plugin-math rules
   "math/prefer-math-cbrt": "error",
+  "math/prefer-math-ln2": "error",
   "math/prefer-math-sqrt": "error",
   "math/prefer-math-sqrt1-2": "error",
   "math/prefer-math-sqrt2": "error",

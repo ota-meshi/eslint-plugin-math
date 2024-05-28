@@ -74,7 +74,9 @@ export function getInfoForToNegative(node: TSESTree.Expression): null | {
 /**
  * Checks whether the given node is a `0`.
  */
-export function isZero(node: TSESTree.Expression): boolean {
+export function isZero(
+  node: TSESTree.Expression,
+): node is TSESTree.Literal | TSESTree.UnaryExpression {
   return (
     isLiteral(node, 0) ||
     (node.type === "UnaryExpression" &&
@@ -85,7 +87,9 @@ export function isZero(node: TSESTree.Expression): boolean {
 /**
  * Checks whether the given node is a `1`.
  */
-export function isOne(node: TSESTree.Expression): boolean {
+export function isOne(
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+): node is TSESTree.Literal {
   return isLiteral(node, 1);
 }
 /**
@@ -96,7 +100,7 @@ export function isTwo(
     | TSESTree.Expression
     | TSESTree.PrivateIdentifier
     | TSESTree.SpreadElement,
-): boolean {
+): node is TSESTree.Literal {
   return isLiteral(node, 2);
 }
 /**
@@ -104,13 +108,15 @@ export function isTwo(
  */
 export function isFiftyThree(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
-): boolean {
+): node is TSESTree.Literal {
   return isLiteral(node, 53);
 }
 /**
  * Checks whether the given node is a `-1`.
  */
-export function isMinusOne(node: TSESTree.Expression): boolean {
+export function isMinusOne(
+  node: TSESTree.Expression,
+): node is TSESTree.Literal | TSESTree.UnaryExpression {
   return (
     isLiteral(node, -1) ||
     (node.type === "UnaryExpression" &&
@@ -123,7 +129,7 @@ export function isMinusOne(node: TSESTree.Expression): boolean {
  */
 export function isHalf(
   node: TSESTree.Expression | TSESTree.SpreadElement,
-): boolean {
+): node is TSESTree.Literal | TSESTree.BinaryExpression {
   return (
     isLiteral(node, 0.5) ||
     (node.type === "BinaryExpression" &&

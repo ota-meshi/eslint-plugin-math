@@ -15,6 +15,7 @@ The rules with the following star :star: are included in the `plugin:math/recomm
 |:--------|:------------|:-------:|:-----------:|
 | [math/abs](./abs.md) | enforce the conversion to absolute values to be the method you prefer | :wrench: |  |
 | [math/prefer-math-cbrt](./prefer-math-cbrt.md) | enforce the use of Math.cbrt() instead of other cube root calculations | :wrench: | :star: |
+| [math/prefer-math-ln2](./prefer-math-ln2.md) | enforce the use of Math.LN2 instead of other ways | :wrench: | :star: |
 | [math/prefer-math-sqrt](./prefer-math-sqrt.md) | enforce the use of Math.sqrt() instead of other square root calculations | :wrench: | :star: |
 | [math/prefer-math-sqrt1-2](./prefer-math-sqrt1-2.md) | enforce the use of Math.SQRT1_2 instead of other ways | :wrench: | :star: |
 | [math/prefer-math-sqrt2](./prefer-math-sqrt2.md) | enforce the use of Math.SQRT2 instead of other ways | :wrench: | :star: |
