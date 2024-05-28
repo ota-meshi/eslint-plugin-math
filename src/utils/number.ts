@@ -605,6 +605,53 @@ export function getInfoForTransformingToNumberIsNaN(
   return null;
 }
 
+export type TransformingToNumberIsFinite = NumberMethodInfo<"isFinite"> & {
+  from: "global.isFinite";
+  node: TSESTree.LogicalExpression;
+  not: boolean;
+};
+/**
+ * Returns information if the given expression can be transformed to Number.isNaN().
+ */
+export function getInfoForTransformingToNumberIsFinite(
+  node: TSESTree.Expression,
+  sourceCode: SourceCode,
+): null | TransformingToNumberIsFinite {
+  if (node.type === "LogicalExpression") {
+    const { left, right, operator } = node;
+    if (operator !== "&&" && operator !== "||") return null;
+
+    const not = operator === "||";
+    for (const [a, b] of [
+      [left, right],
+      [right, left],
+    ]) {
+      const typeofNumber = getInfoForTypeOfNumber(a);
+      if (!typeofNumber || typeofNumber.not !== not) continue;
+      const globalIsFinite = getInfoForGlobalIsFinite(b, sourceCode);
+      if (
+        !globalIsFinite ||
+        globalIsFinite.not !== not ||
+        !equalNodeTokens(
+          typeofNumber.argument,
+          globalIsFinite.argument,
+          sourceCode,
+        )
+      )
+        continue;
+      return {
+        from: "global.isFinite",
+        node,
+        argument: typeofNumber.argument,
+        not,
+        method: "isFinite",
+      };
+    }
+    return null;
+  }
+  return null;
+}
+
 /**
  * Returns information if the condition checks whether the given expression is less than or equal Number.MAX_SAFE_INTEGER.
  */
@@ -763,7 +810,7 @@ function getInfoForNumberIsIntegerOrLike(
 }
 
 /**
- * Returns information if the condition checks whether the given expression is Number.isNaN().
+ * Returns information if the condition checks whether the given expression is isNaN().
  */
 function getInfoForGlobalIsNaN(
   node: TSESTree.Expression,
@@ -794,6 +841,46 @@ function getInfoForGlobalIsNaN(
   ) {
     return {
       method: "isNaN",
+      node,
+      argument: argument.arguments[0],
+      not: true,
+    };
+  }
+  return null;
+}
+
+/**
+ * Returns information if the condition checks whether the given expression is isFinite().
+ */
+function getInfoForGlobalIsFinite(
+  node: TSESTree.Expression,
+  sourceCode: SourceCode,
+):
+  | (NumberMethodInfo<"isFinite"> & {
+      not: boolean;
+    })
+  | null {
+  if (
+    isGlobalMethodCall(node, "isFinite", sourceCode) &&
+    node.arguments.length > 0 &&
+    node.arguments[0].type !== "SpreadElement"
+  ) {
+    return {
+      method: "isFinite",
+      node,
+      argument: node.arguments[0],
+      not: false,
+    };
+  }
+  if (node.type !== "UnaryExpression" || node.operator !== "!") return null;
+  const argument = node.argument;
+  if (
+    isGlobalMethodCall(argument, "isFinite", sourceCode) &&
+    argument.arguments.length > 0 &&
+    argument.arguments[0].type !== "SpreadElement"
+  ) {
+    return {
+      method: "isFinite",
       node,
       argument: argument.arguments[0],
       not: true,

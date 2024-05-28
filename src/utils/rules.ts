@@ -8,6 +8,7 @@ import preferMathSqrt from "../rules/prefer-math-sqrt";
 import preferMathSqrt12 from "../rules/prefer-math-sqrt1-2";
 import preferMathSqrt2 from "../rules/prefer-math-sqrt2";
 import preferMathTrunc from "../rules/prefer-math-trunc";
+import preferNumberIsFinite from "../rules/prefer-number-is-finite";
 import preferNumberIsInteger from "../rules/prefer-number-is-integer";
 import preferNumberIsNan from "../rules/prefer-number-is-nan";
 import preferNumberIsSafeInteger from "../rules/prefer-number-is-safe-integer";
@@ -21,6 +22,7 @@ export const rules = [
   preferMathSqrt12,
   preferMathSqrt2,
   preferMathTrunc,
+  preferNumberIsFinite,
   preferNumberIsInteger,
   preferNumberIsNan,
   preferNumberIsSafeInteger,

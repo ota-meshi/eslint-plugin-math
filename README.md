@@ -110,19 +110,20 @@ The rules with the following star :star: are included in the configs.
 
 ### Math Rules
 
-| Rule ID | Description | Fixable | RECOMMENDED | STANDARD |
-|:--------|:------------|:-------:|:-----------:|:--------:|
-| [math/abs](https://ota-meshi.github.io/eslint-plugin-math/rules/abs.html) | enforce the conversion to absolute values to be the method you prefer | :wrench: |  |  |
-| [math/prefer-math-cbrt](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-cbrt.html) | enforce the use of Math.cbrt() instead of other cube root calculations | :wrench: | :star: |  |
-| [math/prefer-math-sqrt](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-sqrt.html) | enforce the use of Math.sqrt() instead of other square root calculations | :wrench: | :star: |  |
-| [math/prefer-math-sqrt1-2](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-sqrt1-2.html) | enforce the use of Math.SQRT1_2 instead of other ways | :wrench: | :star: |  |
-| [math/prefer-math-sqrt2](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-sqrt2.html) | enforce the use of Math.SQRT2 instead of other ways | :wrench: | :star: |  |
-| [math/prefer-math-trunc](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-trunc.html) | enforce the use of Math.trunc() instead of other truncations | :wrench: | :star: |  |
-| [math/prefer-number-is-integer](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-is-integer.html) | enforce the use of Number.isInteger() instead of other checking ways | :wrench: | :star: |  |
-| [math/prefer-number-is-nan](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-is-nan.html) | enforce the use of Number.isNaN() instead of other checking ways | :wrench: | :star: |  |
-| [math/prefer-number-is-safe-integer](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-is-safe-integer.html) | enforce the use of Number.isSafeInteger() instead of other checking ways | :wrench: | :star: |  |
-| [math/prefer-number-max-safe-integer](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-max-safe-integer.html) | enforce the use of Number.MAX_SAFE_INTEGER instead of other ways | :wrench: | :star: |  |
-| [math/prefer-number-min-safe-integer](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-min-safe-integer.html) | enforce the use of Number.MIN_SAFE_INTEGER instead of other ways | :wrench: | :star: |  |
+| Rule ID | Description | Fixable | RECOMMENDED |
+|:--------|:------------|:-------:|:-----------:|
+| [math/abs](https://ota-meshi.github.io/eslint-plugin-math/rules/abs.html) | enforce the conversion to absolute values to be the method you prefer | :wrench: |  |
+| [math/prefer-math-cbrt](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-cbrt.html) | enforce the use of Math.cbrt() instead of other cube root calculations | :wrench: | :star: |
+| [math/prefer-math-sqrt](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-sqrt.html) | enforce the use of Math.sqrt() instead of other square root calculations | :wrench: | :star: |
+| [math/prefer-math-sqrt1-2](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-sqrt1-2.html) | enforce the use of Math.SQRT1_2 instead of other ways | :wrench: | :star: |
+| [math/prefer-math-sqrt2](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-sqrt2.html) | enforce the use of Math.SQRT2 instead of other ways | :wrench: | :star: |
+| [math/prefer-math-trunc](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-trunc.html) | enforce the use of Math.trunc() instead of other truncations | :wrench: | :star: |
+| [math/prefer-number-is-finite](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-is-finite.html) | enforce the use of Number.isFinite() instead of other checking ways | :wrench: | :star: |
+| [math/prefer-number-is-integer](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-is-integer.html) | enforce the use of Number.isInteger() instead of other checking ways | :wrench: | :star: |
+| [math/prefer-number-is-nan](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-is-nan.html) | enforce the use of Number.isNaN() instead of other checking ways | :wrench: | :star: |
+| [math/prefer-number-is-safe-integer](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-is-safe-integer.html) | enforce the use of Number.isSafeInteger() instead of other checking ways | :wrench: | :star: |
+| [math/prefer-number-max-safe-integer](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-max-safe-integer.html) | enforce the use of Number.MAX_SAFE_INTEGER instead of other ways | :wrench: | :star: |
+| [math/prefer-number-min-safe-integer](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-min-safe-integer.html) | enforce the use of Number.MIN_SAFE_INTEGER instead of other ways | :wrench: | :star: |
 
 <!--RULES_TABLE_END-->
 <!--RULES_SECTION_END-->
