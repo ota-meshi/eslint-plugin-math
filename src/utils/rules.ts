@@ -5,6 +5,7 @@ import type { RuleModule } from "../types";
 import abs from "../rules/abs";
 import preferMathCbrt from "../rules/prefer-math-cbrt";
 import preferMathSqrt from "../rules/prefer-math-sqrt";
+import preferMathSqrt2 from "../rules/prefer-math-sqrt2";
 import preferMathTrunc from "../rules/prefer-math-trunc";
 import preferNumberIsInteger from "../rules/prefer-number-is-integer";
 import preferNumberIsNan from "../rules/prefer-number-is-nan";
@@ -16,6 +17,7 @@ export const rules = [
   abs,
   preferMathCbrt,
   preferMathSqrt,
+  preferMathSqrt2,
   preferMathTrunc,
   preferNumberIsInteger,
   preferNumberIsNan,

@@ -6,6 +6,7 @@ export const rules = {
   // eslint-plugin-math rules
   "math/prefer-math-cbrt": "error",
   "math/prefer-math-sqrt": "error",
+  "math/prefer-math-sqrt2": "error",
   "math/prefer-math-trunc": "error",
   "math/prefer-number-is-integer": "error",
   "math/prefer-number-is-nan": "error",

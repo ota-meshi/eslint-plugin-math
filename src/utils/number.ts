@@ -92,7 +92,10 @@ export function isOne(node: TSESTree.Expression): boolean {
  * Checks whether the given node is a `2`.
  */
 export function isTwo(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node:
+    | TSESTree.Expression
+    | TSESTree.PrivateIdentifier
+    | TSESTree.SpreadElement,
 ): boolean {
   return isLiteral(node, 2);
 }
