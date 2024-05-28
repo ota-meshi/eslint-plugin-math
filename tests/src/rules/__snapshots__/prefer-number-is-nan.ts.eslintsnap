@@ -1,0 +1,63 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: prefer-number-is-nan >> invalid
+Filename: prefer-number-is-nan/invalid/example-input.js
+
+Code:
+  1 | /*prefer-number-is-nan/invalid/example-input.js*/
+  2 |
+  3 | /* ✓ GOOD */
+  4 | x = Number.isNaN(n);
+  5 |
+  6 | /* ✗ BAD */
+  7 | x = typeof n === "number" && isNaN(n);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+  8 | x = n !== n;
+    |     ^~~~~~~ [2]
+  9 | x = Object.is(n, NaN);
+    |     ^~~~~~~~~~~~~~~~~ [3]
+ 10 |
+
+Output:
+  1 | /*prefer-number-is-nan/invalid/example-input.js*/
+  2 |
+  3 | /* ✓ GOOD */
+  4 | x = Number.isNaN(n);
+  5 |
+  6 | /* ✗ BAD */
+  7 | x = Number.isNaN(n);
+  8 | x = Number.isNaN(n);
+  9 | x = Number.isNaN(n);
+ 10 |
+
+[1] Can use 'Number.isNaN()' instead of 'typeof n === "number" && isNaN(n)'.
+[2] Can use 'Number.isNaN()' instead of 'n !== n'.
+[3] Can use 'Number.isNaN()' instead of 'Object.is(n, NaN)'.
+---
+
+
+Test: prefer-number-is-nan >> invalid
+Filename: prefer-number-is-nan/invalid/not-input.js
+
+Code:
+  1 | /*prefer-number-is-nan/invalid/not-input.js*/
+  2 | x = typeof n !== "number" || !isNaN(n);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+  3 | x = n !== n;
+    |     ^~~~~~~ [2]
+  4 | x = !Object.is(n, NaN);
+    |      ^~~~~~~~~~~~~~~~~ [3]
+  5 |
+
+Output:
+  1 | /*prefer-number-is-nan/invalid/not-input.js*/
+  2 | x = !Number.isNaN(n);
+  3 | x = Number.isNaN(n);
+  4 | x = !Number.isNaN(n);
+  5 |
+
+[1] Can use '!Number.isNaN()' instead of 'typeof n !== "number" || !isNaN(n)'.
+[2] Can use 'Number.isNaN()' instead of 'n !== n'.
+[3] Can use 'Number.isNaN()' instead of 'Object.is(n, NaN)'.
+---

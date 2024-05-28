@@ -42,12 +42,14 @@ export function existCommentBetween(
   }
   return false;
 }
-
 /**
  * Checks whether the given node is a global object.
  */
 export function isGlobalObject(
-  node: TSESTree.Expression,
+  node:
+    | TSESTree.Expression
+    | TSESTree.PrivateIdentifier
+    | TSESTree.SpreadElement,
   name: keyof typeof globalThis,
   sourceCode: SourceCode,
 ): node is TSESTree.Identifier {

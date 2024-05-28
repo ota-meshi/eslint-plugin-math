@@ -66,6 +66,7 @@ export default [
       "no-shadow": "off",
       yoda: "off",
       "no-empty": "off",
+      "no-self-compare": "off",
     },
   },
   {

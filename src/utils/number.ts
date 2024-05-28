@@ -508,6 +508,99 @@ export function getInfoForTransformingToNumberIsSafeInteger(
   }
   return null;
 }
+export type TransformingToNumberIsNaN =
+  | (NumberMethodInfo<"isNaN"> & {
+      from: "global.isNaN";
+      node: TSESTree.LogicalExpression;
+      not: boolean;
+    })
+  | (NumberMethodInfo<"isNaN"> & {
+      from: "notEquals";
+      node: TSESTree.BinaryExpression;
+      not: false;
+    })
+  | (NumberMethodInfo<"isNaN"> & {
+      from: "Object.is";
+      node: TSESTree.CallExpression;
+      not: false;
+    });
+/**
+ * Returns information if the given expression can be transformed to Number.isNaN().
+ */
+export function getInfoForTransformingToNumberIsNaN(
+  node: TSESTree.Expression,
+  sourceCode: SourceCode,
+): null | TransformingToNumberIsNaN {
+  if (node.type === "LogicalExpression") {
+    const { left, right, operator } = node;
+    if (operator !== "&&" && operator !== "||") return null;
+
+    const not = operator === "||";
+    for (const [a, b] of [
+      [left, right],
+      [right, left],
+    ]) {
+      const typeofNumber = getInfoForTypeOfNumber(a);
+      if (!typeofNumber || typeofNumber.not !== not) continue;
+      const globalIsNaN = getInfoForGlobalIsNaN(b, sourceCode);
+      if (
+        !globalIsNaN ||
+        globalIsNaN.not !== not ||
+        !equalNodeTokens(
+          typeofNumber.argument,
+          globalIsNaN.argument,
+          sourceCode,
+        )
+      )
+        continue;
+      return {
+        from: "global.isNaN",
+        node,
+        argument: typeofNumber.argument,
+        not,
+        method: "isNaN",
+      };
+    }
+    return null;
+  }
+  if (node.type === "BinaryExpression") {
+    const { left, right, operator } = node;
+    if (
+      (operator !== "!==" && operator !== "!=") ||
+      !equalNodeTokens(left, right, sourceCode)
+    )
+      return null;
+    return {
+      from: "notEquals",
+      node,
+      argument: right,
+      not: false,
+      method: "isNaN",
+    };
+  }
+  if (
+    !isGlobalObjectMethodCall(node, "Object", "is", sourceCode) ||
+    node.arguments.length < 2
+  )
+    return null;
+  const [left, right] = node.arguments;
+  for (const [a, b] of [
+    [left, right],
+    [right, left],
+  ]) {
+    if (a.type === "SpreadElement") continue;
+    if (isGlobalObject(b, "NaN", sourceCode)) {
+      return {
+        from: "Object.is",
+        node,
+        argument: a,
+        not: false,
+        method: "isNaN",
+      };
+    }
+  }
+  return null;
+}
 
 /**
  * Returns information if the condition checks whether the given expression is less than or equal Number.MAX_SAFE_INTEGER.
@@ -560,6 +653,38 @@ export function getInfoForIsLTMinSafeInteger(
   return getArgumentFromBinaryExpression(node, {
     "<": (right) => isMinSafeInteger(right, sourceCode),
   });
+}
+/**
+ * Returns information if the given expression is `typeof x === 'number'`.
+ */
+export function getInfoForTypeOfNumber(node: TSESTree.Expression): null | {
+  argument: TSESTree.Expression;
+  not: boolean;
+} {
+  if (
+    node.type !== "BinaryExpression" ||
+    (node.operator !== "===" &&
+      node.operator !== "==" &&
+      node.operator !== "!==" &&
+      node.operator !== "!=")
+  )
+    return null;
+
+  const { left, right, operator } = node;
+  if (left.type === "PrivateIdentifier") return null;
+  const not = operator === "!==" || operator === "!=";
+  for (const [a, b] of [
+    [left, right],
+    [right, left],
+  ]) {
+    if (a.type !== "UnaryExpression" || a.operator !== "typeof") continue;
+    if (!isLiteral(b, "number")) continue;
+    return {
+      argument: a.argument,
+      not,
+    };
+  }
+  return null;
 }
 
 /**
@@ -631,6 +756,46 @@ function getInfoForNumberIsIntegerOrLike(
   if (node.type !== "UnaryExpression" || node.operator !== "!") return null;
   const isNotInteger = getInfoFoNumberIsInteger(node.argument, sourceCode);
   if (isNotInteger) return { ...isNotInteger, from: "isInteger", not: true };
+  return null;
+}
+
+/**
+ * Returns information if the condition checks whether the given expression is Number.isNaN().
+ */
+function getInfoForGlobalIsNaN(
+  node: TSESTree.Expression,
+  sourceCode: SourceCode,
+):
+  | (NumberMethodInfo<"isNaN"> & {
+      not: boolean;
+    })
+  | null {
+  if (
+    isGlobalMethodCall(node, "isNaN", sourceCode) &&
+    node.arguments.length > 0 &&
+    node.arguments[0].type !== "SpreadElement"
+  ) {
+    return {
+      method: "isNaN",
+      node,
+      argument: node.arguments[0],
+      not: false,
+    };
+  }
+  if (node.type !== "UnaryExpression" || node.operator !== "!") return null;
+  const argument = node.argument;
+  if (
+    isGlobalMethodCall(argument, "isNaN", sourceCode) &&
+    argument.arguments.length > 0 &&
+    argument.arguments[0].type !== "SpreadElement"
+  ) {
+    return {
+      method: "isNaN",
+      node,
+      argument: argument.arguments[0],
+      not: true,
+    };
+  }
   return null;
 }
 
