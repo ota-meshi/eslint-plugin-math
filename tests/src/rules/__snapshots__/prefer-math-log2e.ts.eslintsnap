@@ -1,0 +1,119 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: prefer-math-log2e >> invalid
+Filename: prefer-math-log2e/invalid/example-input.js
+
+Code:
+  1 | /*prefer-math-log2e/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = Math.LOG2E;
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = Math.log2(Math.E);
+    |     ^~~~~~~~~~~~~~~~~ [1]
+  7 | x = 1 / Math.LN2;
+    |     ^~~~~~~~~~~~ [2]
+  8 |
+  9 | /* ✓ GOOD */
+ 10 | x = y * Math.LOG2E;
+ 11 |
+ 12 | /* ✗ BAD */
+ 13 | x = y / Math.LN2;
+    |     ^~~~~~~~~~~~ [3]
+ 14 |
+
+Output:
+  1 | /*prefer-math-log2e/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = Math.LOG2E;
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = Math.LOG2E;
+  7 | x = Math.LOG2E;
+  8 |
+  9 | /* ✓ GOOD */
+ 10 | x = y * Math.LOG2E;
+ 11 |
+ 12 | /* ✗ BAD */
+ 13 | x = y * Math.LOG2E;
+ 14 |
+
+[1] Can use 'Math.LOG2E' instead of 'Math.log2(Math.E)'.
+[2] Can use 'Math.LOG2E' instead of '1 / Math.LN2'.
+[3] Can use 'Math.LOG2E' instead of 'x / Math.LN2'.
+---
+
+
+Test: prefer-math-log2e >> invalid
+Filename: prefer-math-log2e/invalid/ln2-input.js
+
+Code:
+  1 | /*prefer-math-log2e/invalid/ln2-input.js*/
+  2 | x = 1 / Math.LN2;
+    |     ^~~~~~~~~~~~ [1]
+  3 | x = 1 / Math.log(2);
+    |     ^~~~~~~~~~~~~~~ [2]
+  4 | x = y / Math.LN2;
+    |     ^~~~~~~~~~~~ [3]
+  5 | x = y / Math.log(2);
+    |     ^~~~~~~~~~~~~~~ [4]
+  6 |
+
+Output:
+  1 | /*prefer-math-log2e/invalid/ln2-input.js*/
+  2 | x = Math.LOG2E;
+  3 | x = Math.LOG2E;
+  4 | x = y * Math.LOG2E;
+  5 | x = y * Math.LOG2E;
+  6 |
+
+[1] Can use 'Math.LOG2E' instead of '1 / Math.LN2'.
+[2] Can use 'Math.LOG2E' instead of '1 / Math.LN2'.
+[3] Can use 'Math.LOG2E' instead of 'x / Math.LN2'.
+[4] Can use 'Math.LOG2E' instead of 'x / Math.LN2'.
+---
+
+
+Test: prefer-math-log2e >> invalid
+Filename: prefer-math-log2e/invalid/log2-input.js
+
+Code:
+  1 | /*prefer-math-log2e/invalid/log2-input.js*/
+  2 | x = Math.log2(Math.E);
+    |     ^~~~~~~~~~~~~~~~~ [1]
+  3 | x = Math.log(Math.E) * Math.LOG2E;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [2]
+  4 | x = Math.log(Math.E) / Math.log(2);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [3]
+  5 |
+
+Output:
+  1 | /*prefer-math-log2e/invalid/log2-input.js*/
+  2 | x = Math.LOG2E;
+  3 | x = Math.LOG2E;
+  4 | x = Math.LOG2E;
+  5 |
+
+[1] Can use 'Math.LOG2E' instead of 'Math.log2(Math.E)'.
+[2] Can use 'Math.LOG2E' instead of 'Math.log2(Math.E)'.
+[3] Can use 'Math.LOG2E' instead of 'Math.log2(Math.E)'.
+---
+
+
+Test: prefer-math-log2e >> invalid
+Filename: prefer-math-log2e/invalid/num-input.js
+
+Code:
+  1 | /*prefer-math-log2e/invalid/num-input.js*/
+  2 | x = 1.4426950408889634;
+    |     ^~~~~~~~~~~~~~~~~~ [1]
+  3 |
+
+Output:
+  1 | /*prefer-math-log2e/invalid/num-input.js*/
+  2 | x = Math.LOG2E;
+  3 |
+
+[1] Can use 'Math.LOG2E' instead of '1.4426950408889634'.
+---
