@@ -52,17 +52,26 @@ export function isGlobalObject(
     | TSESTree.SpreadElement,
   name: keyof typeof globalThis,
   sourceCode: SourceCode,
-): node is TSESTree.Identifier {
-  if (node.type !== "Identifier" || node.name !== name) return false;
-  const variable = findVariable(sourceCode.getScope(node), node);
-  if (variable && variable.defs.length > 0) return false; // Not a global
-  return true;
+): node is TSESTree.Identifier | TSESTree.MemberExpression {
+  if (node.type === "Identifier") {
+    if (node.name !== name) return false;
+    const variable = findVariable(sourceCode.getScope(node), node);
+    if (variable && variable.defs.length > 0) return false; // Not a global
+    return true;
+  }
+  return (
+    node.type === "MemberExpression" &&
+    (isGlobalObjectProperty(node, "globalThis", name, sourceCode) ||
+      isGlobalObjectProperty(node, "self", name, sourceCode) ||
+      isGlobalObjectProperty(node, "window", name, sourceCode) ||
+      isGlobalObjectProperty(node, "global", name, sourceCode))
+  );
 }
 /**
  * Checks whether the given node is a global object method call.
  */
 export function isGlobalObjectMethodCall<N extends keyof typeof globalThis>(
-  node: TSESTree.Node,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   name: N,
   method: ExtractFunctionKeys<(typeof globalThis)[N]>,
   sourceCode: SourceCode,
@@ -75,22 +84,25 @@ export function isGlobalObjectMethodCall<N extends keyof typeof globalThis>(
  * Checks whether the given node is a global object property.
  */
 export function isGlobalObjectProperty<N extends keyof typeof globalThis>(
-  node: TSESTree.Node,
+  node:
+    | TSESTree.Expression
+    | TSESTree.PrivateIdentifier
+    | TSESTree.SpreadElement,
   name: N,
   property: keyof (typeof globalThis)[N],
   sourceCode: SourceCode,
 ): node is TSESTree.CallExpression {
   return (
     node.type === "MemberExpression" &&
-    isGlobalObject(node.object, name, sourceCode) &&
-    getPropertyName(node) === property
+    getPropertyName(node, sourceCode.getScope(node)) === property &&
+    isGlobalObject(node.object, name, sourceCode)
   );
 }
 /**
  * Checks whether the given node is a global method call.
  */
 export function isGlobalMethodCall(
-  node: TSESTree.Node,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   name: ExtractFunctionKeys<typeof globalThis>,
   sourceCode: SourceCode,
 ): node is TSESTree.CallExpression {
