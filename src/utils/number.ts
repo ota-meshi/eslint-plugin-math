@@ -17,7 +17,7 @@ import {
   isLiteral,
 } from "./ast";
 import type { ExtractFunctionKeys } from "./type";
-import { processLR } from "./util";
+import { processLR, processThreeOperands, processTwoOperands } from "./process";
 
 export type NumberMethod = ExtractFunctionKeys<typeof Number>;
 export type NumberMethodInfo<M extends NumberMethod> = {
@@ -367,125 +367,78 @@ export function getInfoForTransformingToNumberIsSafeInteger(
 ): null | TransformingToNumberIsSafeInteger {
   if (node.type !== "LogicalExpression") return null;
   const { operator } = node;
-  if (operator === "&&") {
-    for (const [left, right] of processLR(node)) {
-      if (left.type === "LogicalExpression" && left.operator === "&&") {
-        const operands = [left.left, left.right, right];
-        const { result: isInteger, array: remainingOperands } = findAndMap(
-          operands,
-          (operand) => getInfoForNumberIsIntegerOrLike(operand, sourceCode),
-        );
-        if (isInteger && !isInteger.not) {
-          for (const [x, y] of [
-            remainingOperands,
-            [...remainingOperands].reverse(),
-          ]) {
-            const lteMax = getInfoForIsLTEMaxSafeInteger(x, sourceCode);
-            const gteMin = getInfoForIsGTEMinSafeInteger(y, sourceCode);
-            if (
-              lteMax &&
-              gteMin &&
-              equalNodeTokens(
-                isInteger.argument,
-                lteMax.argument,
-                gteMin.argument,
-                sourceCode,
-              )
-            ) {
-              // Number.isInteger(n) && n <= Number.MAX_SAFE_INTEGER && n >= Number.MIN_SAFE_INTEGER
-              return {
-                from: isInteger.from,
-                node,
-                argument: isInteger.argument,
-                not: false,
-                method: "isSafeInteger",
-              };
-            }
-          }
-        }
-      }
-      const isInteger = getInfoForNumberIsIntegerOrLike(left, sourceCode);
-      if (!isInteger || isInteger.not) continue;
+  if (operator === "&&" || operator === "||") {
+    const not = operator === "||";
 
-      const inMax = getInfoForIsLTEMaxSafeInteger(right, sourceCode);
-      if (!inMax) continue;
-      const abs = getInfoForMathAbsOrLike(inMax.argument, sourceCode);
-      if (
-        !abs ||
-        !equalNodeTokens(abs.argument, isInteger.argument, sourceCode)
-      )
-        continue;
-      // Number.isInteger(n) && Math.abs(n) <= Number.MAX_SAFE_INTEGER
-      return {
-        from: isInteger.from,
+    return (
+      processThreeOperands(
         node,
-        argument: isInteger.argument,
-        not: false,
-        method: "isSafeInteger",
-      };
-    }
+        (operand) => getInfoForNumberIsIntegerOrLike(operand, sourceCode),
+        !not
+          ? (operand) => getInfoForIsLTEMaxSafeInteger(operand, sourceCode)
+          : (operand) => getInfoForIsGTMaxSafeInteger(operand, sourceCode),
+        !not
+          ? (operand) => getInfoForIsGTEMinSafeInteger(operand, sourceCode)
+          : (operand) => getInfoForIsLTMinSafeInteger(operand, sourceCode),
+        (
+          isInteger,
+          compMax,
+          compMin,
+        ): TransformingToNumberIsSafeInteger | null => {
+          if (
+            isInteger.not !== not ||
+            !equalNodeTokens(
+              isInteger.argument,
+              compMax.argument,
+              compMin.argument,
+              sourceCode,
+            )
+          )
+            return null;
 
-    return null;
-  }
-  if (operator === "||") {
-    for (const [left, right] of processLR(node)) {
-      if (left.type === "LogicalExpression" && left.operator === "||") {
-        const operands = [left.left, left.right, right];
-        const { result: isInteger, array: remainingOperands } = findAndMap(
-          operands,
-          (operand) => getInfoForNumberIsIntegerOrLike(operand, sourceCode),
-        );
-        if (isInteger?.not) {
-          for (const [x, y] of [
-            remainingOperands,
-            [...remainingOperands].reverse(),
-          ]) {
-            const gtMax = getInfoForIsGTMaxSafeInteger(x, sourceCode);
-            const ltMin = getInfoForIsLTMinSafeInteger(y, sourceCode);
-            if (
-              gtMax &&
-              ltMin &&
-              equalNodeTokens(
-                isInteger.argument,
-                gtMax.argument,
-                ltMin.argument,
-                sourceCode,
-              )
-            ) {
-              // !Number.isInteger(n) || n <= Number.MAX_SAFE_INTEGER || n >= Number.MIN_SAFE_INTEGER
-              return {
-                from: isInteger.from,
-                node,
-                argument: isInteger.argument,
-                not: true,
-                method: "isSafeInteger",
-              };
-            }
-          }
-        }
-      }
-      const isInteger = getInfoForNumberIsIntegerOrLike(left, sourceCode);
-      const isNotInteger = isInteger?.not ? isInteger : null;
-      if (!isNotInteger) continue;
-
-      const overMax = getInfoForIsGTMaxSafeInteger(right, sourceCode);
-      if (!overMax) continue;
-      const abs = getInfoForMathAbsOrLike(overMax.argument, sourceCode);
-      if (
-        !abs ||
-        !equalNodeTokens(abs.argument, isNotInteger.argument, sourceCode)
-      )
-        continue;
-      // !Number.isInteger(n) || Math.abs(n) > Number.MAX_SAFE_INTEGER
-      return {
-        from: isNotInteger.from,
+          // Number.isInteger(n) && n <= Number.MAX_SAFE_INTEGER && n >= Number.MIN_SAFE_INTEGER
+          // or
+          // !Number.isInteger(n) || n <= Number.MAX_SAFE_INTEGER || n >= Number.MIN_SAFE_INTEGER
+          return {
+            from: isInteger.from,
+            node,
+            argument: isInteger.argument,
+            not,
+            method: "isSafeInteger",
+          };
+        },
+      ) ||
+      processTwoOperands(
         node,
-        argument: isNotInteger.argument,
-        not: true,
-        method: "isSafeInteger",
-      };
-    }
-    return null;
+        (operand) => getInfoForNumberIsIntegerOrLike(operand, sourceCode),
+        (operand) => {
+          const compMax = !not
+            ? getInfoForIsLTEMaxSafeInteger(operand, sourceCode)
+            : getInfoForIsGTMaxSafeInteger(operand, sourceCode);
+          return (
+            compMax && getInfoForMathAbsOrLike(compMax.argument, sourceCode)
+          );
+        },
+        (isInteger, abs): TransformingToNumberIsSafeInteger | null => {
+          if (
+            isInteger.not !== not ||
+            !equalNodeTokens(abs.argument, isInteger.argument, sourceCode)
+          )
+            return null;
+
+          // Number.isInteger(n) && Math.abs(n) <= Number.MAX_SAFE_INTEGER
+          // or
+          // !Number.isInteger(n) || Math.abs(n) > Number.MAX_SAFE_INTEGER
+          return {
+            from: isInteger.from,
+            node,
+            argument: isInteger.argument,
+            not,
+            method: "isSafeInteger",
+          };
+        },
+      )
+    );
   }
   return null;
 }
@@ -517,29 +470,29 @@ export function getInfoForTransformingToNumberIsNaN(
     if (operator !== "&&" && operator !== "||") return null;
 
     const not = operator === "||";
-    for (const [left, right] of processLR(node)) {
-      const typeofNumber = getInfoForTypeOfNumber(left);
-      if (!typeofNumber || typeofNumber.not !== not) continue;
-      const globalIsNaN = getInfoForGlobalIsNaN(right, sourceCode);
-      if (
-        !globalIsNaN ||
-        globalIsNaN.not !== not ||
-        !equalNodeTokens(
-          typeofNumber.argument,
-          globalIsNaN.argument,
-          sourceCode,
+    return processTwoOperands(
+      node,
+      getInfoForTypeOfNumber,
+      (operand) => getInfoForGlobalIsNaN(operand, sourceCode),
+      (typeofNumber, globalIsNaN) => {
+        if (
+          globalIsNaN.not !== not ||
+          !equalNodeTokens(
+            typeofNumber.argument,
+            globalIsNaN.argument,
+            sourceCode,
+          )
         )
-      )
-        continue;
-      return {
-        from: "global.isNaN",
-        node,
-        argument: typeofNumber.argument,
-        not,
-        method: "isNaN",
-      };
-    }
-    return null;
+          return null;
+        return {
+          from: "global.isNaN",
+          node,
+          argument: typeofNumber.argument,
+          not,
+          method: "isNaN",
+        };
+      },
+    );
   }
   if (node.type === "BinaryExpression") {
     const { operator } = node;
@@ -596,29 +549,29 @@ export function getInfoForTransformingToNumberIsFinite(
     if (operator !== "&&" && operator !== "||") return null;
 
     const not = operator === "||";
-    for (const [left, right] of processLR(node)) {
-      const typeofNumber = getInfoForTypeOfNumber(left);
-      if (!typeofNumber || typeofNumber.not !== not) continue;
-      const globalIsFinite = getInfoForGlobalIsFinite(right, sourceCode);
-      if (
-        !globalIsFinite ||
-        globalIsFinite.not !== not ||
-        !equalNodeTokens(
-          typeofNumber.argument,
-          globalIsFinite.argument,
-          sourceCode,
+    return processTwoOperands(
+      node,
+      getInfoForTypeOfNumber,
+      (operand) => getInfoForGlobalIsFinite(operand, sourceCode),
+      (typeofNumber, globalIsFinite) => {
+        if (
+          globalIsFinite.not !== not ||
+          !equalNodeTokens(
+            typeofNumber.argument,
+            globalIsFinite.argument,
+            sourceCode,
+          )
         )
-      )
-        continue;
-      return {
-        from: "global.isFinite",
-        node,
-        argument: typeofNumber.argument,
-        not,
-        method: "isFinite",
-      };
-    }
-    return null;
+          return null;
+        return {
+          from: "global.isFinite",
+          node,
+          argument: typeofNumber.argument,
+          not,
+          method: "isFinite",
+        };
+      },
+    );
   }
   return null;
 }
@@ -891,33 +844,4 @@ function getInfoForGlobalIsFinite(
     };
   }
   return null;
-}
-
-/**
- * Find and map the array.
- */
-function findAndMap<T, R>(
-  array: T[],
-  callback: (item: T) => R,
-): {
-  result: R | null;
-  array: T[];
-} {
-  const remaining: T[] = [];
-  for (let index = 0; index < array.length; index++) {
-    const element = array[index];
-    const result = callback(element);
-    if (result) {
-      remaining.push(...array.slice(index + 1));
-      return {
-        result,
-        array: remaining,
-      };
-    }
-    remaining.push(element);
-  }
-  return {
-    result: null,
-    array,
-  };
 }

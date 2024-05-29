@@ -20,7 +20,7 @@ import {
   isZero,
 } from "./number";
 import type { ExtractFunctionKeys } from "./type";
-import { processLR } from "./util";
+import { processLR } from "./process";
 
 export type MathMethod = ExtractFunctionKeys<typeof Math>;
 export type MathMethodInfo<M extends MathMethod> = {
