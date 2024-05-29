@@ -1,5 +1,29 @@
 # eslint-plugin-math
 
+## 0.4.0
+
+### Minor Changes
+
+- [#20](https://github.com/ota-meshi/eslint-plugin-math/pull/20) [`0de1773`](https://github.com/ota-meshi/eslint-plugin-math/commit/0de1773f3356ca0d6a38fdc9e4d27b283a44618a) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/prefer-number-is-nan` rule
+
+- [#22](https://github.com/ota-meshi/eslint-plugin-math/pull/22) [`8af8d45`](https://github.com/ota-meshi/eslint-plugin-math/commit/8af8d4574ff3ee80082529d2067b346ea4d30fa4) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/prefer-math-ln10` rule
+
+- [#20](https://github.com/ota-meshi/eslint-plugin-math/pull/20) [`0de1773`](https://github.com/ota-meshi/eslint-plugin-math/commit/0de1773f3356ca0d6a38fdc9e4d27b283a44618a) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/prefer-math-ln2` rule
+
+- [#22](https://github.com/ota-meshi/eslint-plugin-math/pull/22) [`8af8d45`](https://github.com/ota-meshi/eslint-plugin-math/commit/8af8d4574ff3ee80082529d2067b346ea4d30fa4) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/prefer-math-log10` rule
+
+- [#22](https://github.com/ota-meshi/eslint-plugin-math/pull/22) [`8af8d45`](https://github.com/ota-meshi/eslint-plugin-math/commit/8af8d4574ff3ee80082529d2067b346ea4d30fa4) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/prefer-math-log10e` rule
+
+- [#20](https://github.com/ota-meshi/eslint-plugin-math/pull/20) [`0de1773`](https://github.com/ota-meshi/eslint-plugin-math/commit/0de1773f3356ca0d6a38fdc9e4d27b283a44618a) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/prefer-math-log2` rule
+
+- [#20](https://github.com/ota-meshi/eslint-plugin-math/pull/20) [`0de1773`](https://github.com/ota-meshi/eslint-plugin-math/commit/0de1773f3356ca0d6a38fdc9e4d27b283a44618a) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/prefer-math-log2e` rule
+
+- [#20](https://github.com/ota-meshi/eslint-plugin-math/pull/20) [`0de1773`](https://github.com/ota-meshi/eslint-plugin-math/commit/0de1773f3356ca0d6a38fdc9e4d27b283a44618a) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/prefer-math-sqrt1-2` rule
+
+- [#20](https://github.com/ota-meshi/eslint-plugin-math/pull/20) [`0de1773`](https://github.com/ota-meshi/eslint-plugin-math/commit/0de1773f3356ca0d6a38fdc9e4d27b283a44618a) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/prefer-math-sqrt2` rule
+
+- [#20](https://github.com/ota-meshi/eslint-plugin-math/pull/20) [`0de1773`](https://github.com/ota-meshi/eslint-plugin-math/commit/0de1773f3356ca0d6a38fdc9e4d27b283a44618a) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/prefer-number-is-finite` rule
+
 ## 0.3.0
 
 ### Minor Changes
