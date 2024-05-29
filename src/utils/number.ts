@@ -17,7 +17,12 @@ import {
   isLiteral,
 } from "./ast";
 import type { ExtractFunctionKeys } from "./type";
-import { processLR, processThreeOperands, processTwoOperands } from "./process";
+import {
+  processLR,
+  processThreeOperands,
+  processTwoOperands,
+  processTwoParams,
+} from "./process";
 
 export type NumberMethod = ExtractFunctionKeys<typeof Number>;
 export type NumberMethodInfo<M extends NumberMethod> = {
@@ -497,39 +502,32 @@ export function getInfoForTransformingToNumberIsNaN(
   if (node.type === "BinaryExpression") {
     const { operator } = node;
     if (operator !== "!==" && operator !== "!=") return null;
-    for (const [left, right] of processLR(node)) {
-      if (!equalNodeTokens(left, right, sourceCode)) continue;
-      return {
-        from: "notEquals",
-        node,
-        argument: right,
-        not: false,
-        method: "isNaN",
-      };
-    }
+    const { left, right } = node;
+    if (!equalNodeTokens(left, right, sourceCode)) return null;
+    return {
+      from: "notEquals",
+      node,
+      argument: right,
+      not: false,
+      method: "isNaN",
+    };
   }
-  if (
-    !isGlobalObjectMethodCall(node, "Object", "is", sourceCode) ||
-    node.arguments.length < 2
-  )
-    return null;
-  const [x, y] = node.arguments;
-  for (const [a, b] of [
-    [x, y],
-    [y, x],
-  ]) {
-    if (a.type === "SpreadElement") continue;
-    if (isGlobalObject(b, "NaN", sourceCode)) {
+  if (!isGlobalObjectMethodCall(node, "Object", "is", sourceCode)) return null;
+
+  return processTwoParams(
+    node,
+    (param) => (isGlobalObject(param, "NaN", sourceCode) ? param : null),
+    (param) => param,
+    (_a, b) => {
       return {
         from: "Object.is",
         node,
-        argument: a,
+        argument: b,
         not: false,
         method: "isNaN",
       };
-    }
-  }
-  return null;
+    },
+  );
 }
 
 export type TransformingToNumberIsFinite = NumberMethodInfo<"isFinite"> & {
