@@ -71,7 +71,10 @@ export function isGlobalObject(
  * Checks whether the given node is a global object method call.
  */
 export function isGlobalObjectMethodCall<N extends keyof typeof globalThis>(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node:
+    | TSESTree.Expression
+    | TSESTree.PrivateIdentifier
+    | TSESTree.SpreadElement,
   name: N,
   method: ExtractFunctionKeys<(typeof globalThis)[N]>,
   sourceCode: SourceCode,

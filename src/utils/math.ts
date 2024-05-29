@@ -582,7 +582,7 @@ export function getInfoForTransformingToMathLOG2E(
   const log2 = getInfoForMathLog2(node);
 
   if (log2) {
-    if (!isMathE(log2.argument, sourceCode)) return null;
+    if (!isMathEOrLike(log2.argument, sourceCode)) return null;
     return {
       property: "LOG2E",
       node: log2.node,
@@ -635,7 +635,7 @@ export function getInfoForTransformingToMathLOG2E(
     if (
       isGlobalObjectMethodCall(expr, "Math", "log2", sourceCode) &&
       expr.arguments.length > 0 &&
-      isMathE(expr.arguments[0], sourceCode)
+      isMathEOrLike(expr.arguments[0], sourceCode)
     ) {
       return {
         argument: expr.arguments[0],
@@ -825,7 +825,7 @@ export function getInfoForTransformingToMathLOG10E(
   const log10 = getInfoForMathLog10(node);
 
   if (log10) {
-    if (!isMathE(log10.argument, sourceCode)) return null;
+    if (!isMathEOrLike(log10.argument, sourceCode)) return null;
     return {
       property: "LOG10E",
       node: log10.node,
@@ -878,7 +878,7 @@ export function getInfoForTransformingToMathLOG10E(
     if (
       isGlobalObjectMethodCall(expr, "Math", "log10", sourceCode) &&
       expr.arguments.length > 0 &&
-      isMathE(expr.arguments[0], sourceCode)
+      isMathEOrLike(expr.arguments[0], sourceCode)
     ) {
       return {
         argument: expr.arguments[0],
@@ -889,6 +889,37 @@ export function getInfoForTransformingToMathLOG10E(
 
     return getInfoForTransformingToMathLog10(expr, sourceCode);
   }
+}
+
+export type TransformingToMathE =
+  // Math.exp(1);
+  MathPropertyInfo<"E"> & {
+    from: "exp";
+    node: TSESTree.CallExpression;
+  };
+
+/**
+ * Returns information if the given expression can be transformed to Math.E.
+ */
+export function getInfoForTransformingToMathE(
+  node:
+    | TSESTree.Expression
+    | TSESTree.PrivateIdentifier
+    | TSESTree.SpreadElement,
+  sourceCode: SourceCode,
+): null | TransformingToMathE {
+  if (
+    isGlobalObjectMethodCall(node, "Math", "exp", sourceCode) &&
+    node.arguments.length > 0 &&
+    isOne(node.arguments[0])
+  ) {
+    return {
+      property: "E",
+      node,
+      from: "exp",
+    };
+  }
+  return null;
 }
 /**
  * Returns information if the given expression is Math.trunc().
@@ -952,6 +983,22 @@ export function getInfoForMathAbsOrLike(
   return abs
     ? { ...abs, from: "abs" }
     : getInfoForTransformingToMathAbs(node, sourceCode);
+}
+
+/**
+ * Checks whether the given node is a Math.E or like.
+ */
+function isMathEOrLike(
+  node:
+    | TSESTree.Expression
+    | TSESTree.SpreadElement
+    | TSESTree.PrivateIdentifier,
+  sourceCode: SourceCode,
+): node is TSESTree.Expression {
+  return (
+    isMathE(node, sourceCode) ||
+    getInfoForTransformingToMathE(node, sourceCode) !== null
+  );
 }
 
 /**

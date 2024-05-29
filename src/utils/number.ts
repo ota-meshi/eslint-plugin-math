@@ -88,7 +88,10 @@ export function isZero(
  * Checks whether the given node is a `1`.
  */
 export function isOne(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node:
+    | TSESTree.Expression
+    | TSESTree.PrivateIdentifier
+    | TSESTree.SpreadElement,
 ): node is TSESTree.Literal {
   return isLiteral(node, 1);
 }
