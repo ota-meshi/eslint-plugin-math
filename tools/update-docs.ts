@@ -84,33 +84,33 @@ class DocFile {
           (name) => `[math/${name}](${name}.md) rule`,
         );
         notes.push(
-          `- :warning: This rule was **deprecated** and replaced by ${formatItems(
+          `- ⚠️ This rule was **deprecated** and replaced by ${formatItems(
             replacedRules,
           )}.`,
         );
       } else {
-        notes.push("- :warning: This rule was **deprecated**.");
+        notes.push("- ⚠️ This rule was **deprecated**.");
       }
     } else if (categories && categories.length) {
       const presets = [];
       for (const cat of categories.sort()) {
         presets.push(`\`"plugin:math/${cat}"\``);
       }
-      notes.push(`- :gear: This rule is included in ${formatItems(presets)}.`);
+      notes.push(`- ⚙️ This rule is included in ${formatItems(presets)}.`);
     }
     if (fixable) {
       notes.push(
-        "- :wrench: The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some of the problems reported by this rule.",
+        "- 🔧 The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some of the problems reported by this rule.",
       );
     }
     if (hasSuggestions) {
       notes.push(
-        "- :bulb: Some problems reported by this rule are manually fixable by editor [suggestions](https://eslint.org/docs/developer-guide/working-with-rules#providing-suggestions).",
+        "- 💡 Some problems reported by this rule are manually fixable by editor [suggestions](https://eslint.org/docs/developer-guide/working-with-rules#providing-suggestions).",
       );
     }
     if (!this.since) {
       notes.unshift(
-        `- :exclamation: <badge text="This rule has not been released yet." vertical="middle" type="error"> **_This rule has not been released yet._** </badge>`,
+        `- ❗ <badge text="This rule has not been released yet." vertical="middle" type="error"> **_This rule has not been released yet._** </badge>`,
       );
     }
 
@@ -136,17 +136,16 @@ class DocFile {
 
   public async updateFooter() {
     const { ruleName } = this.rule.meta.docs;
-    const footerPattern =
-      /## (?:(?::mag:)? ?Implementation|:rocket: Version).+$/s;
+    const footerPattern = /## (?:(?:🔍)? ?Implementation|🚀 Version).+$/s;
     const footer = `${
       this.since
-        ? `## :rocket: Version
+        ? `## 🚀 Version
 
 This rule was introduced in eslint-plugin-math ${await this.since}
 
 `
         : ""
-    }## :mag: Implementation
+    }## 🔍 Implementation
 
 - [Rule source](https://github.com/ota-meshi/eslint-plugin-math/blob/main/src/rules/${ruleName}.ts)
 - [Test source](https://github.com/ota-meshi/eslint-plugin-math/blob/main/tests/src/rules/${ruleName}.ts)

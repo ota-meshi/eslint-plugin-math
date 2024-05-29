@@ -76,7 +76,7 @@ tester.run("${ruleId}", rule as any, loadTestCases("${ruleId}"))
 
 > description
 
-## :book: Rule Details
+## 📖 Rule Details
 
 This rule reports ???.
 
@@ -97,7 +97,7 @@ x = n >= 0 ? Math.floor(n) : Math.ceil(n);
 
 </eslint-code-block>
 
-## :wrench: Options
+## 🔧 Options
 
 Nothing.
 
@@ -111,11 +111,11 @@ Nothing.
 
 - 
 
-## :books: Further reading
+## 📚 Further reading
 
 - 
 
-## :couple: Related rules
+## 👫 Related rules
 
 - [xxx]
 

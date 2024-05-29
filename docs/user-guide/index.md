@@ -1,6 +1,6 @@
 # User Guide
 
-## :cd: Installation
+## 💿 Installation
 
 ```bash
 npm install --save-dev eslint eslint-plugin-math
@@ -12,7 +12,7 @@ npm install --save-dev eslint eslint-plugin-math
 - Node.js v18.x, v20.x and above
 :::
 
-## :book: Usage
+## 📖 Usage
 
 <!--USAGE_GUIDE_START-->
 
@@ -73,6 +73,6 @@ See [the rule list](../rules/index.md) to get the `rules` that this plugin provi
 
 <!--USAGE_GUIDE_END-->
 
-## :question: FAQ
+## ❓ FAQ
 
 - TODO

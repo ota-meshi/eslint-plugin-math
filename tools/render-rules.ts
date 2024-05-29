@@ -14,16 +14,16 @@ export default function renderRulesTableContent(
 
   //eslint-disable-next-line jsdoc/require-jsdoc -- tool
   function toRuleRow(rule: RuleModule) {
-    const fixableMark = rule.meta.fixable ? ":wrench:" : "";
+    const fixableMark = rule.meta.fixable ? "🔧" : "";
     const recommendedMark =
       rule.meta.docs.categories &&
       rule.meta.docs.categories.includes("recommended")
-        ? ":star:"
+        ? "⭐"
         : "";
     // const standardMark =
     //   rule.meta.docs.categories &&
     //   rule.meta.docs.categories.includes("standard")
-    //     ? ":star:"
+    //     ? "⭐"
     //     : "";
     const link = `[${rule.meta.docs.ruleId}](${buildRulePath(
       rule.meta.docs.ruleName || "",
@@ -60,8 +60,8 @@ ${pluginRules.map(toRuleRow).join("\n")}
     rulesTableContent += `
 ## Deprecated
 
-- :warning: We're going to remove deprecated rules in the next major release. Please migrate to successor/new rules.
-- :innocent: We don't fix bugs which are in deprecated rules since we don't have enough resources.
+- ⚠️ We're going to remove deprecated rules in the next major release. Please migrate to successor/new rules.
+- 😇 We don't fix bugs which are in deprecated rules since we don't have enough resources.
 
 | Rule ID | Replaced by |
 |:--------|:------------|

@@ -10,10 +10,10 @@ since: "v0.3.0"
 
 > enforce the conversion to absolute values to be the method you prefer
 
-- :wrench: The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some of the problems reported by this rule.
-- :bulb: Some problems reported by this rule are manually fixable by editor [suggestions](https://eslint.org/docs/developer-guide/working-with-rules#providing-suggestions).
+- 🔧 The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some of the problems reported by this rule.
+- 💡 Some problems reported by this rule are manually fixable by editor [suggestions](https://eslint.org/docs/developer-guide/working-with-rules#providing-suggestions).
 
-## :book: Rule Details
+## 📖 Rule Details
 
 This rule aims to enforce the conversion to absolute values to be the method you prefer.
 
@@ -53,7 +53,7 @@ x = n < 0 ? -n : n; // `n` may be a `BigInt`, so we cannot replace it with `Math
 
 </eslint-code-block>
 
-## :wrench: Options
+## 🔧 Options
 
 ```json
 {
@@ -70,15 +70,15 @@ x = n < 0 ? -n : n; // `n` may be a `BigInt`, so we cannot replace it with `Math
   - `"expression"` ... enforces the conversion to absolute values to be the expression `n < 0 ? -n : n`.
   - `"Math.abs"` ... enforces the conversion to absolute values to be the method `Math.abs(n)`.
 
-## :books: Further reading
+## 📚 Further reading
 
 - [MDN - Math.abs()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/abs)
 
-## :rocket: Version
+## 🚀 Version
 
 This rule was introduced in eslint-plugin-math v0.3.0
 
-## :mag: Implementation
+## 🔍 Implementation
 
 - [Rule source](https://github.com/ota-meshi/eslint-plugin-math/blob/main/src/rules/abs.ts)
 - [Test source](https://github.com/ota-meshi/eslint-plugin-math/blob/main/tests/src/rules/abs.ts)

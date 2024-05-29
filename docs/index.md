@@ -11,23 +11,29 @@
 [![NPM downloads](https://img.shields.io/npm/dt/eslint-plugin-math.svg)](http://www.npmtrends.com/eslint-plugin-math)
 [![Build Status](https://github.com/ota-meshi/eslint-plugin-math/actions/workflows/NodeCI.yml/badge.svg?branch=main)](https://github.com/ota-meshi/eslint-plugin-math/actions/workflows/NodeCI.yml)
 
-## :name_badge: Features
+## 📛 Features
 
 ESLint plugin related to [Math] object and [Number].
 
 You can check on the [Online DEMO](./playground/).
 
-## :book: Usage
+## 📖 Usage
 
 See [User Guide](./user-guide/index.md).
 
-## :white_check_mark: Rules
+## ✅ Rules
 
 See [Available Rules](./rules/index.md).
 
+## 🛸 Prior Art
+
+<https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/prefer-math-trunc.md>
+<https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/prefer-modern-math-apis.md>
+<https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/prefer-number-properties.md>
+
 <!--DOCS_IGNORE_START-->
 
-## :beers: Contributing
+## 🍻 Contributing
 
 Welcome contributing!
 
@@ -38,7 +44,7 @@ Please use GitHub's Issues/PRs.
 - `npm test` runs tests and measures coverage.  
 - `npm run update` runs in order to update readme and recommended configuration.  
 
-## :lock: License
+## 🔒 License
 
 See the [LICENSE](https://github.com/ota-meshi/eslint-plugin-math/blob/main/LICENSE) file for license rights and limitations (MIT).
 
