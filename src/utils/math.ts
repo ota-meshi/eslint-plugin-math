@@ -20,6 +20,7 @@ import {
   isZero,
 } from "./number";
 import type { ExtractFunctionKeys } from "./type";
+import { processLR } from "./util";
 
 export type MathMethod = ExtractFunctionKeys<typeof Math>;
 export type MathMethodInfo<M extends MathMethod> = {
@@ -61,35 +62,28 @@ export function getInfoForTransformingToMathTrunc(
     };
   }
   if (node.type === "BinaryExpression") {
-    const { left, right } = node;
-    if (node.operator === "|" || node.operator === "^") {
-      if (isZero(right)) {
-        // n | 0, n ^ 0, n >> 0, n << 0
-        return { from: "bitwise", method: "trunc", node, argument: left };
+    for (const [left, right] of processLR(node)) {
+      if (node.operator === "|" || node.operator === "^") {
+        if (isZero(right)) {
+          // n | 0, n ^ 0
+          return { from: "bitwise", method: "trunc", node, argument: left };
+        }
+        continue;
       }
-      if (isZero(left)) {
-        // 0 | n, 0 ^ n, 0 >> n
-        return { from: "bitwise", method: "trunc", node, argument: right };
+      if (node.operator === ">>" || node.operator === "<<") {
+        if (isZero(right)) {
+          // n >> 0, n << 0
+          return { from: "bitwise", method: "trunc", node, argument: left };
+        }
+        continue;
       }
-      return null;
-    }
-    if (node.operator === ">>" || node.operator === "<<") {
-      if (isZero(right)) {
-        // n >> 0, n << 0
-        return { from: "bitwise", method: "trunc", node, argument: left };
+      if (node.operator === "&") {
+        if (isMinusOne(right)) {
+          // n & -1
+          return { from: "bitwise", method: "trunc", node, argument: left };
+        }
+        continue;
       }
-      return null;
-    }
-    if (node.operator === "&") {
-      if (isMinusOne(right)) {
-        // n & -1
-        return { from: "bitwise", method: "trunc", node, argument: left };
-      }
-      if (isMinusOne(left)) {
-        // -1 & n
-        return { from: "bitwise", method: "trunc", node, argument: right };
-      }
-      return null;
     }
     return null;
   }
@@ -288,11 +282,12 @@ export function getInfoForTransformingToMathSqrt(
   sourceCode: SourceCode,
 ): null | TransformingToMathSqrt {
   if (node.type === "BinaryExpression") {
-    const { left, right } = node;
     if (node.operator === "**") {
-      if (!isHalf(right)) return null;
-      // n ** (1/2)
-      return { from: "exponentiation", method: "sqrt", node, argument: left };
+      for (const [left, right] of processLR(node)) {
+        if (!isHalf(right)) continue;
+        // n ** (1/2)
+        return { from: "exponentiation", method: "sqrt", node, argument: left };
+      }
     }
     return null;
   }
@@ -386,11 +381,12 @@ export function getInfoForTransformingToMathCbrt(
   sourceCode: SourceCode,
 ): null | TransformingToMathCbrt {
   if (node.type === "BinaryExpression") {
-    const { left, right } = node;
     if (node.operator === "**") {
-      if (!isOneThird(right)) return null;
-      // n ** (1/3)
-      return { from: "exponentiation", method: "cbrt", node, argument: left };
+      for (const [left, right] of processLR(node)) {
+        if (!isOneThird(right)) continue;
+        // n ** (1/3)
+        return { from: "exponentiation", method: "cbrt", node, argument: left };
+      }
     }
     return null;
   }
@@ -426,19 +422,20 @@ export function getInfoForTransformingToMathLog2(
   sourceCode: SourceCode,
 ): null | TransformingToMathLog2 {
   if (node.type === "BinaryExpression") {
-    const { left, right, operator } = node;
-    if (operator === "*") {
-      // Check for Math.log(n) * Math.LOG2E;
-      for (const [a, b] of [
-        [left, right],
-        [right, left],
-      ]) {
-        if (!isGlobalObjectMethodCall(a, "Math", "log", sourceCode)) continue;
-        if (a.arguments.length < 1) continue;
-        const [argument] = a.arguments;
-        if (argument.type === "SpreadElement") continue;
-        if (!isGlobalObjectProperty(b, "Math", "LOG2E", sourceCode)) {
-          const mathLOG2E = getInfoForTransformingToMathLOG2E(b, sourceCode);
+    const { operator } = node;
+    for (const [left, right] of processLR(node)) {
+      if (!isGlobalObjectMethodCall(left, "Math", "log", sourceCode)) continue;
+      if (left.arguments.length < 1) continue;
+      const [argument] = left.arguments;
+      if (argument.type === "SpreadElement") continue;
+
+      if (operator === "*") {
+        // Check for Math.log(n) * Math.LOG2E;
+        if (!isGlobalObjectProperty(right, "Math", "LOG2E", sourceCode)) {
+          const mathLOG2E = getInfoForTransformingToMathLOG2E(
+            right,
+            sourceCode,
+          );
           if (!mathLOG2E || mathLOG2E.inverse) continue;
         }
         return {
@@ -448,25 +445,19 @@ export function getInfoForTransformingToMathLog2(
           argument,
         };
       }
-      return null;
-    }
-    if (operator === "/") {
-      // Check for Math.log(n) / Math.LN2;
-      if (!isGlobalObjectMethodCall(left, "Math", "log", sourceCode))
-        return null;
-      if (left.arguments.length < 1) return null;
-      const [argument] = left.arguments;
-      if (argument.type === "SpreadElement") return null;
-      if (!isGlobalObjectProperty(right, "Math", "LN2", sourceCode)) {
-        const mathLN2 = getInfoForTransformingToMathLN2(right, sourceCode);
-        if (!mathLN2 || mathLN2.inverse) return null;
+      if (operator === "/") {
+        // Check for Math.log(n) / Math.LN2;
+        if (!isGlobalObjectProperty(right, "Math", "LN2", sourceCode)) {
+          const mathLN2 = getInfoForTransformingToMathLN2(right, sourceCode);
+          if (!mathLN2 || mathLN2.inverse) continue;
+        }
+        return {
+          from: "logWithLN2",
+          method: "log2",
+          node,
+          argument,
+        };
       }
-      return {
-        from: "logWithLN2",
-        method: "log2",
-        node,
-        argument,
-      };
     }
     return null;
   }
@@ -503,7 +494,7 @@ export type TransformingToMathLN2 =
  * Returns information if the given expression can be transformed to Math.LN2.
  */
 export function getInfoForTransformingToMathLN2(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | TransformingToMathLN2 {
   if (isGlobalObjectMethodCall(node, "Math", "log", sourceCode)) {
@@ -674,19 +665,20 @@ export function getInfoForTransformingToMathLog10(
   sourceCode: SourceCode,
 ): null | TransformingToMathLog10 {
   if (node.type === "BinaryExpression") {
-    const { left, right, operator } = node;
-    if (operator === "*") {
-      // Check for Math.log(n) * Math.LOG10E;
-      for (const [a, b] of [
-        [left, right],
-        [right, left],
-      ]) {
-        if (!isGlobalObjectMethodCall(a, "Math", "log", sourceCode)) continue;
-        if (a.arguments.length < 1) continue;
-        const [argument] = a.arguments;
-        if (argument.type === "SpreadElement") continue;
-        if (!isGlobalObjectProperty(b, "Math", "LOG10E", sourceCode)) {
-          const mathLOG10E = getInfoForTransformingToMathLOG10E(b, sourceCode);
+    const { operator } = node;
+    for (const [left, right] of processLR(node)) {
+      if (!isGlobalObjectMethodCall(left, "Math", "log", sourceCode)) continue;
+      if (left.arguments.length < 1) continue;
+      const [argument] = left.arguments;
+      if (argument.type === "SpreadElement") continue;
+
+      if (operator === "*") {
+        // Check for Math.log(n) * Math.LOG10E;
+        if (!isGlobalObjectProperty(right, "Math", "LOG10E", sourceCode)) {
+          const mathLOG10E = getInfoForTransformingToMathLOG10E(
+            right,
+            sourceCode,
+          );
           if (!mathLOG10E || mathLOG10E.inverse) continue;
         }
         return {
@@ -696,25 +688,19 @@ export function getInfoForTransformingToMathLog10(
           argument,
         };
       }
-      return null;
-    }
-    if (operator === "/") {
-      // Check for Math.log(n) / Math.LN10;
-      if (!isGlobalObjectMethodCall(left, "Math", "log", sourceCode))
-        return null;
-      if (left.arguments.length < 1) return null;
-      const [argument] = left.arguments;
-      if (argument.type === "SpreadElement") return null;
-      if (!isGlobalObjectProperty(right, "Math", "LN10", sourceCode)) {
-        const mathLN10 = getInfoForTransformingToMathLN10(right, sourceCode);
-        if (!mathLN10 || mathLN10.inverse) return null;
+      if (operator === "/") {
+        // Check for Math.log(n) / Math.LN10;
+        if (!isGlobalObjectProperty(right, "Math", "LN10", sourceCode)) {
+          const mathLN10 = getInfoForTransformingToMathLN10(right, sourceCode);
+          if (!mathLN10 || mathLN10.inverse) continue;
+        }
+        return {
+          from: "logWithLN10",
+          method: "log10",
+          node,
+          argument,
+        };
       }
-      return {
-        from: "logWithLN10",
-        method: "log10",
-        node,
-        argument,
-      };
     }
     return null;
   }
@@ -751,7 +737,7 @@ export type TransformingToMathLN10 =
  * Returns information if the given expression can be transformed to Math.LN10.
  */
 export function getInfoForTransformingToMathLN10(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | TransformingToMathLN10 {
   if (isGlobalObjectMethodCall(node, "Math", "log", sourceCode)) {
