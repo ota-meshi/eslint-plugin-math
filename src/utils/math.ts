@@ -25,7 +25,7 @@ export type MathMethod = ExtractFunctionKeys<typeof Math>;
 export type MathMethodInfo<M extends MathMethod> = {
   method: M;
   node: TSESTree.Expression;
-  argument: TSESTree.Expression;
+  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
 };
 export type MathPropertyInfo<M extends keyof typeof Math> = {
   property: M;
@@ -44,7 +44,7 @@ export type TransformingToMathTrunc =
  * Returns information if the given expression can be transformed to Math.trunc().
  */
 export function getInfoForTransformingToMathTrunc(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | TransformingToMathTrunc {
   if (node.type === "UnaryExpression") {
@@ -62,7 +62,6 @@ export function getInfoForTransformingToMathTrunc(
   }
   if (node.type === "BinaryExpression") {
     const { left, right } = node;
-    if (left.type === "PrivateIdentifier") return null;
     if (node.operator === "|" || node.operator === "^") {
       if (isZero(right)) {
         // n | 0, n ^ 0, n >> 0, n << 0
@@ -163,14 +162,14 @@ export function* extractTransformingToMathTruncStatements(
       floors: {
         block: TSESTree.Statement | TSESTree.Expression;
         node: TSESTree.Expression;
-        argument: TSESTree.Expression;
+        argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
       }[];
       ceils: {
         block: TSESTree.Statement | TSESTree.Expression;
         node: TSESTree.Expression;
         argument: TSESTree.Expression;
       }[];
-      argument: TSESTree.Expression;
+      argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
     }
   >();
   for (const item of [...floorList, ...ceilList]) {
@@ -237,11 +236,11 @@ export function* extractTransformingToMathTruncStatements(
    */
   function* getBranches(
     node: TSESTree.Node,
-    argument: TSESTree.Expression,
+    argument: TSESTree.Expression | TSESTree.PrivateIdentifier,
     targetMethod: "floor" | "ceil",
   ): Iterable<{
     node: TSESTree.IfStatement | TSESTree.ConditionalExpression;
-    argument: TSESTree.Expression;
+    argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
     block: TSESTree.Statement | TSESTree.Expression;
   }> {
     if (node.type === "IfStatement" || node.type === "ConditionalExpression") {
@@ -290,7 +289,6 @@ export function getInfoForTransformingToMathSqrt(
 ): null | TransformingToMathSqrt {
   if (node.type === "BinaryExpression") {
     const { left, right } = node;
-    if (left.type === "PrivateIdentifier") return null;
     if (node.operator === "**") {
       if (!isHalf(right)) return null;
       // n ** (1/2)
@@ -321,7 +319,7 @@ export type TransformingToMathAbs = MathMethodInfo<"abs"> & {
  * However, note that the conversion may fail in the case of BigInt.
  */
 export function getInfoForTransformingToMathAbs(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | TransformingToMathAbs {
   if (node.type === "ConditionalExpression") {
@@ -389,7 +387,6 @@ export function getInfoForTransformingToMathCbrt(
 ): null | TransformingToMathCbrt {
   if (node.type === "BinaryExpression") {
     const { left, right } = node;
-    if (left.type === "PrivateIdentifier") return null;
     if (node.operator === "**") {
       if (!isOneThird(right)) return null;
       // n ** (1/3)
@@ -911,7 +908,7 @@ export function getInfoForTransformingToMathLOG10E(
  * Returns information if the given expression is Math.trunc().
  */
 export function getInfoForMathTrunc(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | MathMethodInfo<"trunc"> {
   return getInfoForMathX(node, "trunc", sourceCode);
@@ -920,7 +917,7 @@ export function getInfoForMathTrunc(
  * Returns information if the given expression is Math.floor().
  */
 export function getInfoForMathFloor(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | MathMethodInfo<"floor"> {
   return getInfoForMathX(node, "floor", sourceCode);
@@ -929,7 +926,7 @@ export function getInfoForMathFloor(
  * Returns information if the given expression is Math.ceil().
  */
 export function getInfoForMathCeil(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | MathMethodInfo<"ceil"> {
   return getInfoForMathX(node, "ceil", sourceCode);
@@ -938,7 +935,7 @@ export function getInfoForMathCeil(
  * Returns information if the given expression is Math.round().
  */
 export function getInfoForMathRound(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | MathMethodInfo<"round"> {
   return getInfoForMathX(node, "round", sourceCode);
@@ -947,7 +944,7 @@ export function getInfoForMathRound(
  * Returns information if the given expression is Math.abs().
  */
 export function getInfoForMathAbs(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | MathMethodInfo<"abs"> {
   return getInfoForMathX(node, "abs", sourceCode);
@@ -957,7 +954,7 @@ export function getInfoForMathAbs(
  * Returns information if the given expression is a Math.abs() expression or such an expression.
  */
 export function getInfoForMathAbsOrLike(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ):
   | (MathMethodInfo<"abs"> & {
@@ -975,7 +972,10 @@ export function getInfoForMathAbsOrLike(
  * Checks whether the given node is a Math.E.
  */
 function isMathE(
-  node: TSESTree.Expression | TSESTree.SpreadElement,
+  node:
+    | TSESTree.Expression
+    | TSESTree.SpreadElement
+    | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): node is TSESTree.Expression {
   return (
@@ -988,14 +988,14 @@ function isMathE(
  * Returns information if the given expression is Math[method]().
  */
 function getInfoForMathX<M extends MathMethod>(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   method: M,
   sourceCode: SourceCode,
 ): null | MathMethodInfo<M> {
   if (!isGlobalObjectMethodCall(node, "Math", method, sourceCode)) return null;
   const { arguments: args } = node;
   if (args.length < 1) return null;
-  const argument = args[0];
+  const [argument] = args;
   if (argument.type === "SpreadElement") return null;
   return { node, method, argument };
 }
@@ -1006,7 +1006,7 @@ function parseBranchNode<
 >(
   node: N,
 ): null | {
-  argument: TSESTree.Expression;
+  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
   whenPositive: NonNullable<N["consequent"] | N["alternate"]>;
   whenNegative: NonNullable<N["consequent"] | N["alternate"]>;
 } {

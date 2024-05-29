@@ -35,6 +35,8 @@ x = n ** (1 / 3);
 
 </eslint-code-block>
 
+Note that the results are different when `n` is `-Infinity`. If you do not use `-Infinity` it is a safe replacement.
+
 ## :wrench: Options
 
 Nothing.

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2015",
     "module": "node16",
-    "lib": ["es2020"],
+    "lib": ["es2020", "DOM"],
     "allowJs": true,
     "checkJs": true,
     "declaration": true,
@@ -20,6 +20,7 @@
     "esModuleInterop": true,
     "outDir": "lib",
     "resolveJsonModule": true,
+    "noEmit": true,
 
     "skipLibCheck": true
   },
@@ -32,5 +33,9 @@
     "typings/**/*",
     "tsup.config.ts"
   ],
-  "exclude": ["lib/**/*"]
+  "exclude": [
+    "lib/**/*",
+    "docs/.vitepress/cache/**/*",
+    "docs/.vitepress/dist/**/*"
+  ]
 }

@@ -22,13 +22,13 @@ export type NumberMethod = ExtractFunctionKeys<typeof Number>;
 export type NumberMethodInfo<M extends NumberMethod> = {
   method: M;
   node: TSESTree.Expression;
-  argument: TSESTree.Expression;
+  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
 };
 /**
  * Returns information if the condition checks whether the given expression is a positive number (or zero).
  */
 export function getInfoForIsPositive(node: TSESTree.Expression): null | {
-  argument: TSESTree.Expression;
+  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
 } {
   return getArgumentFromBinaryExpression(node, {
     ">": isZero,
@@ -39,7 +39,7 @@ export function getInfoForIsPositive(node: TSESTree.Expression): null | {
  * Returns information if the condition checks whether the given expression is a negative number (or zero).
  */
 export function getInfoForIsNegative(node: TSESTree.Expression): null | {
-  argument: TSESTree.Expression;
+  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
 } {
   return getArgumentFromBinaryExpression(node, {
     "<": isZero,
@@ -47,18 +47,19 @@ export function getInfoForIsNegative(node: TSESTree.Expression): null | {
   });
 }
 /**
- * Returns information if the condition checks whether the given expression is a to negative number.
+ * Returns information if the given expression is a to negative number.
  */
-export function getInfoForToNegative(node: TSESTree.Expression): null | {
+export function getInfoForToNegative(
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+): null | {
   from: "multiply" | "minus";
-  argument: TSESTree.Expression;
+  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
 } {
   if (node.type === "UnaryExpression" && node.operator === "-") {
     return { from: "minus", argument: node.argument };
   }
   if (node.type === "BinaryExpression" && node.operator === "*") {
     const { left, right } = node;
-    if (left.type === "PrivateIdentifier") return null;
     for (const [a, b] of [
       [left, right],
       [right, left],
@@ -75,14 +76,11 @@ export function getInfoForToNegative(node: TSESTree.Expression): null | {
  * Checks whether the given node is a `0`.
  */
 export function isZero(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
 ): node is TSESTree.Literal | TSESTree.UnaryExpression {
-  return (
-    isLiteral(node, 0) ||
-    (node.type === "UnaryExpression" &&
-      node.operator === "-" &&
-      isLiteral(node.argument, 0))
-  );
+  if (isLiteral(node, 0)) return true;
+  const neg = getInfoForToNegative(node);
+  return (neg && isZero(neg.argument)) || false;
 }
 /**
  * Checks whether the given node is a `1`.
@@ -118,20 +116,20 @@ export function isTen(
  * Checks whether the given node is a `-1`.
  */
 export function isMinusOne(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
 ): node is TSESTree.Literal | TSESTree.UnaryExpression {
-  return (
-    isLiteral(node, -1) ||
-    (node.type === "UnaryExpression" &&
-      node.operator === "-" &&
-      isOne(node.argument))
-  );
+  if (isLiteral(node, -1)) return true; // Just to be safe
+  const neg = getInfoForToNegative(node);
+  return (neg && isOne(neg.argument)) || false;
 }
 /**
  * Checks whether the given node is a `1/2`.
  */
 export function isHalf(
-  node: TSESTree.Expression | TSESTree.SpreadElement,
+  node:
+    | TSESTree.Expression
+    | TSESTree.SpreadElement
+    | TSESTree.PrivateIdentifier,
 ): node is TSESTree.Literal | TSESTree.BinaryExpression {
   return (
     isLiteral(node, 0.5) ||
@@ -159,7 +157,7 @@ export function isOneThird(
  * Checks whether the given node is a Number.MAX_SAFE_INTEGER.
  */
 export function isMaxSafeInteger(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): boolean {
   return (
@@ -181,16 +179,16 @@ export function isMaxSafeInteger(
  * Checks whether the given node is a Number.MIN_SAFE_INTEGER.
  */
 export function isMinSafeInteger(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): boolean {
-  return (
+  if (
     isLiteral(node, Number.MIN_SAFE_INTEGER) ||
-    isGlobalObjectProperty(node, "Number", "MIN_SAFE_INTEGER", sourceCode) ||
-    (node.type === "UnaryExpression" &&
-      node.operator === "-" &&
-      isMaxSafeInteger(node.argument, sourceCode))
-  );
+    isGlobalObjectProperty(node, "Number", "MIN_SAFE_INTEGER", sourceCode)
+  )
+    return true;
+  const neg = getInfoForToNegative(node);
+  return (neg && isMaxSafeInteger(neg.argument, sourceCode)) || false;
 }
 export type TransformingToNumberIsInteger =
   | (NumberMethodInfo<"isInteger"> & {
@@ -240,7 +238,6 @@ export function getInfoForTransformingToNumberIsInteger(
 ): null | TransformingToNumberIsInteger {
   if (node.type === "BinaryExpression") {
     const { left, right, operator } = node;
-    if (left.type === "PrivateIdentifier") return null;
     if (operator === "===" || operator === "!==") {
       const not = operator === "!==";
       for (const [a, b] of [
@@ -323,7 +320,9 @@ export function getInfoForTransformingToNumberIsInteger(
   /**
    * Get way to convert to an integer.
    */
-  function getToIntegerWay(a: TSESTree.Expression) {
+  function getToIntegerWay(
+    a: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  ) {
     const trunc = getInfoForMathTrunc(a, sourceCode);
     if (trunc) return { ...trunc, type: "trunc" as const };
     const floor = getInfoForMathFloor(a, sourceCode);
@@ -340,8 +339,8 @@ export function getInfoForTransformingToNumberIsInteger(
       isGlobalObjectMethodCall(a, "Number", "parseInt", sourceCode)
     ) {
       if (a.arguments.length > 0 && a.arguments[0].type !== "SpreadElement") {
-        const argument = a.arguments[0];
-        if (a.arguments.length > 1 && !isLiteral(a.arguments[1], 10)) {
+        const [argument] = a.arguments;
+        if (a.arguments.length > 1 && !isTen(a.arguments[1])) {
           // parseInt(n, x), x is not 10
           return null;
         }
@@ -462,7 +461,7 @@ export function getInfoForTransformingToNumberIsSafeInteger(
                 sourceCode,
               )
             ) {
-              // !Number.isInteger(n) || n <= Number.MAX_SAFE_INTEGER || n >= Number.MIN_SAFE_INTEGE
+              // !Number.isInteger(n) || n <= Number.MAX_SAFE_INTEGER || n >= Number.MIN_SAFE_INTEGER
               return {
                 from: isInteger.from,
                 node,
@@ -644,13 +643,15 @@ export function getInfoForTransformingToNumberIsFinite(
  * Checks whether the given node is a `n % 1`.
  */
 function isModuloOne(
-  node: TSESTree.Expression | TSESTree.SpreadElement,
-): node is TSESTree.BinaryExpression & { left: TSESTree.Expression } {
+  node:
+    | TSESTree.Expression
+    | TSESTree.SpreadElement
+    | TSESTree.PrivateIdentifier,
+): node is TSESTree.BinaryExpression {
   return (
     node.type === "BinaryExpression" &&
     node.operator === "%" &&
-    isOne(node.right) &&
-    node.left.type !== "PrivateIdentifier"
+    isOne(node.right)
   );
 }
 
@@ -691,7 +692,7 @@ function getInfoForIsLTEMaxSafeInteger(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | {
-  argument: TSESTree.Expression;
+  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
 } {
   return getArgumentFromBinaryExpression(node, {
     "<=": (right) => isMaxSafeInteger(right, sourceCode),
@@ -705,7 +706,7 @@ function getInfoForIsGTMaxSafeInteger(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | {
-  argument: TSESTree.Expression;
+  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
 } {
   return getArgumentFromBinaryExpression(node, {
     ">": (right) => isMaxSafeInteger(right, sourceCode),
@@ -719,7 +720,7 @@ function getInfoForIsGTEMinSafeInteger(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | {
-  argument: TSESTree.Expression;
+  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
 } {
   return getArgumentFromBinaryExpression(node, {
     ">=": (right) => isMinSafeInteger(right, sourceCode),
@@ -733,7 +734,7 @@ function getInfoForIsLTMinSafeInteger(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | {
-  argument: TSESTree.Expression;
+  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
 } {
   return getArgumentFromBinaryExpression(node, {
     "<": (right) => isMinSafeInteger(right, sourceCode),
@@ -757,7 +758,6 @@ function getInfoForTypeOfNumber(node: TSESTree.Expression): null | {
     return null;
 
   const { left, right, operator } = node;
-  if (left.type === "PrivateIdentifier") return null;
   const not = operator === "!==" || operator === "!=";
   for (const [a, b] of [
     [left, right],
@@ -781,13 +781,12 @@ function getArgumentFromBinaryExpression(
   operators: Partial<
     Record<
       TSESTree.BinaryExpression["operator"],
-      (right: TSESTree.Expression) => boolean
+      (right: TSESTree.Expression | TSESTree.PrivateIdentifier) => boolean
     >
   >,
-): null | { argument: TSESTree.Expression } {
+): null | { argument: TSESTree.Expression | TSESTree.PrivateIdentifier } {
   if (node.type !== "BinaryExpression") return null;
   const { left, right, operator } = node;
-  if (left.type === "PrivateIdentifier") return null;
   if (operators[operator]?.(right)) {
     return { argument: left };
   }
