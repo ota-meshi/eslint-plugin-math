@@ -116,6 +116,7 @@ The rules with the following star :star: are included in the configs.
 | [math/prefer-math-cbrt](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-cbrt.html) | enforce the use of Math.cbrt() instead of other cube root calculations | :wrench: | :star: |
 | [math/prefer-math-ln2](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-ln2.html) | enforce the use of Math.LN2 instead of other ways | :wrench: | :star: |
 | [math/prefer-math-log10](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-log10.html) | enforce the use of Math.log10() instead of other calculation methods. | :wrench: | :star: |
+| [math/prefer-math-log10e](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-log10e.html) | enforce the use of Math.LOG10E instead of other ways | :wrench: | :star: |
 | [math/prefer-math-log2](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-log2.html) | enforce the use of Math.log2() instead of other calculation methods. | :wrench: | :star: |
 | [math/prefer-math-log2e](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-log2e.html) | enforce the use of Math.LOG2E instead of other ways | :wrench: | :star: |
 | [math/prefer-math-sqrt](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-sqrt.html) | enforce the use of Math.sqrt() instead of other square root calculations | :wrench: | :star: |

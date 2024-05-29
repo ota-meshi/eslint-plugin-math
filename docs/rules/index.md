@@ -17,6 +17,7 @@ The rules with the following star :star: are included in the `plugin:math/recomm
 | [math/prefer-math-cbrt](./prefer-math-cbrt.md) | enforce the use of Math.cbrt() instead of other cube root calculations | :wrench: | :star: |
 | [math/prefer-math-ln2](./prefer-math-ln2.md) | enforce the use of Math.LN2 instead of other ways | :wrench: | :star: |
 | [math/prefer-math-log10](./prefer-math-log10.md) | enforce the use of Math.log10() instead of other calculation methods. | :wrench: | :star: |
+| [math/prefer-math-log10e](./prefer-math-log10e.md) | enforce the use of Math.LOG10E instead of other ways | :wrench: | :star: |
 | [math/prefer-math-log2](./prefer-math-log2.md) | enforce the use of Math.log2() instead of other calculation methods. | :wrench: | :star: |
 | [math/prefer-math-log2e](./prefer-math-log2e.md) | enforce the use of Math.LOG2E instead of other ways | :wrench: | :star: |
 | [math/prefer-math-sqrt](./prefer-math-sqrt.md) | enforce the use of Math.sqrt() instead of other square root calculations | :wrench: | :star: |

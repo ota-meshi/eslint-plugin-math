@@ -15,6 +15,7 @@ import {
   isMinusOne,
   isOne,
   isOneThird,
+  isTen,
   isTwo,
   isZero,
 } from "./number";
@@ -759,7 +760,7 @@ export function getInfoForTransformingToMathLN10(
   if (isGlobalObjectMethodCall(node, "Math", "log", sourceCode)) {
     if (node.arguments.length < 1) return null;
     const [argument] = node.arguments;
-    if (!isTwo(argument)) return null;
+    if (!isTen(argument)) return null;
     return {
       property: "LN10",
       node,
