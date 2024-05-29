@@ -43,5 +43,5 @@ Output:
   2 | x = Math.E;
   3 |
 
-[1] Can use 'Math.E' instead of ''.
+[1] Can use 'Math.E' instead of '2.718281828459045'.
 ---

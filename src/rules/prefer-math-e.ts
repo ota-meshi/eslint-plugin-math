@@ -54,6 +54,8 @@ export default createRule("prefer-math-e", {
       switch (info.from) {
         case "exp":
           return "Math.exp(1)";
+        case "literal":
+          return `${Math.E}`;
       }
       return "";
     }
