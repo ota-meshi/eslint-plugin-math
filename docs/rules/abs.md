@@ -46,6 +46,9 @@ x = Math.abs(n);
 
 /* ✗ BAD */
 x = n < 0 ? n * -1 : n;
+
+/* Ignore */
+x = n < 0 ? -n : n; // `n` may be a `BigInt`, so we cannot replace it with `Math.abs(n)`.
 ```
 
 </eslint-code-block>

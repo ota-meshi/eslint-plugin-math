@@ -126,7 +126,10 @@ export function isMinusOne(
  * Checks whether the given node is a `1/2`.
  */
 export function isHalf(
-  node: TSESTree.Expression | TSESTree.SpreadElement,
+  node:
+    | TSESTree.Expression
+    | TSESTree.SpreadElement
+    | TSESTree.PrivateIdentifier,
 ): node is TSESTree.Literal | TSESTree.BinaryExpression {
   return (
     isLiteral(node, 0.5) ||
