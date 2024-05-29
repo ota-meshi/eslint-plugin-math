@@ -4,6 +4,7 @@
 import type { RuleModule } from "../types";
 import abs from "../rules/abs";
 import preferMathCbrt from "../rules/prefer-math-cbrt";
+import preferMathE from "../rules/prefer-math-e";
 import preferMathLn10 from "../rules/prefer-math-ln10";
 import preferMathLn2 from "../rules/prefer-math-ln2";
 import preferMathLog10 from "../rules/prefer-math-log10";
@@ -24,6 +25,7 @@ import preferNumberMinSafeInteger from "../rules/prefer-number-min-safe-integer"
 export const rules = [
   abs,
   preferMathCbrt,
+  preferMathE,
   preferMathLn10,
   preferMathLn2,
   preferMathLog10,

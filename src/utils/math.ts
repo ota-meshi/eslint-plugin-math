@@ -893,10 +893,15 @@ export function getInfoForTransformingToMathLOG10E(
 
 export type TransformingToMathE =
   // Math.exp(1);
-  MathPropertyInfo<"E"> & {
-    from: "exp";
-    node: TSESTree.CallExpression;
-  };
+  | (MathPropertyInfo<"E"> & {
+      from: "exp";
+      node: TSESTree.CallExpression;
+    })
+  // 2.718281828459045;
+  | (MathPropertyInfo<"E"> & {
+      from: "literal";
+      node: TSESTree.Literal;
+    });
 
 /**
  * Returns information if the given expression can be transformed to Math.E.
@@ -917,6 +922,13 @@ export function getInfoForTransformingToMathE(
       property: "E",
       node,
       from: "exp",
+    };
+  }
+  if (isLiteral(node, Math.E)) {
+    return {
+      property: "E",
+      node,
+      from: "literal",
     };
   }
   return null;
@@ -1011,10 +1023,7 @@ function isMathE(
     | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): node is TSESTree.Expression {
-  return (
-    isLiteral(node, Math.E) ||
-    isGlobalObjectProperty(node, "Math", "E", sourceCode)
-  );
+  return isGlobalObjectProperty(node, "Math", "E", sourceCode);
 }
 
 /**

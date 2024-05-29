@@ -15,6 +15,7 @@ The rules with the following star ⭐ are included in the `plugin:math/recommend
 |:--------|:------------|:-------:|:-----------:|
 | [math/abs](./abs.md) | enforce the conversion to absolute values to be the method you prefer | 🔧 |  |
 | [math/prefer-math-cbrt](./prefer-math-cbrt.md) | enforce the use of Math.cbrt() instead of other cube root calculations | 🔧 | ⭐ |
+| [math/prefer-math-e](./prefer-math-e.md) | enforce the use of Math.E instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-ln10](./prefer-math-ln10.md) | enforce the use of Math.LN10 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-ln2](./prefer-math-ln2.md) | enforce the use of Math.LN2 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-log10](./prefer-math-log10.md) | enforce the use of Math.log10() instead of other calculation methods. | 🔧 | ⭐ |
