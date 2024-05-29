@@ -15,7 +15,7 @@ since: "v0.3.0"
 
 ## :book: Rule Details
 
-This rule amis to enforces the conversion to absolute values to be the method you prefer.
+This rule aims to enforce the conversion to absolute values to be the method you prefer.
 
 <eslint-code-block fix>
 

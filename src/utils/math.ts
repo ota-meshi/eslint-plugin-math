@@ -1,13 +1,21 @@
 import type { TSESTree } from "@typescript-eslint/types";
 import type { SourceCode } from "eslint";
-import { equalNodeTokens, equalTokens, isGlobalObjectMethodCall } from "./ast";
+import {
+  equalNodeTokens,
+  equalTokens,
+  isGlobalObjectMethodCall,
+  isGlobalObjectProperty,
+  isLiteral,
+} from "./ast";
 import {
   getInfoForIsNegative,
   getInfoForIsPositive,
   getInfoForToNegative,
   isHalf,
   isMinusOne,
+  isOne,
   isOneThird,
+  isTwo,
   isZero,
 } from "./number";
 import type { ExtractFunctionKeys } from "./type";
@@ -17,6 +25,10 @@ export type MathMethodInfo<M extends MathMethod> = {
   method: M;
   node: TSESTree.Expression;
   argument: TSESTree.Expression;
+};
+export type MathPropertyInfo<M extends keyof typeof Math> = {
+  property: M;
+  node: TSESTree.Expression;
 };
 
 export type TransformingToMathTrunc =
@@ -398,6 +410,254 @@ export function getInfoForTransformingToMathCbrt(
   }
   return null;
 }
+
+export type TransformingToMathLog2 =
+  | (MathMethodInfo<"log2"> & {
+      from: "logWithLOG2E";
+      node: TSESTree.BinaryExpression;
+    })
+  | (MathMethodInfo<"log2"> & {
+      from: "logWithLN2";
+      node: TSESTree.BinaryExpression;
+    });
+/**
+ * Returns information if the given expression can be transformed to Math.log2().
+ */
+export function getInfoForTransformingToMathLog2(
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  sourceCode: SourceCode,
+): null | TransformingToMathLog2 {
+  if (node.type === "BinaryExpression") {
+    const { left, right, operator } = node;
+    if (operator === "*") {
+      // Check for Math.log(n) * Math.LOG2E;
+      for (const [a, b] of [
+        [left, right],
+        [right, left],
+      ]) {
+        if (!isGlobalObjectMethodCall(a, "Math", "log", sourceCode)) continue;
+        if (a.arguments.length < 1) continue;
+        const [argument] = a.arguments;
+        if (argument.type === "SpreadElement") continue;
+        if (!isGlobalObjectProperty(b, "Math", "LOG2E", sourceCode)) {
+          const mathLOG2E = getInfoForTransformingToMathLOG2E(b, sourceCode);
+          if (!mathLOG2E || mathLOG2E.inverse) continue;
+        }
+        return {
+          from: "logWithLOG2E",
+          method: "log2",
+          node,
+          argument,
+        };
+      }
+      return null;
+    }
+    if (operator === "/") {
+      // Check for Math.log(n) / Math.LN2;
+      if (!isGlobalObjectMethodCall(left, "Math", "log", sourceCode))
+        return null;
+      if (left.arguments.length < 1) return null;
+      const [argument] = left.arguments;
+      if (argument.type === "SpreadElement") return null;
+      if (!isGlobalObjectProperty(right, "Math", "LN2", sourceCode)) {
+        const mathLN2 = getInfoForTransformingToMathLN2(right, sourceCode);
+        if (!mathLN2 || mathLN2.inverse) return null;
+      }
+      return {
+        from: "logWithLN2",
+        method: "log2",
+        node,
+        argument,
+      };
+    }
+    return null;
+  }
+  return null;
+}
+
+export type TransformingToMathLN2 =
+  // Math.log(2);
+  | (MathPropertyInfo<"LN2"> & {
+      from: "log";
+      node: TSESTree.CallExpression;
+      inverse: false;
+    })
+  // 1 / Math.LOG2E;
+  | (MathPropertyInfo<"LN2"> & {
+      from: "LOG2E";
+      node: TSESTree.BinaryExpression;
+      inverse: false;
+    })
+  // x / Math.LOG2E;
+  | (MathPropertyInfo<"LN2"> & {
+      from: "LOG2E";
+      node: TSESTree.Expression;
+      inverse: true;
+      parent: TSESTree.BinaryExpression;
+    })
+  // Literal
+  | (MathPropertyInfo<"LN2"> & {
+      from: "literal";
+      node: TSESTree.Literal;
+      inverse: false;
+    });
+/**
+ * Returns information if the given expression can be transformed to Math.LN2.
+ */
+export function getInfoForTransformingToMathLN2(
+  node: TSESTree.Expression,
+  sourceCode: SourceCode,
+): null | TransformingToMathLN2 {
+  if (isGlobalObjectMethodCall(node, "Math", "log", sourceCode)) {
+    if (node.arguments.length < 1) return null;
+    const [argument] = node.arguments;
+    if (!isTwo(argument)) return null;
+    return {
+      property: "LN2",
+      node,
+      from: "log",
+      inverse: false,
+    };
+  }
+  if (node.type === "BinaryExpression") {
+    if (node.operator !== "/") return null;
+
+    if (!isGlobalObjectProperty(node.right, "Math", "LOG2E", sourceCode)) {
+      const mathLOG2E = getInfoForTransformingToMathLOG2E(
+        node.right,
+        sourceCode,
+      );
+      if (!mathLOG2E || mathLOG2E.inverse) return null;
+    }
+    if (isOne(node.left)) {
+      return {
+        property: "LN2",
+        node,
+        from: "LOG2E",
+        inverse: false,
+      };
+    }
+    return {
+      property: "LN2",
+      node: node.right,
+      from: "LOG2E",
+      inverse: true,
+      parent: node,
+    };
+  }
+  if (isLiteral(node, Math.LN2)) {
+    return {
+      from: "literal",
+      node,
+      property: "LN2",
+      inverse: false,
+    };
+  }
+  return null;
+}
+
+export type TransformingToMathLOG2E =
+  // Math.log2(Math.E);;
+  | (MathPropertyInfo<"LOG2E"> & {
+      from: "log2";
+      node: TSESTree.CallExpression | TSESTree.BinaryExpression;
+      inverse: false;
+    })
+  // 1 / Math.LN2;
+  | (MathPropertyInfo<"LOG2E"> & {
+      from: "LN2";
+      node: TSESTree.BinaryExpression;
+      inverse: false;
+    })
+  // x / Math.LN2;
+  | (MathPropertyInfo<"LOG2E"> & {
+      from: "LN2";
+      node: TSESTree.Expression;
+      inverse: true;
+      parent: TSESTree.BinaryExpression;
+    })
+  // Literal
+  | (MathPropertyInfo<"LOG2E"> & {
+      from: "literal";
+      node: TSESTree.Literal;
+      inverse: false;
+    });
+
+/**
+ * Returns information if the given expression can be transformed to Math.LOG2E.
+ */
+export function getInfoForTransformingToMathLOG2E(
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  sourceCode: SourceCode,
+): null | TransformingToMathLOG2E {
+  const log2 = getInfoForMathLog2(node);
+
+  if (log2) {
+    if (!isMathE(log2.argument, sourceCode)) return null;
+    return {
+      property: "LOG2E",
+      node: log2.node,
+      from: "log2",
+      inverse: false,
+    };
+  }
+  if (node.type === "BinaryExpression") {
+    if (node.operator !== "/") return null;
+    if (!isGlobalObjectProperty(node.right, "Math", "LN2", sourceCode)) {
+      const mathLN2 = getInfoForTransformingToMathLN2(node.right, sourceCode);
+      if (!mathLN2 || mathLN2.inverse) return null;
+    }
+
+    if (isOne(node.left)) {
+      return {
+        property: "LOG2E",
+        node,
+        from: "LN2",
+        inverse: false,
+      };
+    }
+    return {
+      property: "LOG2E",
+      node: node.right,
+      from: "LN2",
+      inverse: true,
+      parent: node,
+    };
+  }
+  if (isLiteral(node, Math.LOG2E)) {
+    return {
+      property: "LOG2E",
+      from: "literal",
+      node,
+      inverse: false,
+    };
+  }
+  return null;
+
+  /**
+   * Returns information if the given expression is Math.log2().
+   */
+  function getInfoForMathLog2(
+    expr: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  ):
+    | null
+    | (MathMethodInfo<"log2"> & { node: TSESTree.CallExpression })
+    | TransformingToMathLog2 {
+    if (
+      isGlobalObjectMethodCall(expr, "Math", "log2", sourceCode) &&
+      expr.arguments.length > 0 &&
+      isMathE(expr.arguments[0], sourceCode)
+    ) {
+      return {
+        argument: expr.arguments[0],
+        method: "log2",
+        node: expr,
+      };
+    }
+
+    return getInfoForTransformingToMathLog2(expr, sourceCode);
+  }
+}
 /**
  * Returns information if the given expression is Math.trunc().
  */
@@ -460,6 +720,19 @@ export function getInfoForMathAbsOrLike(
   return abs
     ? { ...abs, from: "abs" }
     : getInfoForTransformingToMathAbs(node, sourceCode);
+}
+
+/**
+ * Checks whether the given node is a Math.E.
+ */
+function isMathE(
+  node: TSESTree.Expression | TSESTree.SpreadElement,
+  sourceCode: SourceCode,
+): node is TSESTree.Expression {
+  return (
+    isLiteral(node, Math.E) ||
+    isGlobalObjectProperty(node, "Math", "E", sourceCode)
+  );
 }
 
 /**

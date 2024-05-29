@@ -16,7 +16,7 @@ Code:
 
 Output: unchanged
 
-[1] Can use 'Number.isInteger()' instead of 'Math.floor(n) === n'.
+[1] Can use 'Number.isInteger(n)' instead of 'Math.floor(n) === n'.
     Suggestions:
       - Replace using 'Number.isInteger()'.
         Output:
@@ -25,7 +25,7 @@ Output: unchanged
           3 | x = Math.ceil(n) /* x */ === n;
           4 | x = Math.trunc(n) /* x */ === n;
           5 |
-[2] Can use 'Number.isInteger()' instead of 'Math.ceil(n) === n'.
+[2] Can use 'Number.isInteger(n)' instead of 'Math.ceil(n) === n'.
     Suggestions:
       - Replace using 'Number.isInteger()'.
         Output:
@@ -34,7 +34,7 @@ Output: unchanged
           3 | x = Number.isInteger(n);
           4 | x = Math.trunc(n) /* x */ === n;
           5 |
-[3] Can use 'Number.isInteger()' instead of 'Math.trunc(n) === n'.
+[3] Can use 'Number.isInteger(n)' instead of 'Math.trunc(n) === n'.
     Suggestions:
       - Replace using 'Number.isInteger()'.
         Output:
@@ -85,12 +85,12 @@ Output:
  12 | x = Number.isInteger(n);
  13 |
 
-[1] Can use 'Number.isInteger()' instead of 'Math.floor(n) === n'.
-[2] Can use 'Number.isInteger()' instead of 'Math.ceil(n) === n'.
-[3] Can use 'Number.isInteger()' instead of 'Math.trunc(n) === n'.
-[4] Can use 'Number.isInteger()' instead of 'Math.round(n) === n'.
-[5] Can use 'Number.isInteger()' instead of 'parseInt(n) === n'.
-[6] Can use 'Number.isInteger()' instead of 'parseInt(n) === n'.
+[1] Can use 'Number.isInteger(n)' instead of 'Math.floor(n) === n'.
+[2] Can use 'Number.isInteger(n)' instead of 'Math.ceil(n) === n'.
+[3] Can use 'Number.isInteger(n)' instead of 'Math.trunc(n) === n'.
+[4] Can use 'Number.isInteger(n)' instead of 'Math.round(n) === n'.
+[5] Can use 'Number.isInteger(n)' instead of 'parseInt(n) === n'.
+[6] Can use 'Number.isInteger(n)' instead of 'parseInt(n) === n'.
 ---
 
 
@@ -120,11 +120,11 @@ Output:
   6 | x = Number.isInteger(n);
   7 |
 
-[1] Can use 'Number.isInteger()' instead of 'Math.trunc(n) === n' like expression.
-[2] Can use 'Number.isInteger()' instead of 'Math.trunc(n) === n' like expression.
-[3] Can use 'Number.isInteger()' instead of 'Math.trunc(n) === n' like expression.
-[4] Can use 'Number.isInteger()' instead of 'Math.trunc(n) === n' like expression.
-[5] Can use 'Number.isInteger()' instead of 'Math.trunc(n) === n' like expression.
+[1] Can use 'Number.isInteger(n)' instead of 'Math.trunc(n) === n' like expression.
+[2] Can use 'Number.isInteger(n)' instead of 'Math.trunc(n) === n' like expression.
+[3] Can use 'Number.isInteger(n)' instead of 'Math.trunc(n) === n' like expression.
+[4] Can use 'Number.isInteger(n)' instead of 'Math.trunc(n) === n' like expression.
+[5] Can use 'Number.isInteger(n)' instead of 'Math.trunc(n) === n' like expression.
 ---
 
 
@@ -184,15 +184,15 @@ Output:
  19 | }
  20 |
 
-[1] Can use '!Number.isInteger()' instead of 'n % 1 === 0'.
-[2] Can use 'Number.isInteger()' instead of 'n % 1 !== 0'.
-[3] Can use 'Number.isInteger()' instead of 'n % 1 !== 0'.
-[4] Can use '!Number.isInteger()' instead of 'n % 1 === 0'.
-[5] Can use '!Number.isInteger()' instead of 'n % 1 === 0'.
-[6] Can use '!Number.isInteger()' instead of 'n % 1 === 0'.
-[7] Can use '!Number.isInteger()' instead of 'n % 1 === 0'.
-[8] Can use '!Number.isInteger()' instead of 'n % 1 === 0'.
-[9] Can use '!Number.isInteger()' instead of 'n % 1 === 0'.
+[1] Can use '!Number.isInteger(n)' instead of 'n % 1 === 0'.
+[2] Can use 'Number.isInteger(n)' instead of 'n % 1 !== 0'.
+[3] Can use 'Number.isInteger(n)' instead of 'n % 1 !== 0'.
+[4] Can use '!Number.isInteger(n)' instead of 'n % 1 === 0'.
+[5] Can use '!Number.isInteger(n)' instead of 'n % 1 === 0'.
+[6] Can use '!Number.isInteger(n)' instead of 'n % 1 === 0'.
+[7] Can use '!Number.isInteger(n)' instead of 'n % 1 === 0'.
+[8] Can use '!Number.isInteger(n)' instead of 'n % 1 === 0'.
+[9] Can use '!Number.isInteger(n)' instead of 'n % 1 === 0'.
 ---
 
 
@@ -227,10 +227,10 @@ Output:
   8 | x = !Number.isInteger(n);
   9 |
 
-[1] Can use '!Number.isInteger()' instead of 'Math.floor(n) !== n'.
-[2] Can use '!Number.isInteger()' instead of 'Math.ceil(n) !== n'.
-[3] Can use '!Number.isInteger()' instead of 'Math.trunc(n) !== n'.
-[4] Can use '!Number.isInteger()' instead of 'Math.round(n) !== n'.
-[5] Can use '!Number.isInteger()' instead of 'parseInt(n) !== n'.
-[6] Can use '!Number.isInteger()' instead of 'parseInt(n) !== n'.
+[1] Can use '!Number.isInteger(n)' instead of 'Math.floor(n) !== n'.
+[2] Can use '!Number.isInteger(n)' instead of 'Math.ceil(n) !== n'.
+[3] Can use '!Number.isInteger(n)' instead of 'Math.trunc(n) !== n'.
+[4] Can use '!Number.isInteger(n)' instead of 'Math.round(n) !== n'.
+[5] Can use '!Number.isInteger(n)' instead of 'parseInt(n) !== n'.
+[6] Can use '!Number.isInteger(n)' instead of 'parseInt(n) !== n'.
 ---

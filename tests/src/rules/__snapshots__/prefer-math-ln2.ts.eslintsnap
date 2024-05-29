@@ -1,0 +1,93 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: prefer-math-ln2 >> invalid
+Filename: prefer-math-ln2/invalid/example-input.js
+
+Code:
+  1 | /*prefer-math-ln2/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = Math.LN2;
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = Math.log(2);
+    |     ^~~~~~~~~~~ [1]
+  7 | x = 1 / Math.LOG2E;
+    |     ^~~~~~~~~~~~~~ [2]
+  8 |
+  9 | /* ✓ GOOD */
+ 10 | x = y * Math.LN2;
+ 11 |
+ 12 | /* ✗ BAD */
+ 13 | x = y / Math.LOG2E;
+    |     ^~~~~~~~~~~~~~ [3]
+ 14 |
+
+Output:
+  1 | /*prefer-math-ln2/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = Math.LN2;
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = Math.LN2;
+  7 | x = Math.LN2;
+  8 |
+  9 | /* ✓ GOOD */
+ 10 | x = y * Math.LN2;
+ 11 |
+ 12 | /* ✗ BAD */
+ 13 | x = y * Math.LN2;
+ 14 |
+
+[1] Can use 'Math.LN2' instead of 'Math.log(2)'.
+[2] Can use 'Math.LN2' instead of '1 / Math.LOG2E'.
+[3] Can use 'Math.LN2' instead of 'x / Math.LOG2E'.
+---
+
+
+Test: prefer-math-ln2 >> invalid
+Filename: prefer-math-ln2/invalid/log2e-input.js
+
+Code:
+  1 | /*prefer-math-ln2/invalid/log2e-input.js*/
+  2 | x = 1 / Math.LOG2E;
+    |     ^~~~~~~~~~~~~~ [1]
+  3 | x = 1 / Math.log2(Math.E);
+    |     ^~~~~~~~~~~~~~~~~~~~~ [2]
+  4 | x = y / Math.LOG2E;
+    |     ^~~~~~~~~~~~~~ [3]
+  5 | x = y / Math.log2(Math.E);
+    |     ^~~~~~~~~~~~~~~~~~~~~ [4]
+  6 |
+
+Output:
+  1 | /*prefer-math-ln2/invalid/log2e-input.js*/
+  2 | x = Math.LN2;
+  3 | x = Math.LN2;
+  4 | x = y * Math.LN2;
+  5 | x = y * Math.LN2;
+  6 |
+
+[1] Can use 'Math.LN2' instead of '1 / Math.LOG2E'.
+[2] Can use 'Math.LN2' instead of '1 / Math.LOG2E'.
+[3] Can use 'Math.LN2' instead of 'x / Math.LOG2E'.
+[4] Can use 'Math.LN2' instead of 'x / Math.LOG2E'.
+---
+
+
+Test: prefer-math-ln2 >> invalid
+Filename: prefer-math-ln2/invalid/num-input.js
+
+Code:
+  1 | /*prefer-math-ln2/invalid/num-input.js*/
+  2 | x = 0.6931471805599453;
+    |     ^~~~~~~~~~~~~~~~~~ [1]
+  3 |
+
+Output:
+  1 | /*prefer-math-ln2/invalid/num-input.js*/
+  2 | x = Math.LN2;
+  3 |
+
+[1] Can use 'Math.LN2' instead of '0.6931471805599453'.
+---

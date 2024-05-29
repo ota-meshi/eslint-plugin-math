@@ -23,6 +23,7 @@ const logger = console;
     `../tests/fixtures/rules/${ruleId}/`,
   );
   const docFile = path.resolve(__dirname, `../docs/rules/${ruleId}.md`);
+  const changesetFile = path.resolve(__dirname, `../.changeset/${ruleId}.md`);
 
   fs.mkdirSync(path.dirname(ruleFile), { recursive: true });
   fs.mkdirSync(path.dirname(testFile), { recursive: true });
@@ -120,6 +121,15 @@ Nothing.
 
 [xxx]: https://xxx
 
+`,
+  );
+  fs.writeFileSync(
+    changesetFile,
+    `---
+"eslint-plugin-math": minor
+---
+
+feat: add \`math/${ruleId}\` rule
 `,
   );
 

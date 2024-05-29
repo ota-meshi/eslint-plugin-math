@@ -1,0 +1,53 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: prefer-math-sqrt2 >> invalid
+Filename: prefer-math-sqrt2/invalid/example-input.js
+
+Code:
+  1 | /*prefer-math-sqrt2/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = Math.SQRT2;
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = Math.sqrt(2);
+    |     ^~~~~~~~~~~~ [1]
+  7 | x = 2 ** (1 / 2);
+    |     ^~~~~~~~~~~~ [2]
+  8 | x = 2 ** 0.5;
+    |     ^~~~~~~~ [3]
+  9 |
+
+Output:
+  1 | /*prefer-math-sqrt2/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = Math.SQRT2;
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = Math.SQRT2;
+  7 | x = Math.SQRT2;
+  8 | x = Math.SQRT2;
+  9 |
+
+[1] Can use 'Math.SQRT2' instead of 'Math.sqrt(2)'.
+[2] Can use 'Math.SQRT2' instead of '2 ** (1 / 2)'.
+[3] Can use 'Math.SQRT2' instead of '2 ** (1 / 2)'.
+---
+
+
+Test: prefer-math-sqrt2 >> invalid
+Filename: prefer-math-sqrt2/invalid/num-input.js
+
+Code:
+  1 | /*prefer-math-sqrt2/invalid/num-input.js*/
+  2 | x = 1.4142135623730951;
+    |     ^~~~~~~~~~~~~~~~~~ [1]
+  3 |
+
+Output:
+  1 | /*prefer-math-sqrt2/invalid/num-input.js*/
+  2 | x = Math.SQRT2;
+  3 |
+
+[1] Can use 'Math.SQRT2' instead of '1.4142135623730951'.
+---

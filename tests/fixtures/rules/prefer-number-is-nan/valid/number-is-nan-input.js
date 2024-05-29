@@ -1,0 +1,2 @@
+/* {} */
+x = Number.isNaN(n);

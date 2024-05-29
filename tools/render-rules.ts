@@ -20,17 +20,17 @@ export default function renderRulesTableContent(
       rule.meta.docs.categories.includes("recommended")
         ? ":star:"
         : "";
-    const standardMark =
-      rule.meta.docs.categories &&
-      rule.meta.docs.categories.includes("standard")
-        ? ":star:"
-        : "";
+    // const standardMark =
+    //   rule.meta.docs.categories &&
+    //   rule.meta.docs.categories.includes("standard")
+    //     ? ":star:"
+    //     : "";
     const link = `[${rule.meta.docs.ruleId}](${buildRulePath(
       rule.meta.docs.ruleName || "",
     )})`;
     const description = rule.meta.docs.description || "(no description)";
 
-    return `| ${link} | ${description} | ${fixableMark} | ${recommendedMark} | ${standardMark} |`;
+    return `| ${link} | ${description} | ${fixableMark} | ${recommendedMark} |`;
   }
 
   //eslint-disable-next-line jsdoc/require-jsdoc -- tool
@@ -50,8 +50,8 @@ export default function renderRulesTableContent(
   let rulesTableContent = `
 #${"#".repeat(categoryLevel)} Math Rules
 
-| Rule ID | Description | Fixable | RECOMMENDED | STANDARD |
-|:--------|:------------|:-------:|:-----------:|:--------:|
+| Rule ID | Description | Fixable | RECOMMENDED |
+|:--------|:------------|:-------:|:-----------:|
 ${pluginRules.map(toRuleRow).join("\n")}
 `;
 

@@ -22,9 +22,9 @@ export default createRule("prefer-math-trunc", {
     schema: [],
     messages: {
       canUseTruncInsteadOfBitwise:
-        "Can use 'Math.trunc()' instead of '{{expression}}'.",
+        "Can use 'Math.trunc(n)' instead of '{{expression}}'.",
       canUseTruncInsteadOfConditional:
-        "Can use 'Math.trunc()', instead of branching on value and using 'Math.floor()' / 'Math.ceil()'.",
+        "Can use 'Math.trunc(n)', instead of branching on value and using 'Math.floor(n)' / 'Math.ceil(n)'.",
       replace: "Replace using 'Math.trunc()'.",
     },
     type: "suggestion",
