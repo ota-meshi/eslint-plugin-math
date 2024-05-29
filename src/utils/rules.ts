@@ -11,6 +11,7 @@ import preferMathLog10 from "../rules/prefer-math-log10";
 import preferMathLog10e from "../rules/prefer-math-log10e";
 import preferMathLog2 from "../rules/prefer-math-log2";
 import preferMathLog2e from "../rules/prefer-math-log2e";
+import preferMathPi from "../rules/prefer-math-pi";
 import preferMathSqrt from "../rules/prefer-math-sqrt";
 import preferMathSqrt12 from "../rules/prefer-math-sqrt1-2";
 import preferMathSqrt2 from "../rules/prefer-math-sqrt2";
@@ -32,6 +33,7 @@ export const rules = [
   preferMathLog10e,
   preferMathLog2,
   preferMathLog2e,
+  preferMathPi,
   preferMathSqrt,
   preferMathSqrt12,
   preferMathSqrt2,

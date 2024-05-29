@@ -18,6 +18,7 @@ export const rules: Linter.RulesRecord = {
   "math/prefer-math-log10e": "error",
   "math/prefer-math-log2": "error",
   "math/prefer-math-log2e": "error",
+  "math/prefer-math-pi": "error",
   "math/prefer-math-sqrt": "error",
   "math/prefer-math-sqrt1-2": "error",
   "math/prefer-math-sqrt2": "error",

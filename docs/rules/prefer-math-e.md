@@ -43,7 +43,6 @@ Nothing.
 - [MDN - Math.E](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/E)
 - [MDN - Math.exp()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/exp)
 
-
 ## 🔍 Implementation
 
 - [Rule source](https://github.com/ota-meshi/eslint-plugin-math/blob/main/src/rules/prefer-math-e.ts)

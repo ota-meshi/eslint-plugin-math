@@ -121,6 +121,7 @@ The rules with the following star ⭐ are included in the configs.
 | [math/prefer-math-log10e](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-log10e.html) | enforce the use of Math.LOG10E instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-log2](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-log2.html) | enforce the use of Math.log2() instead of other calculation methods. | 🔧 | ⭐ |
 | [math/prefer-math-log2e](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-log2e.html) | enforce the use of Math.LOG2E instead of other ways | 🔧 | ⭐ |
+| [math/prefer-math-pi](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-pi.html) | enforce the use of Math.PI instead of literal number | 🔧 | ⭐ |
 | [math/prefer-math-sqrt](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-sqrt.html) | enforce the use of Math.sqrt() instead of other square root calculations | 🔧 | ⭐ |
 | [math/prefer-math-sqrt1-2](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-sqrt1-2.html) | enforce the use of Math.SQRT1_2 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-sqrt2](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-sqrt2.html) | enforce the use of Math.SQRT2 instead of other ways | 🔧 | ⭐ |

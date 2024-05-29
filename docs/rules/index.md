@@ -22,6 +22,7 @@ The rules with the following star ⭐ are included in the `plugin:math/recommend
 | [math/prefer-math-log10e](./prefer-math-log10e.md) | enforce the use of Math.LOG10E instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-log2](./prefer-math-log2.md) | enforce the use of Math.log2() instead of other calculation methods. | 🔧 | ⭐ |
 | [math/prefer-math-log2e](./prefer-math-log2e.md) | enforce the use of Math.LOG2E instead of other ways | 🔧 | ⭐ |
+| [math/prefer-math-pi](./prefer-math-pi.md) | enforce the use of Math.PI instead of literal number | 🔧 | ⭐ |
 | [math/prefer-math-sqrt](./prefer-math-sqrt.md) | enforce the use of Math.sqrt() instead of other square root calculations | 🔧 | ⭐ |
 | [math/prefer-math-sqrt1-2](./prefer-math-sqrt1-2.md) | enforce the use of Math.SQRT1_2 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-sqrt2](./prefer-math-sqrt2.md) | enforce the use of Math.SQRT2 instead of other ways | 🔧 | ⭐ |
