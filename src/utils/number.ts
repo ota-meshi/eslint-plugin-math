@@ -104,14 +104,6 @@ export function isTwo(
   return isLiteral(node, 2);
 }
 /**
- * Checks whether the given node is a `53`.
- */
-export function isFiftyThree(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
-): node is TSESTree.Literal {
-  return isLiteral(node, 53);
-}
-/**
  * Checks whether the given node is a `-1`.
  */
 export function isMinusOne(
@@ -121,7 +113,7 @@ export function isMinusOne(
     isLiteral(node, -1) ||
     (node.type === "UnaryExpression" &&
       node.operator === "-" &&
-      isLiteral(node.argument, 1))
+      isOne(node.argument))
   );
 }
 /**
@@ -189,27 +181,6 @@ export function isMinSafeInteger(
       isMaxSafeInteger(node.argument, sourceCode))
   );
 }
-/**
- * Returns information if the given expression is Number.isInteger().
- */
-export function getInfoFoNumberIsInteger(
-  node: TSESTree.Expression,
-  sourceCode: SourceCode,
-): null | NumberMethodInfo<"isInteger"> {
-  if (
-    isGlobalObjectMethodCall(node, "Number", "isInteger", sourceCode) &&
-    node.arguments.length > 0 &&
-    node.arguments[0].type !== "SpreadElement"
-  ) {
-    return {
-      method: "isInteger",
-      node,
-      argument: node.arguments[0],
-    };
-  }
-  return null;
-}
-
 export type TransformingToNumberIsInteger =
   | (NumberMethodInfo<"isInteger"> & {
       from: "trunc";
@@ -659,9 +630,53 @@ export function getInfoForTransformingToNumberIsFinite(
 }
 
 /**
+ * Checks whether the given node is a `n % 1`.
+ */
+function isModuloOne(
+  node: TSESTree.Expression | TSESTree.SpreadElement,
+): node is TSESTree.BinaryExpression & { left: TSESTree.Expression } {
+  return (
+    node.type === "BinaryExpression" &&
+    node.operator === "%" &&
+    isOne(node.right) &&
+    node.left.type !== "PrivateIdentifier"
+  );
+}
+
+/**
+ * Checks whether the given node is a `53`.
+ */
+function isFiftyThree(
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+): node is TSESTree.Literal {
+  return isLiteral(node, 53);
+}
+
+/**
+ * Returns information if the given expression is Number.isInteger().
+ */
+function getInfoFoNumberIsInteger(
+  node: TSESTree.Expression,
+  sourceCode: SourceCode,
+): null | NumberMethodInfo<"isInteger"> {
+  if (
+    isGlobalObjectMethodCall(node, "Number", "isInteger", sourceCode) &&
+    node.arguments.length > 0 &&
+    node.arguments[0].type !== "SpreadElement"
+  ) {
+    return {
+      method: "isInteger",
+      node,
+      argument: node.arguments[0],
+    };
+  }
+  return null;
+}
+
+/**
  * Returns information if the condition checks whether the given expression is less than or equal Number.MAX_SAFE_INTEGER.
  */
-export function getInfoForIsLTEMaxSafeInteger(
+function getInfoForIsLTEMaxSafeInteger(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | {
@@ -671,10 +686,11 @@ export function getInfoForIsLTEMaxSafeInteger(
     "<=": (right) => isMaxSafeInteger(right, sourceCode),
   });
 }
+
 /**
  * Returns information if the condition checks whether the given expression is greater than Number.MAX_SAFE_INTEGER.
  */
-export function getInfoForIsGTMaxSafeInteger(
+function getInfoForIsGTMaxSafeInteger(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | {
@@ -684,10 +700,11 @@ export function getInfoForIsGTMaxSafeInteger(
     ">": (right) => isMaxSafeInteger(right, sourceCode),
   });
 }
+
 /**
  * Returns information if the condition checks whether the given expression is greater than or equal Number.MIN_SAFE_INTEGER.
  */
-export function getInfoForIsGTEMinSafeInteger(
+function getInfoForIsGTEMinSafeInteger(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | {
@@ -697,10 +714,11 @@ export function getInfoForIsGTEMinSafeInteger(
     ">=": (right) => isMinSafeInteger(right, sourceCode),
   });
 }
+
 /**
  * Returns information if the condition checks whether the given expression is less than Number.MIN_SAFE_INTEGER.
  */
-export function getInfoForIsLTMinSafeInteger(
+function getInfoForIsLTMinSafeInteger(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | {
@@ -710,10 +728,11 @@ export function getInfoForIsLTMinSafeInteger(
     "<": (right) => isMinSafeInteger(right, sourceCode),
   });
 }
+
 /**
  * Returns information if the given expression is `typeof x === 'number'`.
  */
-export function getInfoForTypeOfNumber(node: TSESTree.Expression): null | {
+function getInfoForTypeOfNumber(node: TSESTree.Expression): null | {
   argument: TSESTree.Expression;
   not: boolean;
 } {
@@ -741,20 +760,6 @@ export function getInfoForTypeOfNumber(node: TSESTree.Expression): null | {
     };
   }
   return null;
-}
-
-/**
- * Checks whether the given node is a `n % 1`.
- */
-function isModuloOne(
-  node: TSESTree.Expression | TSESTree.SpreadElement,
-): node is TSESTree.BinaryExpression & { left: TSESTree.Expression } {
-  return (
-    node.type === "BinaryExpression" &&
-    node.operator === "%" &&
-    isOne(node.right) &&
-    node.left.type !== "PrivateIdentifier"
-  );
 }
 
 /**
