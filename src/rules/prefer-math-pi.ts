@@ -1,6 +1,6 @@
 import type { TSESTree } from "@typescript-eslint/types";
 import { createRule } from "../utils";
-import { isLiteral } from "../utils/ast";
+import { isStaticValue } from "../utils/ast";
 import type { Rule } from "eslint";
 
 export default createRule("prefer-math-pi", {
@@ -22,7 +22,7 @@ export default createRule("prefer-math-pi", {
      * Verify if the given node can be converted to Math.PI.
      */
     function verifyForExpression(node: TSESTree.Expression) {
-      if (isLiteral(node, Math.PI)) {
+      if (isStaticValue(node, Math.PI)) {
         const fix = (fixer: Rule.RuleFixer) => {
           return fixer.replaceText(node, `Math.PI`);
         };

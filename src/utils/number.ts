@@ -14,7 +14,7 @@ import {
   isGlobalObject,
   isGlobalObjectMethodCall,
   isGlobalObjectProperty,
-  isLiteral,
+  isStaticValue,
 } from "./ast";
 import type { ExtractFunctionKeys } from "./type";
 import {
@@ -80,9 +80,7 @@ export function getInfoForToNegative(
 export function isZero(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
 ): node is TSESTree.Literal | TSESTree.UnaryExpression {
-  if (isLiteral(node, 0)) return true;
-  const neg = getInfoForToNegative(node);
-  return (neg && isZero(neg.argument)) || false;
+  return isStaticValue(node, 0);
 }
 /**
  * Checks whether the given node is a `1`.
@@ -93,7 +91,7 @@ export function isOne(
     | TSESTree.PrivateIdentifier
     | TSESTree.SpreadElement,
 ): node is TSESTree.Literal {
-  return isLiteral(node, 1);
+  return isStaticValue(node, 1);
 }
 /**
  * Checks whether the given node is a `2`.
@@ -104,7 +102,7 @@ export function isTwo(
     | TSESTree.PrivateIdentifier
     | TSESTree.SpreadElement,
 ): node is TSESTree.Literal {
-  return isLiteral(node, 2);
+  return isStaticValue(node, 2);
 }
 /**
  * Checks whether the given node is a `10`.
@@ -115,7 +113,7 @@ export function isTen(
     | TSESTree.PrivateIdentifier
     | TSESTree.SpreadElement,
 ): node is TSESTree.Literal {
-  return isLiteral(node, 10);
+  return isStaticValue(node, 10);
 }
 /**
  * Checks whether the given node is a `-1`.
@@ -123,9 +121,7 @@ export function isTen(
 export function isMinusOne(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
 ): node is TSESTree.Literal | TSESTree.UnaryExpression {
-  if (isLiteral(node, -1)) return true; // Just to be safe
-  const neg = getInfoForToNegative(node);
-  return (neg && isOne(neg.argument)) || false;
+  return isStaticValue(node, -1);
 }
 /**
  * Checks whether the given node is a `1/2`.
@@ -136,13 +132,7 @@ export function isHalf(
     | TSESTree.SpreadElement
     | TSESTree.PrivateIdentifier,
 ): node is TSESTree.Literal | TSESTree.BinaryExpression {
-  return (
-    isLiteral(node, 0.5) ||
-    (node.type === "BinaryExpression" &&
-      node.operator === "/" &&
-      isLiteral(node.left, 1) &&
-      isLiteral(node.right, 2))
-  );
+  return isStaticValue(node, 0.5);
 }
 /**
  * Checks whether the given node is a `1/3`.
@@ -153,13 +143,7 @@ export function isOneThird(
     | TSESTree.SpreadElement
     | TSESTree.PrivateIdentifier,
 ): boolean {
-  return (
-    isLiteral(node, 1 / 3) ||
-    (node.type === "BinaryExpression" &&
-      node.operator === "/" &&
-      isLiteral(node.left, 1) &&
-      isLiteral(node.right, 3))
-  );
+  return isStaticValue(node, 1 / 3);
 }
 /**
  * Checks whether the given node is a Number.MAX_SAFE_INTEGER.
@@ -169,18 +153,8 @@ export function isMaxSafeInteger(
   sourceCode: SourceCode,
 ): boolean {
   return (
-    isLiteral(node, Number.MAX_SAFE_INTEGER) ||
-    isGlobalObjectProperty(node, "Number", "MAX_SAFE_INTEGER", sourceCode) ||
-    // 2 ** 53 - 1
-    (node.type === "BinaryExpression" &&
-      // 2 ** 53
-      node.left.type === "BinaryExpression" &&
-      isTwo(node.left.left) &&
-      node.left.operator === "**" &&
-      isFiftyThree(node.left.right) &&
-      // - 1
-      node.operator === "-" &&
-      isOne(node.right))
+    isStaticValue(node, Number.MAX_SAFE_INTEGER) ||
+    isGlobalObjectProperty(node, "Number", "MAX_SAFE_INTEGER", sourceCode)
   );
 }
 /**
@@ -191,7 +165,7 @@ export function isMinSafeInteger(
   sourceCode: SourceCode,
 ): boolean {
   if (
-    isLiteral(node, Number.MIN_SAFE_INTEGER) ||
+    isStaticValue(node, Number.MIN_SAFE_INTEGER) ||
     isGlobalObjectProperty(node, "Number", "MIN_SAFE_INTEGER", sourceCode)
   )
     return true;
@@ -594,15 +568,6 @@ function isModuloOne(
 }
 
 /**
- * Checks whether the given node is a `53`.
- */
-function isFiftyThree(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
-): node is TSESTree.Literal {
-  return isLiteral(node, 53);
-}
-
-/**
  * Returns information if the given expression is Number.isInteger().
  */
 function getInfoFoNumberIsInteger(
@@ -701,7 +666,7 @@ function getInfoForTypeOfNumber(
   const not = operator === "!==" || operator === "!=";
   for (const [left, right] of processLR(node)) {
     if (left.type !== "UnaryExpression" || left.operator !== "typeof") continue;
-    if (!isLiteral(right, "number")) continue;
+    if (!isStaticValue(right, "number")) continue;
     return {
       argument: left.argument,
       not,

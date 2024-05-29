@@ -162,14 +162,85 @@ export function equalTokens(
 }
 
 /**
- * Checks whether the given node is a Literal with the given value.
+ * Checks whether the given node is a expression with the given static value.
  */
-export function isLiteral<V extends TSESTree.Literal["value"]>(
+export function isStaticValue<V extends TSESTree.Literal["value"]>(
   node:
     | TSESTree.Expression
     | TSESTree.SpreadElement
     | TSESTree.PrivateIdentifier,
   value: V,
-): node is TSESTree.Literal & { value: V } {
-  return node.type === "Literal" && node.value === value;
+): node is TSESTree.Expression {
+  const v = getStaticValue(node);
+  return v != null && v.value === value;
+}
+
+/**
+ * Gets the static value of the given node.
+ */
+function getStaticValue(
+  node:
+    | TSESTree.Expression
+    | TSESTree.SpreadElement
+    | TSESTree.PrivateIdentifier,
+): {
+  value: string | number | bigint | boolean | RegExp | null | undefined;
+} | null {
+  if (node.type === "Literal") return node;
+  if (node.type === "UnaryExpression") {
+    const v = getStaticValue(node.argument);
+    if (v == null) return null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- ignore
+    const value: any = v.value;
+    if (node.operator === "+") return { value };
+    if (node.operator === "-") return { value: -value };
+    if (node.operator === "~") return { value: ~value };
+    if (node.operator === "!") return { value: !value };
+    if (node.operator === "typeof") return { value: typeof value };
+    if (node.operator === "void") return { value: undefined };
+    if (node.operator === "delete") return { value: true };
+    return null;
+  }
+  if (node.type === "BinaryExpression" || node.type === "LogicalExpression") {
+    const left = getStaticValue(node.left);
+    const right = getStaticValue(node.right);
+    if (left == null || right == null) return null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- ignore
+    const l: any = left.value;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- ignore
+    const r: any = right.value;
+    if (node.operator === "+") return { value: l + r };
+    if (node.operator === "-") return { value: l - r };
+    if (node.operator === "*") return { value: l * r };
+    if (node.operator === "/") return { value: l / r };
+    if (node.operator === "%") return { value: l ** r };
+    if (node.operator === "**") return { value: l ** r };
+    if (node.operator === "<<") return { value: l << r };
+    if (node.operator === ">>") return { value: l >> r };
+    if (node.operator === ">>>") return { value: l >>> r };
+    if (node.operator === "&") return { value: l & r };
+    if (node.operator === "|") return { value: l | r };
+    if (node.operator === "^") return { value: l ^ r };
+    if (node.operator === "&&") return { value: l && r };
+    if (node.operator === "||") return { value: l || r };
+    if (node.operator === "??") return { value: l ?? r };
+    return null;
+  }
+  if (node.type === "ConditionalExpression") {
+    const test = getStaticValue(node.test);
+    if (test)
+      return test.value
+        ? getStaticValue(node.consequent)
+        : getStaticValue(node.alternate);
+    return null;
+  }
+  if (
+    node.type === "TSAsExpression" ||
+    node.type === "TSTypeAssertion" ||
+    node.type === "TSSatisfiesExpression" ||
+    node.type === "TSNonNullExpression" ||
+    node.type === "TSInstantiationExpression"
+  )
+    return getStaticValue(node.expression);
+  return null;
 }

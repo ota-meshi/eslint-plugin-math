@@ -5,7 +5,7 @@ import {
   equalTokens,
   isGlobalObjectMethodCall,
   isGlobalObjectProperty,
-  isLiteral,
+  isStaticValue,
 } from "./ast";
 import {
   getInfoForIsNegative,
@@ -487,7 +487,7 @@ export type TransformingToMathLN2 =
   // Literal
   | (MathPropertyInfo<"LN2"> & {
       from: "literal";
-      node: TSESTree.Literal;
+      node: TSESTree.Expression;
       inverse: false;
     });
 /**
@@ -534,7 +534,7 @@ export function getInfoForTransformingToMathLN2(
       parent: node,
     };
   }
-  if (isLiteral(node, Math.LN2)) {
+  if (isStaticValue(node, Math.LN2)) {
     return {
       from: "literal",
       node,
@@ -568,7 +568,7 @@ export type TransformingToMathLOG2E =
   // Literal
   | (MathPropertyInfo<"LOG2E"> & {
       from: "literal";
-      node: TSESTree.Literal;
+      node: TSESTree.Expression;
       inverse: false;
     });
 
@@ -613,7 +613,7 @@ export function getInfoForTransformingToMathLOG2E(
       parent: node,
     };
   }
-  if (isLiteral(node, Math.LOG2E)) {
+  if (isStaticValue(node, Math.LOG2E)) {
     return {
       property: "LOG2E",
       from: "literal",
@@ -730,7 +730,7 @@ export type TransformingToMathLN10 =
   // Literal
   | (MathPropertyInfo<"LN10"> & {
       from: "literal";
-      node: TSESTree.Literal;
+      node: TSESTree.Expression;
       inverse: false;
     });
 /**
@@ -777,7 +777,7 @@ export function getInfoForTransformingToMathLN10(
       parent: node,
     };
   }
-  if (isLiteral(node, Math.LN10)) {
+  if (isStaticValue(node, Math.LN10)) {
     return {
       from: "literal",
       node,
@@ -811,7 +811,7 @@ export type TransformingToMathLOG10E =
   // Literal
   | (MathPropertyInfo<"LOG10E"> & {
       from: "literal";
-      node: TSESTree.Literal;
+      node: TSESTree.Expression;
       inverse: false;
     });
 
@@ -856,7 +856,7 @@ export function getInfoForTransformingToMathLOG10E(
       parent: node,
     };
   }
-  if (isLiteral(node, Math.LOG10E)) {
+  if (isStaticValue(node, Math.LOG10E)) {
     return {
       property: "LOG10E",
       from: "literal",
@@ -900,7 +900,7 @@ export type TransformingToMathE =
   // 2.718281828459045;
   | (MathPropertyInfo<"E"> & {
       from: "literal";
-      node: TSESTree.Literal;
+      node: TSESTree.Expression;
     });
 
 /**
@@ -924,7 +924,7 @@ export function getInfoForTransformingToMathE(
       from: "exp",
     };
   }
-  if (isLiteral(node, Math.E)) {
+  if (isStaticValue(node, Math.E)) {
     return {
       property: "E",
       node,

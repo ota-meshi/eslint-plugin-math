@@ -3,7 +3,7 @@ import { createRule } from "../utils";
 import {
   existComment,
   isGlobalObjectMethodCall,
-  isLiteral,
+  isStaticValue,
 } from "../utils/ast";
 import type { Rule } from "eslint";
 import { getInfoForTransformingToMathSqrt } from "../utils/math";
@@ -42,7 +42,7 @@ export default createRule("prefer-math-sqrt1-2", {
       } else if (isGlobalObjectMethodCall(node, "Math", "sqrt", sourceCode)) {
         if (node.arguments.length < 1 || !isHalf(node.arguments[0])) return;
         expression = "Math.sqrt(1 / 2)";
-      } else if (isLiteral(node, Math.SQRT1_2)) {
+      } else if (isStaticValue(node, Math.SQRT1_2)) {
         expression = `${Math.SQRT1_2}`;
       } else {
         return;
