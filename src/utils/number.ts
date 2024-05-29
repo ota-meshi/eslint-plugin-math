@@ -17,6 +17,12 @@ import {
   isLiteral,
 } from "./ast";
 import type { ExtractFunctionKeys } from "./type";
+import {
+  processLR,
+  processThreeOperands,
+  processTwoOperands,
+  processTwoParams,
+} from "./process";
 
 export type NumberMethod = ExtractFunctionKeys<typeof Number>;
 export type NumberMethodInfo<M extends NumberMethod> = {
@@ -59,13 +65,9 @@ export function getInfoForToNegative(
     return { from: "minus", argument: node.argument };
   }
   if (node.type === "BinaryExpression" && node.operator === "*") {
-    const { left, right } = node;
-    for (const [a, b] of [
-      [left, right],
-      [right, left],
-    ]) {
-      if (isMinusOne(b)) {
-        return { from: "multiply", argument: a };
+    for (const [left, right] of processLR(node)) {
+      if (isMinusOne(right)) {
+        return { from: "multiply", argument: left };
       }
     }
     return null;
@@ -143,7 +145,10 @@ export function isHalf(
  * Checks whether the given node is a `1/3`.
  */
 export function isOneThird(
-  node: TSESTree.Expression | TSESTree.SpreadElement,
+  node:
+    | TSESTree.Expression
+    | TSESTree.SpreadElement
+    | TSESTree.PrivateIdentifier,
 ): boolean {
   return (
     isLiteral(node, 1 / 3) ||
@@ -233,20 +238,17 @@ export type TransformingToNumberIsInteger =
  * Returns information if the given expression can be transformed to Number.isInteger().
  */
 export function getInfoForTransformingToNumberIsInteger(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | TransformingToNumberIsInteger {
   if (node.type === "BinaryExpression") {
-    const { left, right, operator } = node;
+    const { operator } = node;
     if (operator === "===" || operator === "!==") {
       const not = operator === "!==";
-      for (const [a, b] of [
-        [left, right],
-        [right, left],
-      ]) {
-        const toInt = getToIntegerWay(a);
+      for (const [left, right] of processLR(node)) {
+        const toInt = getToIntegerWay(left);
         if (toInt) {
-          if (!equalNodeTokens(toInt.argument, b, sourceCode)) continue;
+          if (!equalNodeTokens(toInt.argument, right, sourceCode)) continue;
           return {
             from: toInt.type,
             method: "isInteger",
@@ -255,14 +257,14 @@ export function getInfoForTransformingToNumberIsInteger(
             argument: toInt.argument,
           };
         }
-        if (isZero(b) && isModuloOne(a)) {
+        if (isModuloOne(left) && isZero(right)) {
           // n % 1 === 0
           return {
             from: "modulo",
             method: "isInteger",
             not,
             node,
-            argument: a.left,
+            argument: left.left,
           };
         }
       }
@@ -283,7 +285,7 @@ export function getInfoForTransformingToNumberIsInteger(
           method: "isInteger",
           not: true,
           node,
-          argument: left,
+          argument: node.left,
         };
       }
     }
@@ -369,132 +371,79 @@ export function getInfoForTransformingToNumberIsSafeInteger(
   sourceCode: SourceCode,
 ): null | TransformingToNumberIsSafeInteger {
   if (node.type !== "LogicalExpression") return null;
-  const { left, right, operator } = node;
-  if (operator === "&&") {
-    for (const [a, b] of [
-      [left, right],
-      [right, left],
-    ]) {
-      if (a.type === "LogicalExpression" && a.operator === "&&") {
-        const operands = [a.left, a.right, b];
-        const { result: isInteger, array: remainingOperands } = findAndMap(
-          operands,
-          (operand) => getInfoForNumberIsIntegerOrLike(operand, sourceCode),
-        );
-        if (isInteger && !isInteger.not) {
-          for (const [x, y] of [
-            remainingOperands,
-            [...remainingOperands].reverse(),
-          ]) {
-            const lteMax = getInfoForIsLTEMaxSafeInteger(x, sourceCode);
-            const gteMin = getInfoForIsGTEMinSafeInteger(y, sourceCode);
-            if (
-              lteMax &&
-              gteMin &&
-              equalNodeTokens(
-                isInteger.argument,
-                lteMax.argument,
-                gteMin.argument,
-                sourceCode,
-              )
-            ) {
-              // Number.isInteger(n) && n <= Number.MAX_SAFE_INTEGER && n >= Number.MIN_SAFE_INTEGER
-              return {
-                from: isInteger.from,
-                node,
-                argument: isInteger.argument,
-                not: false,
-                method: "isSafeInteger",
-              };
-            }
-          }
-        }
-      }
-      const isInteger = getInfoForNumberIsIntegerOrLike(a, sourceCode);
-      if (!isInteger || isInteger.not) continue;
+  const { operator } = node;
+  if (operator === "&&" || operator === "||") {
+    const not = operator === "||";
 
-      const inMax = getInfoForIsLTEMaxSafeInteger(b, sourceCode);
-      if (!inMax) continue;
-      const abs = getInfoForMathAbsOrLike(inMax.argument, sourceCode);
-      if (
-        !abs ||
-        !equalNodeTokens(abs.argument, isInteger.argument, sourceCode)
-      )
-        continue;
-      // Number.isInteger(n) && Math.abs(n) <= Number.MAX_SAFE_INTEGER
-      return {
-        from: isInteger.from,
+    return (
+      processThreeOperands(
         node,
-        argument: isInteger.argument,
-        not: false,
-        method: "isSafeInteger",
-      };
-    }
+        (operand) => getInfoForNumberIsIntegerOrLike(operand, sourceCode),
+        !not
+          ? (operand) => getInfoForIsLTEMaxSafeInteger(operand, sourceCode)
+          : (operand) => getInfoForIsGTMaxSafeInteger(operand, sourceCode),
+        !not
+          ? (operand) => getInfoForIsGTEMinSafeInteger(operand, sourceCode)
+          : (operand) => getInfoForIsLTMinSafeInteger(operand, sourceCode),
+        (
+          isInteger,
+          compMax,
+          compMin,
+        ): TransformingToNumberIsSafeInteger | null => {
+          if (
+            isInteger.not !== not ||
+            !equalNodeTokens(
+              isInteger.argument,
+              compMax.argument,
+              compMin.argument,
+              sourceCode,
+            )
+          )
+            return null;
 
-    return null;
-  }
-  if (operator === "||") {
-    for (const [a, b] of [
-      [left, right],
-      [right, left],
-    ]) {
-      if (a.type === "LogicalExpression" && a.operator === "||") {
-        const operands = [a.left, a.right, b];
-        const { result: isInteger, array: remainingOperands } = findAndMap(
-          operands,
-          (operand) => getInfoForNumberIsIntegerOrLike(operand, sourceCode),
-        );
-        if (isInteger?.not) {
-          for (const [x, y] of [
-            remainingOperands,
-            [...remainingOperands].reverse(),
-          ]) {
-            const gtMax = getInfoForIsGTMaxSafeInteger(x, sourceCode);
-            const ltMin = getInfoForIsLTMinSafeInteger(y, sourceCode);
-            if (
-              gtMax &&
-              ltMin &&
-              equalNodeTokens(
-                isInteger.argument,
-                gtMax.argument,
-                ltMin.argument,
-                sourceCode,
-              )
-            ) {
-              // !Number.isInteger(n) || n <= Number.MAX_SAFE_INTEGER || n >= Number.MIN_SAFE_INTEGER
-              return {
-                from: isInteger.from,
-                node,
-                argument: isInteger.argument,
-                not: true,
-                method: "isSafeInteger",
-              };
-            }
-          }
-        }
-      }
-      const isInteger = getInfoForNumberIsIntegerOrLike(a, sourceCode);
-      const isNotInteger = isInteger?.not ? isInteger : null;
-      if (!isNotInteger) continue;
-
-      const overMax = getInfoForIsGTMaxSafeInteger(b, sourceCode);
-      if (!overMax) continue;
-      const abs = getInfoForMathAbsOrLike(overMax.argument, sourceCode);
-      if (
-        !abs ||
-        !equalNodeTokens(abs.argument, isNotInteger.argument, sourceCode)
-      )
-        continue;
-      // !Number.isInteger(n) || Math.abs(n) > Number.MAX_SAFE_INTEGER
-      return {
-        from: isNotInteger.from,
+          // Number.isInteger(n) && n <= Number.MAX_SAFE_INTEGER && n >= Number.MIN_SAFE_INTEGER
+          // or
+          // !Number.isInteger(n) || n <= Number.MAX_SAFE_INTEGER || n >= Number.MIN_SAFE_INTEGER
+          return {
+            from: isInteger.from,
+            node,
+            argument: isInteger.argument,
+            not,
+            method: "isSafeInteger",
+          };
+        },
+      ) ||
+      processTwoOperands(
         node,
-        argument: isNotInteger.argument,
-        not: true,
-        method: "isSafeInteger",
-      };
-    }
-    return null;
+        (operand) => getInfoForNumberIsIntegerOrLike(operand, sourceCode),
+        (operand) => {
+          const compMax = !not
+            ? getInfoForIsLTEMaxSafeInteger(operand, sourceCode)
+            : getInfoForIsGTMaxSafeInteger(operand, sourceCode);
+          return (
+            compMax && getInfoForMathAbsOrLike(compMax.argument, sourceCode)
+          );
+        },
+        (isInteger, abs): TransformingToNumberIsSafeInteger | null => {
+          if (
+            isInteger.not !== not ||
+            !equalNodeTokens(abs.argument, isInteger.argument, sourceCode)
+          )
+            return null;
+
+          // Number.isInteger(n) && Math.abs(n) <= Number.MAX_SAFE_INTEGER
+          // or
+          // !Number.isInteger(n) || Math.abs(n) > Number.MAX_SAFE_INTEGER
+          return {
+            from: isInteger.from,
+            node,
+            argument: isInteger.argument,
+            not,
+            method: "isSafeInteger",
+          };
+        },
+      )
+    );
   }
   return null;
 }
@@ -522,44 +471,39 @@ export function getInfoForTransformingToNumberIsNaN(
   sourceCode: SourceCode,
 ): null | TransformingToNumberIsNaN {
   if (node.type === "LogicalExpression") {
-    const { left, right, operator } = node;
+    const { operator } = node;
     if (operator !== "&&" && operator !== "||") return null;
 
     const not = operator === "||";
-    for (const [a, b] of [
-      [left, right],
-      [right, left],
-    ]) {
-      const typeofNumber = getInfoForTypeOfNumber(a);
-      if (!typeofNumber || typeofNumber.not !== not) continue;
-      const globalIsNaN = getInfoForGlobalIsNaN(b, sourceCode);
-      if (
-        !globalIsNaN ||
-        globalIsNaN.not !== not ||
-        !equalNodeTokens(
-          typeofNumber.argument,
-          globalIsNaN.argument,
-          sourceCode,
+    return processTwoOperands(
+      node,
+      getInfoForTypeOfNumber,
+      (operand) => getInfoForGlobalIsNaN(operand, sourceCode),
+      (typeofNumber, globalIsNaN) => {
+        if (
+          globalIsNaN.not !== not ||
+          !equalNodeTokens(
+            typeofNumber.argument,
+            globalIsNaN.argument,
+            sourceCode,
+          )
         )
-      )
-        continue;
-      return {
-        from: "global.isNaN",
-        node,
-        argument: typeofNumber.argument,
-        not,
-        method: "isNaN",
-      };
-    }
-    return null;
+          return null;
+        return {
+          from: "global.isNaN",
+          node,
+          argument: typeofNumber.argument,
+          not,
+          method: "isNaN",
+        };
+      },
+    );
   }
   if (node.type === "BinaryExpression") {
-    const { left, right, operator } = node;
-    if (
-      (operator !== "!==" && operator !== "!=") ||
-      !equalNodeTokens(left, right, sourceCode)
-    )
-      return null;
+    const { operator } = node;
+    if (operator !== "!==" && operator !== "!=") return null;
+    const { left, right } = node;
+    if (!equalNodeTokens(left, right, sourceCode)) return null;
     return {
       from: "notEquals",
       node,
@@ -568,28 +512,22 @@ export function getInfoForTransformingToNumberIsNaN(
       method: "isNaN",
     };
   }
-  if (
-    !isGlobalObjectMethodCall(node, "Object", "is", sourceCode) ||
-    node.arguments.length < 2
-  )
-    return null;
-  const [left, right] = node.arguments;
-  for (const [a, b] of [
-    [left, right],
-    [right, left],
-  ]) {
-    if (a.type === "SpreadElement") continue;
-    if (isGlobalObject(b, "NaN", sourceCode)) {
+  if (!isGlobalObjectMethodCall(node, "Object", "is", sourceCode)) return null;
+
+  return processTwoParams(
+    node,
+    (param) => (isGlobalObject(param, "NaN", sourceCode) ? param : null),
+    (param) => param,
+    (_a, b) => {
       return {
         from: "Object.is",
         node,
-        argument: a,
+        argument: b,
         not: false,
         method: "isNaN",
       };
-    }
-  }
-  return null;
+    },
+  );
 }
 
 export type TransformingToNumberIsFinite = NumberMethodInfo<"isFinite"> & {
@@ -605,36 +543,33 @@ export function getInfoForTransformingToNumberIsFinite(
   sourceCode: SourceCode,
 ): null | TransformingToNumberIsFinite {
   if (node.type === "LogicalExpression") {
-    const { left, right, operator } = node;
+    const { operator } = node;
     if (operator !== "&&" && operator !== "||") return null;
 
     const not = operator === "||";
-    for (const [a, b] of [
-      [left, right],
-      [right, left],
-    ]) {
-      const typeofNumber = getInfoForTypeOfNumber(a);
-      if (!typeofNumber || typeofNumber.not !== not) continue;
-      const globalIsFinite = getInfoForGlobalIsFinite(b, sourceCode);
-      if (
-        !globalIsFinite ||
-        globalIsFinite.not !== not ||
-        !equalNodeTokens(
-          typeofNumber.argument,
-          globalIsFinite.argument,
-          sourceCode,
+    return processTwoOperands(
+      node,
+      getInfoForTypeOfNumber,
+      (operand) => getInfoForGlobalIsFinite(operand, sourceCode),
+      (typeofNumber, globalIsFinite) => {
+        if (
+          globalIsFinite.not !== not ||
+          !equalNodeTokens(
+            typeofNumber.argument,
+            globalIsFinite.argument,
+            sourceCode,
+          )
         )
-      )
-        continue;
-      return {
-        from: "global.isFinite",
-        node,
-        argument: typeofNumber.argument,
-        not,
-        method: "isFinite",
-      };
-    }
-    return null;
+          return null;
+        return {
+          from: "global.isFinite",
+          node,
+          argument: typeofNumber.argument,
+          not,
+          method: "isFinite",
+        };
+      },
+    );
   }
   return null;
 }
@@ -668,7 +603,7 @@ function isFiftyThree(
  * Returns information if the given expression is Number.isInteger().
  */
 function getInfoFoNumberIsInteger(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | NumberMethodInfo<"isInteger"> {
   if (
@@ -744,7 +679,9 @@ function getInfoForIsLTMinSafeInteger(
 /**
  * Returns information if the given expression is `typeof x === 'number'`.
  */
-function getInfoForTypeOfNumber(node: TSESTree.Expression): null | {
+function getInfoForTypeOfNumber(
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+): null | {
   argument: TSESTree.Expression;
   not: boolean;
 } {
@@ -757,16 +694,13 @@ function getInfoForTypeOfNumber(node: TSESTree.Expression): null | {
   )
     return null;
 
-  const { left, right, operator } = node;
+  const { operator } = node;
   const not = operator === "!==" || operator === "!=";
-  for (const [a, b] of [
-    [left, right],
-    [right, left],
-  ]) {
-    if (a.type !== "UnaryExpression" || a.operator !== "typeof") continue;
-    if (!isLiteral(b, "number")) continue;
+  for (const [left, right] of processLR(node)) {
+    if (left.type !== "UnaryExpression" || left.operator !== "typeof") continue;
+    if (!isLiteral(right, "number")) continue;
     return {
-      argument: a.argument,
+      argument: left.argument,
       not,
     };
   }
@@ -811,7 +745,7 @@ function getArgumentFromBinaryExpression(
  * Returns information if the condition checks whether the given expression is Number.isInteger() or like.
  */
 function getInfoForNumberIsIntegerOrLike(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ):
   | (NumberMethodInfo<"isInteger"> & {
@@ -834,7 +768,7 @@ function getInfoForNumberIsIntegerOrLike(
  * Returns information if the condition checks whether the given expression is isNaN().
  */
 function getInfoForGlobalIsNaN(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ):
   | (NumberMethodInfo<"isNaN"> & {
@@ -874,7 +808,7 @@ function getInfoForGlobalIsNaN(
  * Returns information if the condition checks whether the given expression is isFinite().
  */
 function getInfoForGlobalIsFinite(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ):
   | (NumberMethodInfo<"isFinite"> & {
@@ -908,33 +842,4 @@ function getInfoForGlobalIsFinite(
     };
   }
   return null;
-}
-
-/**
- * Find and map the array.
- */
-function findAndMap<T, R>(
-  array: T[],
-  callback: (item: T) => R,
-): {
-  result: R | null;
-  array: T[];
-} {
-  const remaining: T[] = [];
-  for (let index = 0; index < array.length; index++) {
-    const element = array[index];
-    const result = callback(element);
-    if (result) {
-      remaining.push(...array.slice(index + 1));
-      return {
-        result,
-        array: remaining,
-      };
-    }
-    remaining.push(element);
-  }
-  return {
-    result: null,
-    array,
-  };
 }
