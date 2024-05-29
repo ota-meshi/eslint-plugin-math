@@ -63,22 +63,20 @@ export function getInfoForTransformingToMathTrunc(
   }
   if (node.type === "BinaryExpression") {
     for (const [left, right] of processLR(node)) {
-      if (node.operator === "|" || node.operator === "^") {
-        if (isZero(right)) {
-          // n | 0, n ^ 0
-          return { from: "bitwise", method: "trunc", node, argument: left };
-        }
-        continue;
-      }
-      if (node.operator === ">>" || node.operator === "<<") {
-        if (isZero(right)) {
-          // n >> 0, n << 0
+      if (
+        node.operator === "|" ||
+        node.operator === "^" ||
+        node.operator === ">>" ||
+        node.operator === "<<"
+      ) {
+        if (isZero(right, sourceCode)) {
+          // n | 0, n ^ 0, n >> 0, n << 0
           return { from: "bitwise", method: "trunc", node, argument: left };
         }
         continue;
       }
       if (node.operator === "&") {
-        if (isMinusOne(right)) {
+        if (isMinusOne(right, sourceCode)) {
           // n & -1
           return { from: "bitwise", method: "trunc", node, argument: left };
         }
@@ -88,7 +86,7 @@ export function getInfoForTransformingToMathTrunc(
     return null;
   }
   if (node.type === "ConditionalExpression") {
-    const conditional = parseBranchNode(node);
+    const conditional = parseBranchNode(node, sourceCode);
     if (!conditional) return null;
     const floor = getInfoForMathFloor(conditional.whenPositive, sourceCode);
     if (floor === null) return null;
@@ -238,7 +236,7 @@ export function* extractTransformingToMathTruncStatements(
     block: TSESTree.Statement | TSESTree.Expression;
   }> {
     if (node.type === "IfStatement" || node.type === "ConditionalExpression") {
-      const parsed = parseBranchNode(node);
+      const parsed = parseBranchNode(node, sourceCode);
       if (parsed && equalNodeTokens(parsed.argument, argument, sourceCode)) {
         const block =
           targetMethod === "floor" ? parsed.whenPositive : parsed.whenNegative;
@@ -284,7 +282,7 @@ export function getInfoForTransformingToMathSqrt(
   if (node.type === "BinaryExpression") {
     if (node.operator === "**") {
       for (const [left, right] of processLR(node)) {
-        if (!isHalf(right)) continue;
+        if (!isHalf(right, sourceCode)) continue;
         // n ** (1/2)
         return { from: "exponentiation", method: "sqrt", node, argument: left };
       }
@@ -294,7 +292,8 @@ export function getInfoForTransformingToMathSqrt(
   if (isGlobalObjectMethodCall(node, "Math", "pow", sourceCode)) {
     if (node.arguments.length < 2) return null;
     const [argument, exponent] = node.arguments;
-    if (argument.type === "SpreadElement" || !isHalf(exponent)) return null;
+    if (argument.type === "SpreadElement" || !isHalf(exponent, sourceCode))
+      return null;
     // Math.pow(n, 1/2)
     return {
       from: "pow",
@@ -321,7 +320,7 @@ export function getInfoForTransformingToMathAbs(
     const parsed = parseConditionalExpression(node);
     if (parsed) {
       const { argument, whenPositive, whenNegative } = parsed;
-      const neg = getInfoForToNegative(whenNegative);
+      const neg = getInfoForToNegative(whenNegative, sourceCode);
       if (
         neg &&
         equalNodeTokens(argument, neg.argument, whenPositive, sourceCode)
@@ -344,7 +343,7 @@ export function getInfoForTransformingToMathAbs(
    */
   function parseConditionalExpression(c: TSESTree.ConditionalExpression) {
     const { test, consequent, alternate } = c;
-    const positive = getInfoForIsPositive(test);
+    const positive = getInfoForIsPositive(test, sourceCode);
     if (positive) {
       return {
         argument: positive.argument,
@@ -352,7 +351,7 @@ export function getInfoForTransformingToMathAbs(
         whenNegative: alternate,
       };
     }
-    const negative = getInfoForIsNegative(test);
+    const negative = getInfoForIsNegative(test, sourceCode);
     if (negative) {
       return {
         argument: negative.argument,
@@ -383,7 +382,7 @@ export function getInfoForTransformingToMathCbrt(
   if (node.type === "BinaryExpression") {
     if (node.operator === "**") {
       for (const [left, right] of processLR(node)) {
-        if (!isOneThird(right)) continue;
+        if (!isOneThird(right, sourceCode)) continue;
         // n ** (1/3)
         return { from: "exponentiation", method: "cbrt", node, argument: left };
       }
@@ -393,7 +392,8 @@ export function getInfoForTransformingToMathCbrt(
   if (isGlobalObjectMethodCall(node, "Math", "pow", sourceCode)) {
     if (node.arguments.length < 2) return null;
     const [argument, exponent] = node.arguments;
-    if (argument.type === "SpreadElement" || !isOneThird(exponent)) return null;
+    if (argument.type === "SpreadElement" || !isOneThird(exponent, sourceCode))
+      return null;
     // Math.pow(n, 1/3)
     return {
       from: "pow",
@@ -500,7 +500,7 @@ export function getInfoForTransformingToMathLN2(
   if (isGlobalObjectMethodCall(node, "Math", "log", sourceCode)) {
     if (node.arguments.length < 1) return null;
     const [argument] = node.arguments;
-    if (!isTwo(argument)) return null;
+    if (!isTwo(argument, sourceCode)) return null;
     return {
       property: "LN2",
       node,
@@ -518,7 +518,7 @@ export function getInfoForTransformingToMathLN2(
       );
       if (!mathLOG2E || mathLOG2E.inverse) return null;
     }
-    if (isOne(node.left)) {
+    if (isOne(node.left, sourceCode)) {
       return {
         property: "LN2",
         node,
@@ -534,7 +534,10 @@ export function getInfoForTransformingToMathLN2(
       parent: node,
     };
   }
-  if (isStaticValue(node, Math.LN2)) {
+  if (
+    isStaticValue(node, Math.LN2, sourceCode) &&
+    !isGlobalObjectProperty(node, "Math", "LN2", sourceCode)
+  ) {
     return {
       from: "literal",
       node,
@@ -597,7 +600,7 @@ export function getInfoForTransformingToMathLOG2E(
       if (!mathLN2 || mathLN2.inverse) return null;
     }
 
-    if (isOne(node.left)) {
+    if (isOne(node.left, sourceCode)) {
       return {
         property: "LOG2E",
         node,
@@ -613,7 +616,10 @@ export function getInfoForTransformingToMathLOG2E(
       parent: node,
     };
   }
-  if (isStaticValue(node, Math.LOG2E)) {
+  if (
+    isStaticValue(node, Math.LOG2E, sourceCode) &&
+    !isGlobalObjectProperty(node, "Math", "LOG2E", sourceCode)
+  ) {
     return {
       property: "LOG2E",
       from: "literal",
@@ -743,7 +749,7 @@ export function getInfoForTransformingToMathLN10(
   if (isGlobalObjectMethodCall(node, "Math", "log", sourceCode)) {
     if (node.arguments.length < 1) return null;
     const [argument] = node.arguments;
-    if (!isTen(argument)) return null;
+    if (!isTen(argument, sourceCode)) return null;
     return {
       property: "LN10",
       node,
@@ -761,7 +767,7 @@ export function getInfoForTransformingToMathLN10(
       );
       if (!mathLOG10E || mathLOG10E.inverse) return null;
     }
-    if (isOne(node.left)) {
+    if (isOne(node.left, sourceCode)) {
       return {
         property: "LN10",
         node,
@@ -777,7 +783,10 @@ export function getInfoForTransformingToMathLN10(
       parent: node,
     };
   }
-  if (isStaticValue(node, Math.LN10)) {
+  if (
+    isStaticValue(node, Math.LN10, sourceCode) &&
+    !isGlobalObjectProperty(node, "Math", "LN10", sourceCode)
+  ) {
     return {
       from: "literal",
       node,
@@ -840,7 +849,7 @@ export function getInfoForTransformingToMathLOG10E(
       if (!mathLN10 || mathLN10.inverse) return null;
     }
 
-    if (isOne(node.left)) {
+    if (isOne(node.left, sourceCode)) {
       return {
         property: "LOG10E",
         node,
@@ -856,7 +865,10 @@ export function getInfoForTransformingToMathLOG10E(
       parent: node,
     };
   }
-  if (isStaticValue(node, Math.LOG10E)) {
+  if (
+    isStaticValue(node, Math.LOG10E, sourceCode) &&
+    !isGlobalObjectProperty(node, "Math", "LOG10E", sourceCode)
+  ) {
     return {
       property: "LOG10E",
       from: "literal",
@@ -916,7 +928,7 @@ export function getInfoForTransformingToMathE(
   if (
     isGlobalObjectMethodCall(node, "Math", "exp", sourceCode) &&
     node.arguments.length > 0 &&
-    isOne(node.arguments[0])
+    isOne(node.arguments[0], sourceCode)
   ) {
     return {
       property: "E",
@@ -924,7 +936,10 @@ export function getInfoForTransformingToMathE(
       from: "exp",
     };
   }
-  if (isStaticValue(node, Math.E)) {
+  if (
+    isStaticValue(node, Math.E, sourceCode) &&
+    !isGlobalObjectProperty(node, "Math", "E", sourceCode)
+  ) {
     return {
       property: "E",
       node,
@@ -1047,6 +1062,7 @@ function parseBranchNode<
   N extends TSESTree.ConditionalExpression | TSESTree.IfStatement,
 >(
   node: N,
+  sourceCode: SourceCode,
 ): null | {
   argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
   whenPositive: NonNullable<N["consequent"] | N["alternate"]>;
@@ -1054,7 +1070,7 @@ function parseBranchNode<
 } {
   const { test, consequent, alternate } = node;
   if (!alternate) return null;
-  const isPositive = getInfoForIsPositive(test);
+  const isPositive = getInfoForIsPositive(test, sourceCode);
   if (isPositive) {
     return {
       // n > 0
@@ -1063,7 +1079,7 @@ function parseBranchNode<
       whenNegative: alternate,
     };
   }
-  const isNegative = getInfoForIsNegative(test);
+  const isNegative = getInfoForIsNegative(test, sourceCode);
   if (isNegative) {
     return {
       // n < 0

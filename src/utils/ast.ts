@@ -42,6 +42,7 @@ export function existCommentBetween(
   }
   return false;
 }
+
 /**
  * Checks whether the given node is a global object.
  */
@@ -55,17 +56,15 @@ export function isGlobalObject(
 ): node is TSESTree.Identifier | TSESTree.MemberExpression {
   if (node.type === "Identifier") {
     if (node.name !== name) return false;
-    const variable = findVariable(sourceCode.getScope(node), node);
-    if (variable && variable.defs.length > 0) return false; // Not a global
-    return true;
+    return isGlobal(node, sourceCode);
   }
-  return (
+  if (
     node.type === "MemberExpression" &&
-    (isGlobalObjectProperty(node, "globalThis", name, sourceCode) ||
-      isGlobalObjectProperty(node, "self", name, sourceCode) ||
-      isGlobalObjectProperty(node, "window", name, sourceCode) ||
-      isGlobalObjectProperty(node, "global", name, sourceCode))
-  );
+    isGlobalNamespace(node.object, sourceCode)
+  ) {
+    return getPropertyName(node, sourceCode.getScope(node)) === name;
+  }
+  return false;
 }
 /**
  * Checks whether the given node is a global object method call.
@@ -170,9 +169,50 @@ export function isStaticValue<V extends TSESTree.Literal["value"]>(
     | TSESTree.SpreadElement
     | TSESTree.PrivateIdentifier,
   value: V,
+  sourceCode: SourceCode,
 ): node is TSESTree.Expression {
-  const v = getStaticValue(node);
+  const v = getStaticValue(node, sourceCode);
   return v != null && v.value === value;
+}
+
+/**
+ * Checks whether the given node is a global variable.
+ */
+function isGlobal(
+  node: TSESTree.Identifier,
+  sourceCode: SourceCode,
+): node is TSESTree.Identifier {
+  const variable = findVariable(sourceCode.getScope(node), node);
+  if (variable && variable.defs.length > 0) return false; // Not a global
+  return true;
+}
+
+/**
+ * Checks whether the given node is a global namespace.
+ */
+function isGlobalNamespace(
+  node:
+    | TSESTree.Expression
+    | TSESTree.PrivateIdentifier
+    | TSESTree.SpreadElement,
+  sourceCode: SourceCode,
+): node is TSESTree.Identifier | TSESTree.MemberExpression {
+  if (node.type === "Identifier") {
+    if (
+      node.name === "globalThis" ||
+      node.name === "self" ||
+      node.name === "window" ||
+      node.name === "global"
+    )
+      return isGlobal(node, sourceCode);
+    return false;
+  }
+  if (node.type === "MemberExpression") {
+    const name = getPropertyName(node, sourceCode.getScope(node));
+    if (name == null) return false;
+    return isGlobalNamespace(node.object, sourceCode);
+  }
+  return false;
 }
 
 /**
@@ -183,64 +223,97 @@ function getStaticValue(
     | TSESTree.Expression
     | TSESTree.SpreadElement
     | TSESTree.PrivateIdentifier,
+  sourceCode: SourceCode,
 ): {
   value: string | number | bigint | boolean | RegExp | null | undefined;
 } | null {
-  if (node.type === "Literal") return node;
-  if (node.type === "UnaryExpression") {
-    const v = getStaticValue(node.argument);
-    if (v == null) return null;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- ignore
-    const value: any = v.value;
-    if (node.operator === "+") return { value };
-    if (node.operator === "-") return { value: -value };
-    if (node.operator === "~") return { value: ~value };
-    if (node.operator === "!") return { value: !value };
-    if (node.operator === "typeof") return { value: typeof value };
-    if (node.operator === "void") return { value: undefined };
-    if (node.operator === "delete") return { value: true };
-    return null;
+  try {
+    if (node.type === "Literal") return node;
+    if (node.type === "UnaryExpression") {
+      const v = getStaticValue(node.argument, sourceCode);
+      if (v == null) return null;
+      const value = v.value;
+      if (node.operator === "+") return { value };
+      if (node.operator === "-") return { value: -value! };
+      if (node.operator === "~") return { value: ~value! };
+      if (node.operator === "!") return { value: !value };
+      if (node.operator === "typeof") return { value: typeof value };
+      if (node.operator === "void") return { value: undefined };
+      if (node.operator === "delete") return { value: true };
+      return null;
+    }
+    if (node.type === "BinaryExpression" || node.type === "LogicalExpression") {
+      const left = getStaticValue(node.left, sourceCode);
+      const right = getStaticValue(node.right, sourceCode);
+      if (left == null || right == null) return null;
+      const l = left.value as never;
+      const r = right.value as never;
+      /* eslint-disable @typescript-eslint/restrict-plus-operands -- Ignore */
+      if (node.operator === "+") return { value: l + r };
+      if (node.operator === "-") return { value: l - r };
+      if (node.operator === "*") return { value: l * r };
+      if (node.operator === "/") return { value: l / r };
+      if (node.operator === "%") return { value: l ** r };
+      if (node.operator === "**") return { value: l ** r };
+      if (node.operator === "<<") return { value: l << r };
+      if (node.operator === ">>") return { value: l >> r };
+      if (node.operator === ">>>") return { value: l >>> r };
+      if (node.operator === "&") return { value: l & r };
+      if (node.operator === "|") return { value: l | r };
+      if (node.operator === "^") return { value: l ^ r };
+      /* eslint-enable @typescript-eslint/restrict-plus-operands -- Ignore */
+      if (node.operator === "&&") return { value: l && r };
+      if (node.operator === "||") return { value: l || r };
+      if (node.operator === "??") return { value: l ?? r };
+      return null;
+    }
+    if (node.type === "ConditionalExpression") {
+      const test = getStaticValue(node.test, sourceCode);
+      if (test)
+        return test.value
+          ? getStaticValue(node.consequent, sourceCode)
+          : getStaticValue(node.alternate, sourceCode);
+      return null;
+    }
+    if (
+      node.type === "TSAsExpression" ||
+      node.type === "TSTypeAssertion" ||
+      node.type === "TSSatisfiesExpression" ||
+      node.type === "TSNonNullExpression" ||
+      node.type === "TSInstantiationExpression"
+    )
+      return getStaticValue(node.expression, sourceCode);
+    if (node.type === "Identifier") {
+      if (!isGlobal(node, sourceCode)) return null;
+      return getGlobal(node.name);
+    }
+    if (node.type === "MemberExpression") {
+      const name = getPropertyName(node, sourceCode.getScope(node));
+      if (name == null) return null;
+      if (isGlobalNamespace(node.object, sourceCode)) {
+        return getGlobal(name);
+      }
+      if (isGlobalObject(node.object, "Number", sourceCode)) {
+        const value = Number[name as unknown as keyof typeof Number];
+        return typeof value === "number" ? { value } : null;
+      }
+      if (isGlobalObject(node.object, "Math", sourceCode)) {
+        const value = Math[name as unknown as keyof typeof Math];
+        return typeof value === "number" ? { value } : null;
+      }
+    }
+  } catch {
+    // ignore
   }
-  if (node.type === "BinaryExpression" || node.type === "LogicalExpression") {
-    const left = getStaticValue(node.left);
-    const right = getStaticValue(node.right);
-    if (left == null || right == null) return null;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- ignore
-    const l: any = left.value;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- ignore
-    const r: any = right.value;
-    if (node.operator === "+") return { value: l + r };
-    if (node.operator === "-") return { value: l - r };
-    if (node.operator === "*") return { value: l * r };
-    if (node.operator === "/") return { value: l / r };
-    if (node.operator === "%") return { value: l ** r };
-    if (node.operator === "**") return { value: l ** r };
-    if (node.operator === "<<") return { value: l << r };
-    if (node.operator === ">>") return { value: l >> r };
-    if (node.operator === ">>>") return { value: l >>> r };
-    if (node.operator === "&") return { value: l & r };
-    if (node.operator === "|") return { value: l | r };
-    if (node.operator === "^") return { value: l ^ r };
-    if (node.operator === "&&") return { value: l && r };
-    if (node.operator === "||") return { value: l || r };
-    if (node.operator === "??") return { value: l ?? r };
-    return null;
-  }
-  if (node.type === "ConditionalExpression") {
-    const test = getStaticValue(node.test);
-    if (test)
-      return test.value
-        ? getStaticValue(node.consequent)
-        : getStaticValue(node.alternate);
-    return null;
-  }
-  if (
-    node.type === "TSAsExpression" ||
-    node.type === "TSTypeAssertion" ||
-    node.type === "TSSatisfiesExpression" ||
-    node.type === "TSNonNullExpression" ||
-    node.type === "TSInstantiationExpression"
-  )
-    return getStaticValue(node.expression);
   return null;
+
+  /**
+   * Get the global value.
+   */
+  function getGlobal(name: string) {
+    if (name === "undefined") return { value: undefined };
+    if (name === "Infinity") return { value: Infinity };
+    if (name === "NaN") return { value: NaN };
+    return null;
+  }
 }

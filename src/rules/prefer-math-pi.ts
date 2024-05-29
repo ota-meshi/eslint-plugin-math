@@ -1,6 +1,6 @@
 import type { TSESTree } from "@typescript-eslint/types";
 import { createRule } from "../utils";
-import { isStaticValue } from "../utils/ast";
+import { isGlobalObjectProperty, isStaticValue } from "../utils/ast";
 import type { Rule } from "eslint";
 
 export default createRule("prefer-math-pi", {
@@ -18,11 +18,16 @@ export default createRule("prefer-math-pi", {
     type: "suggestion",
   },
   create(context) {
+    const sourceCode = context.sourceCode;
+
     /**
      * Verify if the given node can be converted to Math.PI.
      */
     function verifyForExpression(node: TSESTree.Expression) {
-      if (isStaticValue(node, Math.PI)) {
+      if (
+        isStaticValue(node, Math.PI, sourceCode) &&
+        !isGlobalObjectProperty(node, "Math", "PI", sourceCode)
+      ) {
         const fix = (fixer: Rule.RuleFixer) => {
           return fixer.replaceText(node, `Math.PI`);
         };
