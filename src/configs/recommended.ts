@@ -5,7 +5,10 @@ export const plugins = ["math"];
 export const rules = {
   // eslint-plugin-math rules
   "math/prefer-math-cbrt": "error",
+  "math/prefer-math-ln10": "error",
   "math/prefer-math-ln2": "error",
+  "math/prefer-math-log10": "error",
+  "math/prefer-math-log10e": "error",
   "math/prefer-math-log2": "error",
   "math/prefer-math-log2e": "error",
   "math/prefer-math-sqrt": "error",

@@ -104,6 +104,17 @@ export function isTwo(
   return isLiteral(node, 2);
 }
 /**
+ * Checks whether the given node is a `10`.
+ */
+export function isTen(
+  node:
+    | TSESTree.Expression
+    | TSESTree.PrivateIdentifier
+    | TSESTree.SpreadElement,
+): node is TSESTree.Literal {
+  return isLiteral(node, 10);
+}
+/**
  * Checks whether the given node is a `-1`.
  */
 export function isMinusOne(

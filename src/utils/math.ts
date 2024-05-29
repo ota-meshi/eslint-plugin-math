@@ -15,6 +15,7 @@ import {
   isMinusOne,
   isOne,
   isOneThird,
+  isTen,
   isTwo,
   isZero,
 } from "./number";
@@ -656,6 +657,254 @@ export function getInfoForTransformingToMathLOG2E(
     }
 
     return getInfoForTransformingToMathLog2(expr, sourceCode);
+  }
+}
+
+export type TransformingToMathLog10 =
+  | (MathMethodInfo<"log10"> & {
+      from: "logWithLOG10E";
+      node: TSESTree.BinaryExpression;
+    })
+  | (MathMethodInfo<"log10"> & {
+      from: "logWithLN10";
+      node: TSESTree.BinaryExpression;
+    });
+/**
+ * Returns information if the given expression can be transformed to Math.log10().
+ */
+export function getInfoForTransformingToMathLog10(
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  sourceCode: SourceCode,
+): null | TransformingToMathLog10 {
+  if (node.type === "BinaryExpression") {
+    const { left, right, operator } = node;
+    if (operator === "*") {
+      // Check for Math.log(n) * Math.LOG10E;
+      for (const [a, b] of [
+        [left, right],
+        [right, left],
+      ]) {
+        if (!isGlobalObjectMethodCall(a, "Math", "log", sourceCode)) continue;
+        if (a.arguments.length < 1) continue;
+        const [argument] = a.arguments;
+        if (argument.type === "SpreadElement") continue;
+        if (!isGlobalObjectProperty(b, "Math", "LOG10E", sourceCode)) {
+          const mathLOG10E = getInfoForTransformingToMathLOG10E(b, sourceCode);
+          if (!mathLOG10E || mathLOG10E.inverse) continue;
+        }
+        return {
+          from: "logWithLOG10E",
+          method: "log10",
+          node,
+          argument,
+        };
+      }
+      return null;
+    }
+    if (operator === "/") {
+      // Check for Math.log(n) / Math.LN10;
+      if (!isGlobalObjectMethodCall(left, "Math", "log", sourceCode))
+        return null;
+      if (left.arguments.length < 1) return null;
+      const [argument] = left.arguments;
+      if (argument.type === "SpreadElement") return null;
+      if (!isGlobalObjectProperty(right, "Math", "LN10", sourceCode)) {
+        const mathLN10 = getInfoForTransformingToMathLN10(right, sourceCode);
+        if (!mathLN10 || mathLN10.inverse) return null;
+      }
+      return {
+        from: "logWithLN10",
+        method: "log10",
+        node,
+        argument,
+      };
+    }
+    return null;
+  }
+  return null;
+}
+
+export type TransformingToMathLN10 =
+  // Math.log(10);
+  | (MathPropertyInfo<"LN10"> & {
+      from: "log";
+      node: TSESTree.CallExpression;
+      inverse: false;
+    })
+  // 1 / Math.LOG10E;
+  | (MathPropertyInfo<"LN10"> & {
+      from: "LOG10E";
+      node: TSESTree.BinaryExpression;
+      inverse: false;
+    })
+  // x / Math.LOG10E;
+  | (MathPropertyInfo<"LN10"> & {
+      from: "LOG10E";
+      node: TSESTree.Expression;
+      inverse: true;
+      parent: TSESTree.BinaryExpression;
+    })
+  // Literal
+  | (MathPropertyInfo<"LN10"> & {
+      from: "literal";
+      node: TSESTree.Literal;
+      inverse: false;
+    });
+/**
+ * Returns information if the given expression can be transformed to Math.LN10.
+ */
+export function getInfoForTransformingToMathLN10(
+  node: TSESTree.Expression,
+  sourceCode: SourceCode,
+): null | TransformingToMathLN10 {
+  if (isGlobalObjectMethodCall(node, "Math", "log", sourceCode)) {
+    if (node.arguments.length < 1) return null;
+    const [argument] = node.arguments;
+    if (!isTen(argument)) return null;
+    return {
+      property: "LN10",
+      node,
+      from: "log",
+      inverse: false,
+    };
+  }
+  if (node.type === "BinaryExpression") {
+    if (node.operator !== "/") return null;
+
+    if (!isGlobalObjectProperty(node.right, "Math", "LOG10E", sourceCode)) {
+      const mathLOG10E = getInfoForTransformingToMathLOG10E(
+        node.right,
+        sourceCode,
+      );
+      if (!mathLOG10E || mathLOG10E.inverse) return null;
+    }
+    if (isOne(node.left)) {
+      return {
+        property: "LN10",
+        node,
+        from: "LOG10E",
+        inverse: false,
+      };
+    }
+    return {
+      property: "LN10",
+      node: node.right,
+      from: "LOG10E",
+      inverse: true,
+      parent: node,
+    };
+  }
+  if (isLiteral(node, Math.LN10)) {
+    return {
+      from: "literal",
+      node,
+      property: "LN10",
+      inverse: false,
+    };
+  }
+  return null;
+}
+
+export type TransformingToMathLOG10E =
+  // Math.log10(Math.E);;
+  | (MathPropertyInfo<"LOG10E"> & {
+      from: "log10";
+      node: TSESTree.CallExpression | TSESTree.BinaryExpression;
+      inverse: false;
+    })
+  // 1 / Math.LN10;
+  | (MathPropertyInfo<"LOG10E"> & {
+      from: "LN10";
+      node: TSESTree.BinaryExpression;
+      inverse: false;
+    })
+  // x / Math.LN10;
+  | (MathPropertyInfo<"LOG10E"> & {
+      from: "LN10";
+      node: TSESTree.Expression;
+      inverse: true;
+      parent: TSESTree.BinaryExpression;
+    })
+  // Literal
+  | (MathPropertyInfo<"LOG10E"> & {
+      from: "literal";
+      node: TSESTree.Literal;
+      inverse: false;
+    });
+
+/**
+ * Returns information if the given expression can be transformed to Math.LOG10E.
+ */
+export function getInfoForTransformingToMathLOG10E(
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  sourceCode: SourceCode,
+): null | TransformingToMathLOG10E {
+  const log10 = getInfoForMathLog10(node);
+
+  if (log10) {
+    if (!isMathE(log10.argument, sourceCode)) return null;
+    return {
+      property: "LOG10E",
+      node: log10.node,
+      from: "log10",
+      inverse: false,
+    };
+  }
+  if (node.type === "BinaryExpression") {
+    if (node.operator !== "/") return null;
+    if (!isGlobalObjectProperty(node.right, "Math", "LN10", sourceCode)) {
+      const mathLN10 = getInfoForTransformingToMathLN10(node.right, sourceCode);
+      if (!mathLN10 || mathLN10.inverse) return null;
+    }
+
+    if (isOne(node.left)) {
+      return {
+        property: "LOG10E",
+        node,
+        from: "LN10",
+        inverse: false,
+      };
+    }
+    return {
+      property: "LOG10E",
+      node: node.right,
+      from: "LN10",
+      inverse: true,
+      parent: node,
+    };
+  }
+  if (isLiteral(node, Math.LOG10E)) {
+    return {
+      property: "LOG10E",
+      from: "literal",
+      node,
+      inverse: false,
+    };
+  }
+  return null;
+
+  /**
+   * Returns information if the given expression is Math.log10().
+   */
+  function getInfoForMathLog10(
+    expr: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  ):
+    | null
+    | (MathMethodInfo<"log10"> & { node: TSESTree.CallExpression })
+    | TransformingToMathLog10 {
+    if (
+      isGlobalObjectMethodCall(expr, "Math", "log10", sourceCode) &&
+      expr.arguments.length > 0 &&
+      isMathE(expr.arguments[0], sourceCode)
+    ) {
+      return {
+        argument: expr.arguments[0],
+        method: "log10",
+        node: expr,
+      };
+    }
+
+    return getInfoForTransformingToMathLog10(expr, sourceCode);
   }
 }
 /**
