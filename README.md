@@ -113,22 +113,28 @@ The rules with the following star ⭐ are included in the configs.
 | Rule ID | Description | Fixable | RECOMMENDED |
 |:--------|:------------|:-------:|:-----------:|
 | [math/abs](https://ota-meshi.github.io/eslint-plugin-math/rules/abs.html) | enforce the conversion to absolute values to be the method you prefer | 🔧 |  |
+| [math/no-static-infinity-calculations](https://ota-meshi.github.io/eslint-plugin-math/rules/no-static-infinity-calculations.html) | disallow static calculations that go to infinity |  | ⭐ |
+| [math/no-static-nan-calculations](https://ota-meshi.github.io/eslint-plugin-math/rules/no-static-nan-calculations.html) | disallow static calculations that go to NaN |  | ⭐ |
 | [math/prefer-math-cbrt](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-cbrt.html) | enforce the use of Math.cbrt() instead of other cube root calculations | 🔧 | ⭐ |
+| [math/prefer-math-e](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-e.html) | enforce the use of Math.E instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-ln10](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-ln10.html) | enforce the use of Math.LN10 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-ln2](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-ln2.html) | enforce the use of Math.LN2 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-log10](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-log10.html) | enforce the use of Math.log10() instead of other calculation methods. | 🔧 | ⭐ |
 | [math/prefer-math-log10e](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-log10e.html) | enforce the use of Math.LOG10E instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-log2](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-log2.html) | enforce the use of Math.log2() instead of other calculation methods. | 🔧 | ⭐ |
 | [math/prefer-math-log2e](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-log2e.html) | enforce the use of Math.LOG2E instead of other ways | 🔧 | ⭐ |
+| [math/prefer-math-pi](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-pi.html) | enforce the use of Math.PI instead of literal number | 🔧 | ⭐ |
 | [math/prefer-math-sqrt](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-sqrt.html) | enforce the use of Math.sqrt() instead of other square root calculations | 🔧 | ⭐ |
 | [math/prefer-math-sqrt1-2](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-sqrt1-2.html) | enforce the use of Math.SQRT1_2 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-sqrt2](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-sqrt2.html) | enforce the use of Math.SQRT2 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-trunc](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-trunc.html) | enforce the use of Math.trunc() instead of other truncations | 🔧 | ⭐ |
+| [math/prefer-number-epsilon](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-epsilon.html) | enforce the use of Number.EPSILON instead of other ways | 🔧 | ⭐ |
 | [math/prefer-number-is-finite](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-is-finite.html) | enforce the use of Number.isFinite() instead of other checking ways | 🔧 | ⭐ |
 | [math/prefer-number-is-integer](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-is-integer.html) | enforce the use of Number.isInteger() instead of other checking ways | 🔧 | ⭐ |
 | [math/prefer-number-is-nan](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-is-nan.html) | enforce the use of Number.isNaN() instead of other checking ways | 🔧 | ⭐ |
 | [math/prefer-number-is-safe-integer](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-is-safe-integer.html) | enforce the use of Number.isSafeInteger() instead of other checking ways | 🔧 | ⭐ |
 | [math/prefer-number-max-safe-integer](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-max-safe-integer.html) | enforce the use of Number.MAX_SAFE_INTEGER instead of other ways | 🔧 | ⭐ |
+| [math/prefer-number-max-value](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-max-value.html) | enforce the use of Number.MAX_VALUE instead of literal number | 🔧 | ⭐ |
 | [math/prefer-number-min-safe-integer](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-min-safe-integer.html) | enforce the use of Number.MIN_SAFE_INTEGER instead of other ways | 🔧 | ⭐ |
 
 <!--RULES_TABLE_END-->

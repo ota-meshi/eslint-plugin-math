@@ -1,0 +1,489 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: no-static-infinity-calculations >> invalid
+Filename: no-static-infinity-calculations/invalid/example-input.js
+
+Code:
+  1 | /*no-static-infinity-calculations/invalid/example-input.js*/
+  2 |
+  3 | /* ✓ GOOD */
+  4 | x = Infinity;
+  5 | x = -Infinity;
+  6 | x = Number.POSITIVE_INFINITY;
+  7 | x = Number.NEGATIVE_INFINITY;
+  8 | x = 2 ** 1023 - 2 ** 971 + 2 ** 1023;
+  9 |
+ 10 | /* ✗ BAD */
+ 11 | x = 2 ** 1024;
+    |     ^~~~~~~~~ [1]
+ 12 | x = 2 ** 1024 - 2 ** 971;
+    |     ^~~~~~~~~~~~~~~~~~~~ [2]
+    |     ^~~~~~~~~ [3]
+ 13 | x = 2 ** 1023 + 2 ** 1023;
+    |     ^~~~~~~~~~~~~~~~~~~~~ [4]
+ 14 | x = 2 ** 1023 - 2 ** 970 + 2 ** 1023;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [5]
+ 15 |
+
+[1] This calculation will always result in infinity, use explicit `Infinity` or `Number.POSITIVE_INFINITY` instead.
+    Suggestions:
+      - Replace using 'Infinity'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = Infinity;
+          5 | x = -Infinity;
+          6 | x = Number.POSITIVE_INFINITY;
+          7 | x = Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1023 - 2 ** 971 + 2 ** 1023;
+          9 |
+         10 | /* ✗ BAD */
+         11 | x = Infinity;
+         12 | x = 2 ** 1024 - 2 ** 971;
+         13 | x = 2 ** 1023 + 2 ** 1023;
+         14 | x = 2 ** 1023 - 2 ** 970 + 2 ** 1023;
+         15 |
+      - Replace using 'Number.POSITIVE_INFINITY'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = Infinity;
+          5 | x = -Infinity;
+          6 | x = Number.POSITIVE_INFINITY;
+          7 | x = Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1023 - 2 ** 971 + 2 ** 1023;
+          9 |
+         10 | /* ✗ BAD */
+         11 | x = Number.POSITIVE_INFINITY;
+         12 | x = 2 ** 1024 - 2 ** 971;
+         13 | x = 2 ** 1023 + 2 ** 1023;
+         14 | x = 2 ** 1023 - 2 ** 970 + 2 ** 1023;
+         15 |
+[2] This calculation will always result in infinity, use explicit `Infinity` or `Number.POSITIVE_INFINITY` instead.
+    Suggestions:
+      - Replace using 'Infinity'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = Infinity;
+          5 | x = -Infinity;
+          6 | x = Number.POSITIVE_INFINITY;
+          7 | x = Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1023 - 2 ** 971 + 2 ** 1023;
+          9 |
+         10 | /* ✗ BAD */
+         11 | x = 2 ** 1024;
+         12 | x = Infinity;
+         13 | x = 2 ** 1023 + 2 ** 1023;
+         14 | x = 2 ** 1023 - 2 ** 970 + 2 ** 1023;
+         15 |
+      - Replace using 'Number.POSITIVE_INFINITY'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = Infinity;
+          5 | x = -Infinity;
+          6 | x = Number.POSITIVE_INFINITY;
+          7 | x = Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1023 - 2 ** 971 + 2 ** 1023;
+          9 |
+         10 | /* ✗ BAD */
+         11 | x = 2 ** 1024;
+         12 | x = Number.POSITIVE_INFINITY;
+         13 | x = 2 ** 1023 + 2 ** 1023;
+         14 | x = 2 ** 1023 - 2 ** 970 + 2 ** 1023;
+         15 |
+[3] This calculation will always result in infinity, use explicit `Infinity` or `Number.POSITIVE_INFINITY` instead.
+    Suggestions:
+      - Replace using 'Infinity'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = Infinity;
+          5 | x = -Infinity;
+          6 | x = Number.POSITIVE_INFINITY;
+          7 | x = Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1023 - 2 ** 971 + 2 ** 1023;
+          9 |
+         10 | /* ✗ BAD */
+         11 | x = 2 ** 1024;
+         12 | x = Infinity - 2 ** 971;
+         13 | x = 2 ** 1023 + 2 ** 1023;
+         14 | x = 2 ** 1023 - 2 ** 970 + 2 ** 1023;
+         15 |
+      - Replace using 'Number.POSITIVE_INFINITY'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = Infinity;
+          5 | x = -Infinity;
+          6 | x = Number.POSITIVE_INFINITY;
+          7 | x = Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1023 - 2 ** 971 + 2 ** 1023;
+          9 |
+         10 | /* ✗ BAD */
+         11 | x = 2 ** 1024;
+         12 | x = Number.POSITIVE_INFINITY - 2 ** 971;
+         13 | x = 2 ** 1023 + 2 ** 1023;
+         14 | x = 2 ** 1023 - 2 ** 970 + 2 ** 1023;
+         15 |
+[4] This calculation will always result in infinity, use explicit `Infinity` or `Number.POSITIVE_INFINITY` instead.
+    Suggestions:
+      - Replace using 'Infinity'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = Infinity;
+          5 | x = -Infinity;
+          6 | x = Number.POSITIVE_INFINITY;
+          7 | x = Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1023 - 2 ** 971 + 2 ** 1023;
+          9 |
+         10 | /* ✗ BAD */
+         11 | x = 2 ** 1024;
+         12 | x = 2 ** 1024 - 2 ** 971;
+         13 | x = Infinity;
+         14 | x = 2 ** 1023 - 2 ** 970 + 2 ** 1023;
+         15 |
+      - Replace using 'Number.POSITIVE_INFINITY'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = Infinity;
+          5 | x = -Infinity;
+          6 | x = Number.POSITIVE_INFINITY;
+          7 | x = Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1023 - 2 ** 971 + 2 ** 1023;
+          9 |
+         10 | /* ✗ BAD */
+         11 | x = 2 ** 1024;
+         12 | x = 2 ** 1024 - 2 ** 971;
+         13 | x = Number.POSITIVE_INFINITY;
+         14 | x = 2 ** 1023 - 2 ** 970 + 2 ** 1023;
+         15 |
+[5] This calculation will always result in infinity, use explicit `Infinity` or `Number.POSITIVE_INFINITY` instead.
+    Suggestions:
+      - Replace using 'Infinity'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = Infinity;
+          5 | x = -Infinity;
+          6 | x = Number.POSITIVE_INFINITY;
+          7 | x = Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1023 - 2 ** 971 + 2 ** 1023;
+          9 |
+         10 | /* ✗ BAD */
+         11 | x = 2 ** 1024;
+         12 | x = 2 ** 1024 - 2 ** 971;
+         13 | x = 2 ** 1023 + 2 ** 1023;
+         14 | x = Infinity;
+         15 |
+      - Replace using 'Number.POSITIVE_INFINITY'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = Infinity;
+          5 | x = -Infinity;
+          6 | x = Number.POSITIVE_INFINITY;
+          7 | x = Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1023 - 2 ** 971 + 2 ** 1023;
+          9 |
+         10 | /* ✗ BAD */
+         11 | x = 2 ** 1024;
+         12 | x = 2 ** 1024 - 2 ** 971;
+         13 | x = 2 ** 1023 + 2 ** 1023;
+         14 | x = Number.POSITIVE_INFINITY;
+         15 |
+---
+
+
+Test: no-static-infinity-calculations >> invalid
+Filename: no-static-infinity-calculations/invalid/infinity-plus-input.js
+
+Code:
+  1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+  2 | x = Infinity - 1;
+    |     ^~~~~~~~~~~~ [1]
+  3 | x = -Infinity + 1;
+    |     ^~~~~~~~~~~~~ [2]
+  4 | x = Number.POSITIVE_INFINITY - 1;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~ [3]
+  5 | x = Number.NEGATIVE_INFINITY + 1;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~ [4]
+  6 | x = -Number.POSITIVE_INFINITY;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~ [5]
+  7 | x = -Number.NEGATIVE_INFINITY;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~ [6]
+  8 | x = 2 ** 1024;
+    |     ^~~~~~~~~ [7]
+  9 | x = 2 ** 1024 - Number.POSITIVE_INFINITY;
+    |     ^~~~~~~~~ [8]
+ 10 | x = 2 ** 1023 + Number.NEGATIVE_INFINITY;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [9]
+ 11 |
+
+[1] This calculation will always result in infinity, use explicit `Infinity` or `Number.POSITIVE_INFINITY` instead.
+    Suggestions:
+      - Replace using 'Infinity'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Infinity;
+          3 | x = -Infinity + 1;
+          4 | x = Number.POSITIVE_INFINITY - 1;
+          5 | x = Number.NEGATIVE_INFINITY + 1;
+          6 | x = -Number.POSITIVE_INFINITY;
+          7 | x = -Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1024;
+          9 | x = 2 ** 1024 - Number.POSITIVE_INFINITY;
+         10 | x = 2 ** 1023 + Number.NEGATIVE_INFINITY;
+         11 |
+      - Replace using 'Number.POSITIVE_INFINITY'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Number.POSITIVE_INFINITY;
+          3 | x = -Infinity + 1;
+          4 | x = Number.POSITIVE_INFINITY - 1;
+          5 | x = Number.NEGATIVE_INFINITY + 1;
+          6 | x = -Number.POSITIVE_INFINITY;
+          7 | x = -Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1024;
+          9 | x = 2 ** 1024 - Number.POSITIVE_INFINITY;
+         10 | x = 2 ** 1023 + Number.NEGATIVE_INFINITY;
+         11 |
+[2] This calculation will always result in negative infinity, use explicit `-Infinity` or `Number.NEGATIVE_INFINITY` instead.
+    Suggestions:
+      - Replace using '-Infinity'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Infinity - 1;
+          3 | x = -Infinity;
+          4 | x = Number.POSITIVE_INFINITY - 1;
+          5 | x = Number.NEGATIVE_INFINITY + 1;
+          6 | x = -Number.POSITIVE_INFINITY;
+          7 | x = -Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1024;
+          9 | x = 2 ** 1024 - Number.POSITIVE_INFINITY;
+         10 | x = 2 ** 1023 + Number.NEGATIVE_INFINITY;
+         11 |
+      - Replace using 'Number.NEGATIVE_INFINITY'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Infinity - 1;
+          3 | x = Number.NEGATIVE_INFINITY;
+          4 | x = Number.POSITIVE_INFINITY - 1;
+          5 | x = Number.NEGATIVE_INFINITY + 1;
+          6 | x = -Number.POSITIVE_INFINITY;
+          7 | x = -Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1024;
+          9 | x = 2 ** 1024 - Number.POSITIVE_INFINITY;
+         10 | x = 2 ** 1023 + Number.NEGATIVE_INFINITY;
+         11 |
+[3] This calculation will always result in infinity, use explicit `Infinity` or `Number.POSITIVE_INFINITY` instead.
+    Suggestions:
+      - Replace using 'Infinity'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Infinity - 1;
+          3 | x = -Infinity + 1;
+          4 | x = Infinity;
+          5 | x = Number.NEGATIVE_INFINITY + 1;
+          6 | x = -Number.POSITIVE_INFINITY;
+          7 | x = -Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1024;
+          9 | x = 2 ** 1024 - Number.POSITIVE_INFINITY;
+         10 | x = 2 ** 1023 + Number.NEGATIVE_INFINITY;
+         11 |
+      - Replace using 'Number.POSITIVE_INFINITY'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Infinity - 1;
+          3 | x = -Infinity + 1;
+          4 | x = Number.POSITIVE_INFINITY;
+          5 | x = Number.NEGATIVE_INFINITY + 1;
+          6 | x = -Number.POSITIVE_INFINITY;
+          7 | x = -Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1024;
+          9 | x = 2 ** 1024 - Number.POSITIVE_INFINITY;
+         10 | x = 2 ** 1023 + Number.NEGATIVE_INFINITY;
+         11 |
+[4] This calculation will always result in negative infinity, use explicit `-Infinity` or `Number.NEGATIVE_INFINITY` instead.
+    Suggestions:
+      - Replace using '-Infinity'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Infinity - 1;
+          3 | x = -Infinity + 1;
+          4 | x = Number.POSITIVE_INFINITY - 1;
+          5 | x = -Infinity;
+          6 | x = -Number.POSITIVE_INFINITY;
+          7 | x = -Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1024;
+          9 | x = 2 ** 1024 - Number.POSITIVE_INFINITY;
+         10 | x = 2 ** 1023 + Number.NEGATIVE_INFINITY;
+         11 |
+      - Replace using 'Number.NEGATIVE_INFINITY'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Infinity - 1;
+          3 | x = -Infinity + 1;
+          4 | x = Number.POSITIVE_INFINITY - 1;
+          5 | x = Number.NEGATIVE_INFINITY;
+          6 | x = -Number.POSITIVE_INFINITY;
+          7 | x = -Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1024;
+          9 | x = 2 ** 1024 - Number.POSITIVE_INFINITY;
+         10 | x = 2 ** 1023 + Number.NEGATIVE_INFINITY;
+         11 |
+[5] This calculation will always result in negative infinity, use explicit `-Infinity` or `Number.NEGATIVE_INFINITY` instead.
+    Suggestions:
+      - Replace using '-Infinity'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Infinity - 1;
+          3 | x = -Infinity + 1;
+          4 | x = Number.POSITIVE_INFINITY - 1;
+          5 | x = Number.NEGATIVE_INFINITY + 1;
+          6 | x = -Infinity;
+          7 | x = -Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1024;
+          9 | x = 2 ** 1024 - Number.POSITIVE_INFINITY;
+         10 | x = 2 ** 1023 + Number.NEGATIVE_INFINITY;
+         11 |
+      - Replace using 'Number.NEGATIVE_INFINITY'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Infinity - 1;
+          3 | x = -Infinity + 1;
+          4 | x = Number.POSITIVE_INFINITY - 1;
+          5 | x = Number.NEGATIVE_INFINITY + 1;
+          6 | x = Number.NEGATIVE_INFINITY;
+          7 | x = -Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1024;
+          9 | x = 2 ** 1024 - Number.POSITIVE_INFINITY;
+         10 | x = 2 ** 1023 + Number.NEGATIVE_INFINITY;
+         11 |
+[6] This calculation will always result in infinity, use explicit `Infinity` or `Number.POSITIVE_INFINITY` instead.
+    Suggestions:
+      - Replace using 'Infinity'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Infinity - 1;
+          3 | x = -Infinity + 1;
+          4 | x = Number.POSITIVE_INFINITY - 1;
+          5 | x = Number.NEGATIVE_INFINITY + 1;
+          6 | x = -Number.POSITIVE_INFINITY;
+          7 | x = Infinity;
+          8 | x = 2 ** 1024;
+          9 | x = 2 ** 1024 - Number.POSITIVE_INFINITY;
+         10 | x = 2 ** 1023 + Number.NEGATIVE_INFINITY;
+         11 |
+      - Replace using 'Number.POSITIVE_INFINITY'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Infinity - 1;
+          3 | x = -Infinity + 1;
+          4 | x = Number.POSITIVE_INFINITY - 1;
+          5 | x = Number.NEGATIVE_INFINITY + 1;
+          6 | x = -Number.POSITIVE_INFINITY;
+          7 | x = Number.POSITIVE_INFINITY;
+          8 | x = 2 ** 1024;
+          9 | x = 2 ** 1024 - Number.POSITIVE_INFINITY;
+         10 | x = 2 ** 1023 + Number.NEGATIVE_INFINITY;
+         11 |
+[7] This calculation will always result in infinity, use explicit `Infinity` or `Number.POSITIVE_INFINITY` instead.
+    Suggestions:
+      - Replace using 'Infinity'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Infinity - 1;
+          3 | x = -Infinity + 1;
+          4 | x = Number.POSITIVE_INFINITY - 1;
+          5 | x = Number.NEGATIVE_INFINITY + 1;
+          6 | x = -Number.POSITIVE_INFINITY;
+          7 | x = -Number.NEGATIVE_INFINITY;
+          8 | x = Infinity;
+          9 | x = 2 ** 1024 - Number.POSITIVE_INFINITY;
+         10 | x = 2 ** 1023 + Number.NEGATIVE_INFINITY;
+         11 |
+      - Replace using 'Number.POSITIVE_INFINITY'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Infinity - 1;
+          3 | x = -Infinity + 1;
+          4 | x = Number.POSITIVE_INFINITY - 1;
+          5 | x = Number.NEGATIVE_INFINITY + 1;
+          6 | x = -Number.POSITIVE_INFINITY;
+          7 | x = -Number.NEGATIVE_INFINITY;
+          8 | x = Number.POSITIVE_INFINITY;
+          9 | x = 2 ** 1024 - Number.POSITIVE_INFINITY;
+         10 | x = 2 ** 1023 + Number.NEGATIVE_INFINITY;
+         11 |
+[8] This calculation will always result in infinity, use explicit `Infinity` or `Number.POSITIVE_INFINITY` instead.
+    Suggestions:
+      - Replace using 'Infinity'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Infinity - 1;
+          3 | x = -Infinity + 1;
+          4 | x = Number.POSITIVE_INFINITY - 1;
+          5 | x = Number.NEGATIVE_INFINITY + 1;
+          6 | x = -Number.POSITIVE_INFINITY;
+          7 | x = -Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1024;
+          9 | x = Infinity - Number.POSITIVE_INFINITY;
+         10 | x = 2 ** 1023 + Number.NEGATIVE_INFINITY;
+         11 |
+      - Replace using 'Number.POSITIVE_INFINITY'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Infinity - 1;
+          3 | x = -Infinity + 1;
+          4 | x = Number.POSITIVE_INFINITY - 1;
+          5 | x = Number.NEGATIVE_INFINITY + 1;
+          6 | x = -Number.POSITIVE_INFINITY;
+          7 | x = -Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1024;
+          9 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+         10 | x = 2 ** 1023 + Number.NEGATIVE_INFINITY;
+         11 |
+[9] This calculation will always result in negative infinity, use explicit `-Infinity` or `Number.NEGATIVE_INFINITY` instead.
+    Suggestions:
+      - Replace using '-Infinity'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Infinity - 1;
+          3 | x = -Infinity + 1;
+          4 | x = Number.POSITIVE_INFINITY - 1;
+          5 | x = Number.NEGATIVE_INFINITY + 1;
+          6 | x = -Number.POSITIVE_INFINITY;
+          7 | x = -Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1024;
+          9 | x = 2 ** 1024 - Number.POSITIVE_INFINITY;
+         10 | x = -Infinity;
+         11 |
+      - Replace using 'Number.NEGATIVE_INFINITY'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/infinity-plus-input.js*/
+          2 | x = Infinity - 1;
+          3 | x = -Infinity + 1;
+          4 | x = Number.POSITIVE_INFINITY - 1;
+          5 | x = Number.NEGATIVE_INFINITY + 1;
+          6 | x = -Number.POSITIVE_INFINITY;
+          7 | x = -Number.NEGATIVE_INFINITY;
+          8 | x = 2 ** 1024;
+          9 | x = 2 ** 1024 - Number.POSITIVE_INFINITY;
+         10 | x = Number.NEGATIVE_INFINITY;
+         11 |
+---

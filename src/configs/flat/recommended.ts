@@ -10,21 +10,27 @@ export const plugins = {
 };
 export const rules: Linter.RulesRecord = {
   // eslint-plugin-math rules
+  "math/no-static-infinity-calculations": "error",
+  "math/no-static-nan-calculations": "error",
   "math/prefer-math-cbrt": "error",
+  "math/prefer-math-e": "error",
   "math/prefer-math-ln10": "error",
   "math/prefer-math-ln2": "error",
   "math/prefer-math-log10": "error",
   "math/prefer-math-log10e": "error",
   "math/prefer-math-log2": "error",
   "math/prefer-math-log2e": "error",
+  "math/prefer-math-pi": "error",
   "math/prefer-math-sqrt": "error",
   "math/prefer-math-sqrt1-2": "error",
   "math/prefer-math-sqrt2": "error",
   "math/prefer-math-trunc": "error",
+  "math/prefer-number-epsilon": "error",
   "math/prefer-number-is-finite": "error",
   "math/prefer-number-is-integer": "error",
   "math/prefer-number-is-nan": "error",
   "math/prefer-number-is-safe-integer": "error",
   "math/prefer-number-max-safe-integer": "error",
+  "math/prefer-number-max-value": "error",
   "math/prefer-number-min-safe-integer": "error",
 };

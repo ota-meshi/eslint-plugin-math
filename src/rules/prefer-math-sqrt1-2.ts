@@ -3,7 +3,8 @@ import { createRule } from "../utils";
 import {
   existComment,
   isGlobalObjectMethodCall,
-  isLiteral,
+  isGlobalObjectProperty,
+  isStaticValue,
 } from "../utils/ast";
 import type { Rule } from "eslint";
 import { getInfoForTransformingToMathSqrt } from "../utils/math";
@@ -34,15 +35,19 @@ export default createRule("prefer-math-sqrt1-2", {
       let expression: string;
       const transform = getInfoForTransformingToMathSqrt(node, sourceCode);
       if (transform) {
-        if (!isHalf(transform.argument)) return;
+        if (!isHalf(transform.argument, sourceCode)) return;
         expression =
           transform.from === "exponentiation"
             ? "(1 / 2) ** (1 / 2)"
             : "Math.pow(1 / 2, 1 / 2)";
       } else if (isGlobalObjectMethodCall(node, "Math", "sqrt", sourceCode)) {
-        if (node.arguments.length < 1 || !isHalf(node.arguments[0])) return;
+        if (node.arguments.length < 1 || !isHalf(node.arguments[0], sourceCode))
+          return;
         expression = "Math.sqrt(1 / 2)";
-      } else if (isLiteral(node, Math.SQRT1_2)) {
+      } else if (
+        isStaticValue(node, Math.SQRT1_2, sourceCode) &&
+        !isGlobalObjectProperty(node, "Math", "SQRT1_2", sourceCode)
+      ) {
         expression = `${Math.SQRT1_2}`;
       } else {
         return;

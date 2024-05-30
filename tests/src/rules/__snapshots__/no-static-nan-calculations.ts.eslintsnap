@@ -1,0 +1,693 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: no-static-nan-calculations >> invalid
+Filename: no-static-nan-calculations/invalid/example-input.js
+
+Code:
+  1 | /*no-static-nan-calculations/invalid/example-input.js*/
+  2 |
+  3 | /* ✓ GOOD */
+  4 | x = NaN;
+  5 | x = Number.NaN;
+  6 | x = Number("42");
+  7 | x = parseInt("a", 16);
+  8 | x = Number.parseInt("a", 16);
+  9 | x = Infinity + Infinity;
+ 10 |
+ 11 | /* ✗ BAD */
+ 12 | x = Infinity - Infinity;
+    |     ^~~~~~~~~~~~~~~~~~~ [1]
+ 13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [2]
+ 14 | x = Number("a");
+    |     ^~~~~~~~~~~ [3]
+ 15 | x = parseFloat("a");
+    |     ^~~~~~~~~~~~~~~ [4]
+ 16 | x = parseInt("a");
+    |     ^~~~~~~~~~~~~ [5]
+ 17 | x = Number.parseFloat("a");
+    |     ^~~~~~~~~~~~~~~~~~~~~~ [6]
+ 18 | x = Number.parseInt("a");
+    |     ^~~~~~~~~~~~~~~~~~~~ [7]
+ 19 | x = Math.pow();
+    |     ^~~~~~~~~~ [8]
+ 20 | x = Math.pow(-4, 0.5);
+    |     ^~~~~~~~~~~~~~~~~ [9]
+ 21 | x = Math.sqrt(-4);
+    |     ^~~~~~~~~~~~~ [10]
+ 22 | x = (-4) ** 0.5;
+    |     ^~~~~~~~~~~ [11]
+ 23 | x = NaN + 1;
+    |     ^~~~~~~ [12]
+ 24 |
+
+[1] This calculation will always result in NaN, use explicit `NaN` or `Number.NaN` instead.
+    Suggestions:
+      - Replace using 'NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = NaN;
+         13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+         14 | x = Number("a");
+         15 | x = parseFloat("a");
+         16 | x = parseInt("a");
+         17 | x = Number.parseFloat("a");
+         18 | x = Number.parseInt("a");
+         19 | x = Math.pow();
+         20 | x = Math.pow(-4, 0.5);
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+      - Replace using 'Number.NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = Number.NaN;
+         13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+         14 | x = Number("a");
+         15 | x = parseFloat("a");
+         16 | x = parseInt("a");
+         17 | x = Number.parseFloat("a");
+         18 | x = Number.parseInt("a");
+         19 | x = Math.pow();
+         20 | x = Math.pow(-4, 0.5);
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+[2] This calculation will always result in NaN, use explicit `NaN` or `Number.NaN` instead.
+    Suggestions:
+      - Replace using 'NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = Infinity - Infinity;
+         13 | x = NaN;
+         14 | x = Number("a");
+         15 | x = parseFloat("a");
+         16 | x = parseInt("a");
+         17 | x = Number.parseFloat("a");
+         18 | x = Number.parseInt("a");
+         19 | x = Math.pow();
+         20 | x = Math.pow(-4, 0.5);
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+      - Replace using 'Number.NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = Infinity - Infinity;
+         13 | x = Number.NaN;
+         14 | x = Number("a");
+         15 | x = parseFloat("a");
+         16 | x = parseInt("a");
+         17 | x = Number.parseFloat("a");
+         18 | x = Number.parseInt("a");
+         19 | x = Math.pow();
+         20 | x = Math.pow(-4, 0.5);
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+[3] This calculation will always result in NaN, use explicit `NaN` or `Number.NaN` instead.
+    Suggestions:
+      - Replace using 'NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = Infinity - Infinity;
+         13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+         14 | x = NaN;
+         15 | x = parseFloat("a");
+         16 | x = parseInt("a");
+         17 | x = Number.parseFloat("a");
+         18 | x = Number.parseInt("a");
+         19 | x = Math.pow();
+         20 | x = Math.pow(-4, 0.5);
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+      - Replace using 'Number.NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = Infinity - Infinity;
+         13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+         14 | x = Number.NaN;
+         15 | x = parseFloat("a");
+         16 | x = parseInt("a");
+         17 | x = Number.parseFloat("a");
+         18 | x = Number.parseInt("a");
+         19 | x = Math.pow();
+         20 | x = Math.pow(-4, 0.5);
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+[4] This calculation will always result in NaN, use explicit `NaN` or `Number.NaN` instead.
+    Suggestions:
+      - Replace using 'NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = Infinity - Infinity;
+         13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+         14 | x = Number("a");
+         15 | x = NaN;
+         16 | x = parseInt("a");
+         17 | x = Number.parseFloat("a");
+         18 | x = Number.parseInt("a");
+         19 | x = Math.pow();
+         20 | x = Math.pow(-4, 0.5);
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+      - Replace using 'Number.NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = Infinity - Infinity;
+         13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+         14 | x = Number("a");
+         15 | x = Number.NaN;
+         16 | x = parseInt("a");
+         17 | x = Number.parseFloat("a");
+         18 | x = Number.parseInt("a");
+         19 | x = Math.pow();
+         20 | x = Math.pow(-4, 0.5);
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+[5] This calculation will always result in NaN, use explicit `NaN` or `Number.NaN` instead.
+    Suggestions:
+      - Replace using 'NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = Infinity - Infinity;
+         13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+         14 | x = Number("a");
+         15 | x = parseFloat("a");
+         16 | x = NaN;
+         17 | x = Number.parseFloat("a");
+         18 | x = Number.parseInt("a");
+         19 | x = Math.pow();
+         20 | x = Math.pow(-4, 0.5);
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+      - Replace using 'Number.NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = Infinity - Infinity;
+         13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+         14 | x = Number("a");
+         15 | x = parseFloat("a");
+         16 | x = Number.NaN;
+         17 | x = Number.parseFloat("a");
+         18 | x = Number.parseInt("a");
+         19 | x = Math.pow();
+         20 | x = Math.pow(-4, 0.5);
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+[6] This calculation will always result in NaN, use explicit `NaN` or `Number.NaN` instead.
+    Suggestions:
+      - Replace using 'NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = Infinity - Infinity;
+         13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+         14 | x = Number("a");
+         15 | x = parseFloat("a");
+         16 | x = parseInt("a");
+         17 | x = NaN;
+         18 | x = Number.parseInt("a");
+         19 | x = Math.pow();
+         20 | x = Math.pow(-4, 0.5);
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+      - Replace using 'Number.NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = Infinity - Infinity;
+         13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+         14 | x = Number("a");
+         15 | x = parseFloat("a");
+         16 | x = parseInt("a");
+         17 | x = Number.NaN;
+         18 | x = Number.parseInt("a");
+         19 | x = Math.pow();
+         20 | x = Math.pow(-4, 0.5);
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+[7] This calculation will always result in NaN, use explicit `NaN` or `Number.NaN` instead.
+    Suggestions:
+      - Replace using 'NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = Infinity - Infinity;
+         13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+         14 | x = Number("a");
+         15 | x = parseFloat("a");
+         16 | x = parseInt("a");
+         17 | x = Number.parseFloat("a");
+         18 | x = NaN;
+         19 | x = Math.pow();
+         20 | x = Math.pow(-4, 0.5);
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+      - Replace using 'Number.NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = Infinity - Infinity;
+         13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+         14 | x = Number("a");
+         15 | x = parseFloat("a");
+         16 | x = parseInt("a");
+         17 | x = Number.parseFloat("a");
+         18 | x = Number.NaN;
+         19 | x = Math.pow();
+         20 | x = Math.pow(-4, 0.5);
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+[8] This calculation will always result in NaN, use explicit `NaN` or `Number.NaN` instead.
+    Suggestions:
+      - Replace using 'NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = Infinity - Infinity;
+         13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+         14 | x = Number("a");
+         15 | x = parseFloat("a");
+         16 | x = parseInt("a");
+         17 | x = Number.parseFloat("a");
+         18 | x = Number.parseInt("a");
+         19 | x = NaN;
+         20 | x = Math.pow(-4, 0.5);
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+      - Replace using 'Number.NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = Infinity - Infinity;
+         13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+         14 | x = Number("a");
+         15 | x = parseFloat("a");
+         16 | x = parseInt("a");
+         17 | x = Number.parseFloat("a");
+         18 | x = Number.parseInt("a");
+         19 | x = Number.NaN;
+         20 | x = Math.pow(-4, 0.5);
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+[9] This calculation will always result in NaN, use explicit `NaN` or `Number.NaN` instead.
+    Suggestions:
+      - Replace using 'NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = Infinity - Infinity;
+         13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+         14 | x = Number("a");
+         15 | x = parseFloat("a");
+         16 | x = parseInt("a");
+         17 | x = Number.parseFloat("a");
+         18 | x = Number.parseInt("a");
+         19 | x = Math.pow();
+         20 | x = NaN;
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+      - Replace using 'Number.NaN'.
+        Output:
+          1 | /*no-static-nan-calculations/invalid/example-input.js*/
+          2 |
+          3 | /* ✓ GOOD */
+          4 | x = NaN;
+          5 | x = Number.NaN;
+          6 | x = Number("42");
+          7 | x = parseInt("a", 16);
+          8 | x = Number.parseInt("a", 16);
+          9 | x = Infinity + Infinity;
+         10 |
+         11 | /* ✗ BAD */
+         12 | x = Infinity - Infinity;
+         13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+         14 | x = Number("a");
+         15 | x = parseFloat("a");
+         16 | x = parseInt("a");
+         17 | x = Number.parseFloat("a");
+         18 | x = Number.parseInt("a");
+         19 | x = Math.pow();
+         20 | x = Number.NaN;
+         21 | x = Math.sqrt(-4);
+         22 | x = (-4) ** 0.5;
+         23 | x = NaN + 1;
+         24 |
+[10] This calculation will always result in NaN, use explicit `NaN` or `Number.NaN` instead.
+     Suggestions:
+       - Replace using 'NaN'.
+         Output:
+           1 | /*no-static-nan-calculations/invalid/example-input.js*/
+           2 |
+           3 | /* ✓ GOOD */
+           4 | x = NaN;
+           5 | x = Number.NaN;
+           6 | x = Number("42");
+           7 | x = parseInt("a", 16);
+           8 | x = Number.parseInt("a", 16);
+           9 | x = Infinity + Infinity;
+          10 |
+          11 | /* ✗ BAD */
+          12 | x = Infinity - Infinity;
+          13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+          14 | x = Number("a");
+          15 | x = parseFloat("a");
+          16 | x = parseInt("a");
+          17 | x = Number.parseFloat("a");
+          18 | x = Number.parseInt("a");
+          19 | x = Math.pow();
+          20 | x = Math.pow(-4, 0.5);
+          21 | x = NaN;
+          22 | x = (-4) ** 0.5;
+          23 | x = NaN + 1;
+          24 |
+       - Replace using 'Number.NaN'.
+         Output:
+           1 | /*no-static-nan-calculations/invalid/example-input.js*/
+           2 |
+           3 | /* ✓ GOOD */
+           4 | x = NaN;
+           5 | x = Number.NaN;
+           6 | x = Number("42");
+           7 | x = parseInt("a", 16);
+           8 | x = Number.parseInt("a", 16);
+           9 | x = Infinity + Infinity;
+          10 |
+          11 | /* ✗ BAD */
+          12 | x = Infinity - Infinity;
+          13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+          14 | x = Number("a");
+          15 | x = parseFloat("a");
+          16 | x = parseInt("a");
+          17 | x = Number.parseFloat("a");
+          18 | x = Number.parseInt("a");
+          19 | x = Math.pow();
+          20 | x = Math.pow(-4, 0.5);
+          21 | x = Number.NaN;
+          22 | x = (-4) ** 0.5;
+          23 | x = NaN + 1;
+          24 |
+[11] This calculation will always result in NaN, use explicit `NaN` or `Number.NaN` instead.
+     Suggestions:
+       - Replace using 'NaN'.
+         Output:
+           1 | /*no-static-nan-calculations/invalid/example-input.js*/
+           2 |
+           3 | /* ✓ GOOD */
+           4 | x = NaN;
+           5 | x = Number.NaN;
+           6 | x = Number("42");
+           7 | x = parseInt("a", 16);
+           8 | x = Number.parseInt("a", 16);
+           9 | x = Infinity + Infinity;
+          10 |
+          11 | /* ✗ BAD */
+          12 | x = Infinity - Infinity;
+          13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+          14 | x = Number("a");
+          15 | x = parseFloat("a");
+          16 | x = parseInt("a");
+          17 | x = Number.parseFloat("a");
+          18 | x = Number.parseInt("a");
+          19 | x = Math.pow();
+          20 | x = Math.pow(-4, 0.5);
+          21 | x = Math.sqrt(-4);
+          22 | x = NaN;
+          23 | x = NaN + 1;
+          24 |
+       - Replace using 'Number.NaN'.
+         Output:
+           1 | /*no-static-nan-calculations/invalid/example-input.js*/
+           2 |
+           3 | /* ✓ GOOD */
+           4 | x = NaN;
+           5 | x = Number.NaN;
+           6 | x = Number("42");
+           7 | x = parseInt("a", 16);
+           8 | x = Number.parseInt("a", 16);
+           9 | x = Infinity + Infinity;
+          10 |
+          11 | /* ✗ BAD */
+          12 | x = Infinity - Infinity;
+          13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+          14 | x = Number("a");
+          15 | x = parseFloat("a");
+          16 | x = parseInt("a");
+          17 | x = Number.parseFloat("a");
+          18 | x = Number.parseInt("a");
+          19 | x = Math.pow();
+          20 | x = Math.pow(-4, 0.5);
+          21 | x = Math.sqrt(-4);
+          22 | x = Number.NaN;
+          23 | x = NaN + 1;
+          24 |
+[12] This calculation will always result in NaN, use explicit `NaN` or `Number.NaN` instead.
+     Suggestions:
+       - Replace using 'NaN'.
+         Output:
+           1 | /*no-static-nan-calculations/invalid/example-input.js*/
+           2 |
+           3 | /* ✓ GOOD */
+           4 | x = NaN;
+           5 | x = Number.NaN;
+           6 | x = Number("42");
+           7 | x = parseInt("a", 16);
+           8 | x = Number.parseInt("a", 16);
+           9 | x = Infinity + Infinity;
+          10 |
+          11 | /* ✗ BAD */
+          12 | x = Infinity - Infinity;
+          13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+          14 | x = Number("a");
+          15 | x = parseFloat("a");
+          16 | x = parseInt("a");
+          17 | x = Number.parseFloat("a");
+          18 | x = Number.parseInt("a");
+          19 | x = Math.pow();
+          20 | x = Math.pow(-4, 0.5);
+          21 | x = Math.sqrt(-4);
+          22 | x = (-4) ** 0.5;
+          23 | x = NaN;
+          24 |
+       - Replace using 'Number.NaN'.
+         Output:
+           1 | /*no-static-nan-calculations/invalid/example-input.js*/
+           2 |
+           3 | /* ✓ GOOD */
+           4 | x = NaN;
+           5 | x = Number.NaN;
+           6 | x = Number("42");
+           7 | x = parseInt("a", 16);
+           8 | x = Number.parseInt("a", 16);
+           9 | x = Infinity + Infinity;
+          10 |
+          11 | /* ✗ BAD */
+          12 | x = Infinity - Infinity;
+          13 | x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
+          14 | x = Number("a");
+          15 | x = parseFloat("a");
+          16 | x = parseInt("a");
+          17 | x = Number.parseFloat("a");
+          18 | x = Number.parseInt("a");
+          19 | x = Math.pow();
+          20 | x = Math.pow(-4, 0.5);
+          21 | x = Math.sqrt(-4);
+          22 | x = (-4) ** 0.5;
+          23 | x = Number.NaN;
+          24 |
+---

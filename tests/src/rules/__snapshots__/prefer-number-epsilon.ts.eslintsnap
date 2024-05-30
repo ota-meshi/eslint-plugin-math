@@ -1,0 +1,37 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: prefer-number-epsilon >> invalid
+Filename: prefer-number-epsilon/invalid/example-input.js
+
+Code:
+  1 | /*prefer-number-epsilon/invalid/example-input.js*/
+  2 |
+  3 | /* ✓ GOOD */
+  4 | x = Number.EPSILON;
+  5 |
+  6 | /* ✗ BAD */
+  7 | x = 2 ** -52;
+    |     ^~~~~~~~ [1]
+  8 | x = Math.pow(2, -52);
+    |     ^~~~~~~~~~~~~~~~ [2]
+  9 | x = 2.220446049250313e-16;
+    |     ^~~~~~~~~~~~~~~~~~~~~ [3]
+ 10 |
+
+Output:
+  1 | /*prefer-number-epsilon/invalid/example-input.js*/
+  2 |
+  3 | /* ✓ GOOD */
+  4 | x = Number.EPSILON;
+  5 |
+  6 | /* ✗ BAD */
+  7 | x = Number.EPSILON;
+  8 | x = Number.EPSILON;
+  9 | x = Number.EPSILON;
+ 10 |
+
+[1] Can use 'Number.EPSILON' instead of '2 ** -52'.
+[2] Can use 'Number.EPSILON' instead of 'Math.pow(2, -52)'.
+[3] Can use 'Number.EPSILON' instead of '2.220446049250313e-16'.
+---

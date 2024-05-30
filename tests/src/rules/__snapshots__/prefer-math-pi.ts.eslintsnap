@@ -1,0 +1,29 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: prefer-math-pi >> invalid
+Filename: prefer-math-pi/invalid/example-input.js
+
+Code:
+  1 | /*prefer-math-pi/invalid/example-input.js*/
+  2 |
+  3 | /* ✓ GOOD */
+  4 | x = Math.PI;
+  5 |
+  6 | /* ✗ BAD */
+  7 | x = 3.141592653589793;
+    |     ^~~~~~~~~~~~~~~~~ [1]
+  8 |
+
+Output:
+  1 | /*prefer-math-pi/invalid/example-input.js*/
+  2 |
+  3 | /* ✓ GOOD */
+  4 | x = Math.PI;
+  5 |
+  6 | /* ✗ BAD */
+  7 | x = Math.PI;
+  8 |
+
+[1] Can use 'Math.PI' instead of '3.141592653589793'.
+---

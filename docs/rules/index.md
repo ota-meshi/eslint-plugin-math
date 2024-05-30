@@ -14,20 +14,26 @@ The rules with the following star ⭐ are included in the `plugin:math/recommend
 | Rule ID | Description | Fixable | RECOMMENDED |
 |:--------|:------------|:-------:|:-----------:|
 | [math/abs](./abs.md) | enforce the conversion to absolute values to be the method you prefer | 🔧 |  |
+| [math/no-static-infinity-calculations](./no-static-infinity-calculations.md) | disallow static calculations that go to infinity |  | ⭐ |
+| [math/no-static-nan-calculations](./no-static-nan-calculations.md) | disallow static calculations that go to NaN |  | ⭐ |
 | [math/prefer-math-cbrt](./prefer-math-cbrt.md) | enforce the use of Math.cbrt() instead of other cube root calculations | 🔧 | ⭐ |
+| [math/prefer-math-e](./prefer-math-e.md) | enforce the use of Math.E instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-ln10](./prefer-math-ln10.md) | enforce the use of Math.LN10 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-ln2](./prefer-math-ln2.md) | enforce the use of Math.LN2 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-log10](./prefer-math-log10.md) | enforce the use of Math.log10() instead of other calculation methods. | 🔧 | ⭐ |
 | [math/prefer-math-log10e](./prefer-math-log10e.md) | enforce the use of Math.LOG10E instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-log2](./prefer-math-log2.md) | enforce the use of Math.log2() instead of other calculation methods. | 🔧 | ⭐ |
 | [math/prefer-math-log2e](./prefer-math-log2e.md) | enforce the use of Math.LOG2E instead of other ways | 🔧 | ⭐ |
+| [math/prefer-math-pi](./prefer-math-pi.md) | enforce the use of Math.PI instead of literal number | 🔧 | ⭐ |
 | [math/prefer-math-sqrt](./prefer-math-sqrt.md) | enforce the use of Math.sqrt() instead of other square root calculations | 🔧 | ⭐ |
 | [math/prefer-math-sqrt1-2](./prefer-math-sqrt1-2.md) | enforce the use of Math.SQRT1_2 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-sqrt2](./prefer-math-sqrt2.md) | enforce the use of Math.SQRT2 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-trunc](./prefer-math-trunc.md) | enforce the use of Math.trunc() instead of other truncations | 🔧 | ⭐ |
+| [math/prefer-number-epsilon](./prefer-number-epsilon.md) | enforce the use of Number.EPSILON instead of other ways | 🔧 | ⭐ |
 | [math/prefer-number-is-finite](./prefer-number-is-finite.md) | enforce the use of Number.isFinite() instead of other checking ways | 🔧 | ⭐ |
 | [math/prefer-number-is-integer](./prefer-number-is-integer.md) | enforce the use of Number.isInteger() instead of other checking ways | 🔧 | ⭐ |
 | [math/prefer-number-is-nan](./prefer-number-is-nan.md) | enforce the use of Number.isNaN() instead of other checking ways | 🔧 | ⭐ |
 | [math/prefer-number-is-safe-integer](./prefer-number-is-safe-integer.md) | enforce the use of Number.isSafeInteger() instead of other checking ways | 🔧 | ⭐ |
 | [math/prefer-number-max-safe-integer](./prefer-number-max-safe-integer.md) | enforce the use of Number.MAX_SAFE_INTEGER instead of other ways | 🔧 | ⭐ |
+| [math/prefer-number-max-value](./prefer-number-max-value.md) | enforce the use of Number.MAX_VALUE instead of literal number | 🔧 | ⭐ |
 | [math/prefer-number-min-safe-integer](./prefer-number-min-safe-integer.md) | enforce the use of Number.MIN_SAFE_INTEGER instead of other ways | 🔧 | ⭐ |
