@@ -1,5 +1,23 @@
 # eslint-plugin-math
 
+## 0.5.0
+
+### Minor Changes
+
+- [#26](https://github.com/ota-meshi/eslint-plugin-math/pull/26) [`1c15882`](https://github.com/ota-meshi/eslint-plugin-math/commit/1c1588227e8949e9b867d11822abe4337aca5d26) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/no-static-infinity-calculations` rule
+
+- [#26](https://github.com/ota-meshi/eslint-plugin-math/pull/26) [`1c15882`](https://github.com/ota-meshi/eslint-plugin-math/commit/1c1588227e8949e9b867d11822abe4337aca5d26) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/no-static-nan-calculations` rule
+
+- [#26](https://github.com/ota-meshi/eslint-plugin-math/pull/26) [`1c15882`](https://github.com/ota-meshi/eslint-plugin-math/commit/1c1588227e8949e9b867d11822abe4337aca5d26) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/prefer-math-e` rule
+
+- [#26](https://github.com/ota-meshi/eslint-plugin-math/pull/26) [`1c15882`](https://github.com/ota-meshi/eslint-plugin-math/commit/1c1588227e8949e9b867d11822abe4337aca5d26) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/prefer-math-pi` rule
+
+- [#26](https://github.com/ota-meshi/eslint-plugin-math/pull/26) [`1c15882`](https://github.com/ota-meshi/eslint-plugin-math/commit/1c1588227e8949e9b867d11822abe4337aca5d26) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/prefer-number-epsilon` rule
+
+- [#26](https://github.com/ota-meshi/eslint-plugin-math/pull/26) [`1c15882`](https://github.com/ota-meshi/eslint-plugin-math/commit/1c1588227e8949e9b867d11822abe4337aca5d26) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/prefer-number-max-value` rule
+
+- [#24](https://github.com/ota-meshi/eslint-plugin-math/pull/24) [`1331d90`](https://github.com/ota-meshi/eslint-plugin-math/commit/1331d9072a08b0e9dece17ce595901285f080dcc) Thanks [@ota-meshi](https://github.com/ota-meshi)! - refactor
+
 ## 0.4.0
 
 ### Minor Changes

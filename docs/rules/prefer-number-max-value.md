@@ -3,13 +3,13 @@ pageClass: "rule-details"
 sidebarDepth: 0
 title: "math/prefer-number-max-value"
 description: "enforce the use of Number.MAX_VALUE instead of literal number"
+since: "v0.5.0"
 ---
 
 # math/prefer-number-max-value
 
 > enforce the use of Number.MAX_VALUE instead of literal number
 
-- ❗ <badge text="This rule has not been released yet." vertical="middle" type="error"> **_This rule has not been released yet._** </badge>
 - ⚙️ This rule is included in `"plugin:math/recommended"`.
 - 🔧 The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some of the problems reported by this rule.
 
@@ -41,6 +41,10 @@ Nothing.
 ## 📚 Further reading
 
 - [MDN - Number.MAX_VALUE](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_VALUE)
+
+## 🚀 Version
+
+This rule was introduced in eslint-plugin-math v0.5.0
 
 ## 🔍 Implementation
 
