@@ -3,6 +3,7 @@
 // in order to update its content execute "npm run update"
 import type { RuleModule } from "../types";
 import abs from "../rules/abs";
+import noStaticInfinityCalculations from "../rules/no-static-infinity-calculations";
 import preferMathCbrt from "../rules/prefer-math-cbrt";
 import preferMathE from "../rules/prefer-math-e";
 import preferMathLn10 from "../rules/prefer-math-ln10";
@@ -26,6 +27,7 @@ import preferNumberMinSafeInteger from "../rules/prefer-number-min-safe-integer"
 
 export const rules = [
   abs,
+  noStaticInfinityCalculations,
   preferMathCbrt,
   preferMathE,
   preferMathLn10,

@@ -4,6 +4,7 @@
 export const plugins = ["math"];
 export const rules = {
   // eslint-plugin-math rules
+  "math/no-static-infinity-calculations": "error",
   "math/prefer-math-cbrt": "error",
   "math/prefer-math-e": "error",
   "math/prefer-math-ln10": "error",

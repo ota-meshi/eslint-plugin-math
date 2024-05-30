@@ -113,6 +113,7 @@ The rules with the following star ⭐ are included in the configs.
 | Rule ID | Description | Fixable | RECOMMENDED |
 |:--------|:------------|:-------:|:-----------:|
 | [math/abs](https://ota-meshi.github.io/eslint-plugin-math/rules/abs.html) | enforce the conversion to absolute values to be the method you prefer | 🔧 |  |
+| [math/no-static-infinity-calculations](https://ota-meshi.github.io/eslint-plugin-math/rules/no-static-infinity-calculations.html) | disallow static calculations that go to infinity |  | ⭐ |
 | [math/prefer-math-cbrt](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-cbrt.html) | enforce the use of Math.cbrt() instead of other cube root calculations | 🔧 | ⭐ |
 | [math/prefer-math-e](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-e.html) | enforce the use of Math.E instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-ln10](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-ln10.html) | enforce the use of Math.LN10 instead of other ways | 🔧 | ⭐ |
