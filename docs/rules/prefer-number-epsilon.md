@@ -3,13 +3,13 @@ pageClass: "rule-details"
 sidebarDepth: 0
 title: "math/prefer-number-epsilon"
 description: "enforce the use of Number.EPSILON instead of other ways"
+since: "v0.5.0"
 ---
 
 # math/prefer-number-epsilon
 
 > enforce the use of Number.EPSILON instead of other ways
 
-- ❗ <badge text="This rule has not been released yet." vertical="middle" type="error"> **_This rule has not been released yet._** </badge>
 - ⚙️ This rule is included in `"plugin:math/recommended"`.
 - 🔧 The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some of the problems reported by this rule.
 
@@ -42,6 +42,10 @@ Nothing.
 ## 📚 Further reading
 
 - [MDN - Number.EPSILON](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/EPSILON)
+
+## 🚀 Version
+
+This rule was introduced in eslint-plugin-math v0.5.0
 
 ## 🔍 Implementation
 

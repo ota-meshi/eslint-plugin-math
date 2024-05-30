@@ -3,13 +3,13 @@ pageClass: "rule-details"
 sidebarDepth: 0
 title: "math/no-static-nan-calculations"
 description: "disallow static calculations that go to NaN"
+since: "v0.5.0"
 ---
 
 # math/no-static-nan-calculations
 
 > disallow static calculations that go to NaN
 
-- ❗ <badge text="This rule has not been released yet." vertical="middle" type="error"> **_This rule has not been released yet._** </badge>
 - ⚙️ This rule is included in `"plugin:math/recommended"`.
 - 💡 Some problems reported by this rule are manually fixable by editor [suggestions](https://eslint.org/docs/developer-guide/working-with-rules#providing-suggestions).
 
@@ -63,6 +63,10 @@ Nothing.
 - [math/no-static-infinity-calculations]
 
 [math/no-static-infinity-calculations]: ./no-static-infinity-calculations.md
+
+## 🚀 Version
+
+This rule was introduced in eslint-plugin-math v0.5.0
 
 ## 🔍 Implementation
 
