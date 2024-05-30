@@ -22,7 +22,7 @@ This rule aims to enforce the use of `Math.PI` instead of literal number.
 <!-- eslint-skip -->
 
 ```js
-/* eslint math/prefer-math-e: 'error' */
+/* eslint math/prefer-math-pi: 'error' */
 
 /* ✓ GOOD */
 x = Math.PI;

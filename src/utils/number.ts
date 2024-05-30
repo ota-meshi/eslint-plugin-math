@@ -13,6 +13,7 @@ import {
   isGlobalMethodCall,
   isGlobalObject,
   isGlobalObjectMethodCall,
+  isGlobalObjectProperty,
   isStaticValue,
 } from "./ast";
 import type { ExtractFunctionKeys } from "./type";
@@ -28,6 +29,10 @@ export type NumberMethodInfo<M extends NumberMethod> = {
   method: M;
   node: TSESTree.Expression;
   argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
+};
+export type NumberPropertyInfo<M extends keyof typeof Number> = {
+  property: M;
+  node: TSESTree.Expression;
 };
 /**
  * Returns information if the condition checks whether the given expression is a positive number (or zero).
@@ -94,7 +99,7 @@ export function getInfoForToNegative(
 export function isZero(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
-): node is TSESTree.Literal | TSESTree.UnaryExpression {
+): node is TSESTree.Expression {
   return isStaticValue(node, 0, sourceCode);
 }
 /**
@@ -106,7 +111,7 @@ export function isOne(
     | TSESTree.PrivateIdentifier
     | TSESTree.SpreadElement,
   sourceCode: SourceCode,
-): node is TSESTree.Literal {
+): node is TSESTree.Expression {
   return isStaticValue(node, 1, sourceCode);
 }
 /**
@@ -118,7 +123,7 @@ export function isTwo(
     | TSESTree.PrivateIdentifier
     | TSESTree.SpreadElement,
   sourceCode: SourceCode,
-): node is TSESTree.Literal {
+): node is TSESTree.Expression {
   return isStaticValue(node, 2, sourceCode);
 }
 /**
@@ -130,7 +135,7 @@ export function isTen(
     | TSESTree.PrivateIdentifier
     | TSESTree.SpreadElement,
   sourceCode: SourceCode,
-): node is TSESTree.Literal {
+): node is TSESTree.Expression {
   return isStaticValue(node, 10, sourceCode);
 }
 /**
@@ -139,7 +144,7 @@ export function isTen(
 export function isMinusOne(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
-): node is TSESTree.Literal | TSESTree.UnaryExpression {
+): node is TSESTree.Expression {
   return isStaticValue(node, -1, sourceCode);
 }
 /**
@@ -151,7 +156,7 @@ export function isHalf(
     | TSESTree.SpreadElement
     | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
-): node is TSESTree.Literal | TSESTree.BinaryExpression {
+): node is TSESTree.Expression {
   return isStaticValue(node, 0.5, sourceCode);
 }
 /**
@@ -163,7 +168,7 @@ export function isOneThird(
     | TSESTree.SpreadElement
     | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
-): boolean {
+): node is TSESTree.Expression {
   return isStaticValue(node, 1 / 3, sourceCode);
 }
 /**
@@ -172,7 +177,7 @@ export function isOneThird(
 export function isMaxSafeInteger(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
-): boolean {
+): node is TSESTree.Expression {
   return isStaticValue(node, Number.MAX_SAFE_INTEGER, sourceCode);
 }
 /**
@@ -181,7 +186,7 @@ export function isMaxSafeInteger(
 export function isMinSafeInteger(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
-): boolean {
+): node is TSESTree.Expression {
   return isStaticValue(node, Number.MIN_SAFE_INTEGER, sourceCode);
 }
 export type TransformingToNumberIsInteger =
@@ -517,6 +522,69 @@ export function getInfoForTransformingToNumberIsNaN(
       };
     },
   );
+}
+
+export type TransformingToNumberEPSILON =
+  | (NumberPropertyInfo<"EPSILON"> & {
+      from: "exponentiation";
+      node: TSESTree.BinaryExpression;
+    })
+  | (NumberPropertyInfo<"EPSILON"> & {
+      from: "pow";
+      node: TSESTree.CallExpression;
+    })
+  | (NumberPropertyInfo<"EPSILON"> & {
+      from: "literal";
+      node: TSESTree.Expression;
+    });
+/**
+ * Returns information if the given expression can be transformed to Number.isNaN().
+ */
+export function getInfoForTransformingToNumberEPSILON(
+  node: TSESTree.Expression,
+  sourceCode: SourceCode,
+): null | TransformingToNumberEPSILON {
+  if (node.type === "BinaryExpression") {
+    if (
+      node.operator === "**" &&
+      isTwo(node.left, sourceCode) &&
+      isStaticValue(node.right, -52, sourceCode)
+    ) {
+      return {
+        from: "exponentiation",
+        node,
+        property: "EPSILON",
+      };
+    }
+  } else if (node.type === "CallExpression") {
+    if (
+      isGlobalObjectMethodCall(node, "Math", "pow", sourceCode) &&
+      node.arguments.length >= 2
+    ) {
+      if (
+        isTwo(node.arguments[0], sourceCode) &&
+        isStaticValue(node.arguments[1], -52, sourceCode)
+      ) {
+        return {
+          from: "pow",
+          node,
+          property: "EPSILON",
+        };
+      }
+    }
+  }
+  if (
+    isStaticValue(node, Number.EPSILON, sourceCode) &&
+    !isGlobalObjectProperty(node, "Number", "EPSILON", sourceCode)
+  ) {
+    return {
+      from: "literal",
+      node,
+      property: "EPSILON",
+    };
+  }
+
+  return null;
 }
 
 export type TransformingToNumberIsFinite = NumberMethodInfo<"isFinite"> & {

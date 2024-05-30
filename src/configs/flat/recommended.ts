@@ -23,6 +23,7 @@ export const rules: Linter.RulesRecord = {
   "math/prefer-math-sqrt1-2": "error",
   "math/prefer-math-sqrt2": "error",
   "math/prefer-math-trunc": "error",
+  "math/prefer-number-epsilon": "error",
   "math/prefer-number-is-finite": "error",
   "math/prefer-number-is-integer": "error",
   "math/prefer-number-is-nan": "error",
