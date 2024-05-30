@@ -25,5 +25,6 @@ export const rules = {
   "math/prefer-number-is-nan": "error",
   "math/prefer-number-is-safe-integer": "error",
   "math/prefer-number-max-safe-integer": "error",
+  "math/prefer-number-max-value": "error",
   "math/prefer-number-min-safe-integer": "error",
 };

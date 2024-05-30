@@ -24,6 +24,7 @@ import preferNumberIsInteger from "../rules/prefer-number-is-integer";
 import preferNumberIsNan from "../rules/prefer-number-is-nan";
 import preferNumberIsSafeInteger from "../rules/prefer-number-is-safe-integer";
 import preferNumberMaxSafeInteger from "../rules/prefer-number-max-safe-integer";
+import preferNumberMaxValue from "../rules/prefer-number-max-value";
 import preferNumberMinSafeInteger from "../rules/prefer-number-min-safe-integer";
 
 export const rules = [
@@ -49,5 +50,6 @@ export const rules = [
   preferNumberIsNan,
   preferNumberIsSafeInteger,
   preferNumberMaxSafeInteger,
+  preferNumberMaxValue,
   preferNumberMinSafeInteger,
 ] as RuleModule[];
