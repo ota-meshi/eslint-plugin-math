@@ -24,13 +24,13 @@ import {
   processTwoParams,
 } from "./process";
 
-export type NumberMethod = ExtractFunctionKeys<typeof Number>;
+export type NumberMethod = ExtractFunctionKeys<NumberConstructor>;
 export type NumberMethodInfo<M extends NumberMethod> = {
   method: M;
   node: TSESTree.Expression;
   argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
 };
-export type NumberPropertyInfo<M extends keyof typeof Number> = {
+export type NumberPropertyInfo<M extends keyof NumberConstructor> = {
   property: M;
   node: TSESTree.Expression;
 };

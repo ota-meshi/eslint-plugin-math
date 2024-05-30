@@ -67,6 +67,7 @@ export default [
       yoda: "off",
       "no-empty": "off",
       "no-self-compare": "off",
+      radix: "off",
     },
   },
   {

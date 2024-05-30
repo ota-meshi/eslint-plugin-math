@@ -46,12 +46,12 @@ export function existCommentBetween(
 /**
  * Checks whether the given node is a global object.
  */
-export function isGlobalObject(
+export function isGlobalObject<G extends keyof typeof globalThis>(
   node:
     | TSESTree.Expression
     | TSESTree.PrivateIdentifier
     | TSESTree.SpreadElement,
-  name: keyof typeof globalThis,
+  name: G,
   sourceCode: SourceCode,
 ): node is TSESTree.Identifier | TSESTree.MemberExpression {
   if (node.type === "Identifier") {
@@ -69,35 +69,41 @@ export function isGlobalObject(
 /**
  * Checks whether the given node is a global object method call.
  */
-export function isGlobalObjectMethodCall<N extends keyof typeof globalThis>(
+export function isGlobalObjectMethodCall<
+  G extends keyof typeof globalThis,
+  N extends ExtractFunctionKeys<G>,
+>(
   node:
     | TSESTree.Expression
     | TSESTree.PrivateIdentifier
     | TSESTree.SpreadElement,
-  name: N,
-  method: ExtractFunctionKeys<(typeof globalThis)[N]>,
+  name: G,
+  method: N,
   sourceCode: SourceCode,
 ): node is TSESTree.CallExpression {
   if (node.type !== "CallExpression") return false;
   const { callee } = node;
-  return isGlobalObjectProperty(callee, name, method, sourceCode);
+  return isGlobalObjectProperty<G, N>(callee, name, method, sourceCode);
 }
 /**
  * Checks whether the given node is a global object property.
  */
-export function isGlobalObjectProperty<N extends keyof typeof globalThis>(
+export function isGlobalObjectProperty<
+  G extends keyof typeof globalThis,
+  N extends keyof (typeof globalThis)[G],
+>(
   node:
     | TSESTree.Expression
     | TSESTree.PrivateIdentifier
     | TSESTree.SpreadElement,
-  name: N,
-  property: keyof (typeof globalThis)[N],
+  name: G,
+  property: N,
   sourceCode: SourceCode,
-): node is TSESTree.CallExpression {
+): node is TSESTree.MemberExpression {
   return (
     node.type === "MemberExpression" &&
     getPropertyName(node, sourceCode.getScope(node)) === property &&
-    isGlobalObject(node.object, name, sourceCode)
+    isGlobalObject<G>(node.object, name, sourceCode)
   );
 }
 /**
@@ -172,53 +178,13 @@ export function isStaticValue<V extends TSESTree.Literal["value"]>(
   sourceCode: SourceCode,
 ): node is TSESTree.Expression {
   const v = getStaticValue(node, sourceCode);
-  return v != null && v.value === value;
-}
-
-/**
- * Checks whether the given node is a global variable.
- */
-function isGlobal(
-  node: TSESTree.Identifier,
-  sourceCode: SourceCode,
-): node is TSESTree.Identifier {
-  const variable = findVariable(sourceCode.getScope(node), node);
-  if (variable && variable.defs.length > 0) return false; // Not a global
-  return true;
-}
-
-/**
- * Checks whether the given node is a global namespace.
- */
-function isGlobalNamespace(
-  node:
-    | TSESTree.Expression
-    | TSESTree.PrivateIdentifier
-    | TSESTree.SpreadElement,
-  sourceCode: SourceCode,
-): node is TSESTree.Identifier | TSESTree.MemberExpression {
-  if (node.type === "Identifier") {
-    if (
-      node.name === "globalThis" ||
-      node.name === "self" ||
-      node.name === "window" ||
-      node.name === "global"
-    )
-      return isGlobal(node, sourceCode);
-    return false;
-  }
-  if (node.type === "MemberExpression") {
-    const name = getPropertyName(node, sourceCode.getScope(node));
-    if (name == null) return false;
-    return isGlobalNamespace(node.object, sourceCode);
-  }
-  return false;
+  return v != null && (Object.is(v.value, value) || v.value === value);
 }
 
 /**
  * Gets the static value of the given node.
  */
-function getStaticValue(
+export function getStaticValue(
   node:
     | TSESTree.Expression
     | TSESTree.SpreadElement
@@ -316,4 +282,44 @@ function getStaticValue(
     if (name === "NaN") return { value: NaN };
     return null;
   }
+}
+
+/**
+ * Checks whether the given node is a global variable.
+ */
+function isGlobal(
+  node: TSESTree.Identifier,
+  sourceCode: SourceCode,
+): node is TSESTree.Identifier {
+  const variable = findVariable(sourceCode.getScope(node), node);
+  if (variable && variable.defs.length > 0) return false; // Not a global
+  return true;
+}
+
+/**
+ * Checks whether the given node is a global namespace.
+ */
+function isGlobalNamespace(
+  node:
+    | TSESTree.Expression
+    | TSESTree.PrivateIdentifier
+    | TSESTree.SpreadElement,
+  sourceCode: SourceCode,
+): node is TSESTree.Identifier | TSESTree.MemberExpression {
+  if (node.type === "Identifier") {
+    if (
+      node.name === "globalThis" ||
+      node.name === "self" ||
+      node.name === "window" ||
+      node.name === "global"
+    )
+      return isGlobal(node, sourceCode);
+    return false;
+  }
+  if (node.type === "MemberExpression") {
+    const name = getPropertyName(node, sourceCode.getScope(node));
+    if (name == null) return false;
+    return isGlobalNamespace(node.object, sourceCode);
+  }
+  return false;
 }

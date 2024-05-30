@@ -52,9 +52,9 @@ Nothing.
 
 ## 👫 Related rules
 
-- [xxx]
+- [math/no-static-nan-calculations]
 
-[xxx]: https://xxx
+[math/no-static-nan-calculations]: ./no-static-nan-calculations.md
 
 ## 🔍 Implementation
 

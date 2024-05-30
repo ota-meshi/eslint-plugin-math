@@ -4,6 +4,7 @@
 import type { RuleModule } from "../types";
 import abs from "../rules/abs";
 import noStaticInfinityCalculations from "../rules/no-static-infinity-calculations";
+import noStaticNanCalculations from "../rules/no-static-nan-calculations";
 import preferMathCbrt from "../rules/prefer-math-cbrt";
 import preferMathE from "../rules/prefer-math-e";
 import preferMathLn10 from "../rules/prefer-math-ln10";
@@ -28,6 +29,7 @@ import preferNumberMinSafeInteger from "../rules/prefer-number-min-safe-integer"
 export const rules = [
   abs,
   noStaticInfinityCalculations,
+  noStaticNanCalculations,
   preferMathCbrt,
   preferMathE,
   preferMathLn10,

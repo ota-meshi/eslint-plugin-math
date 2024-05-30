@@ -22,13 +22,14 @@ import {
 import type { ExtractFunctionKeys } from "./type";
 import { processLR } from "./process";
 
-export type MathMethod = ExtractFunctionKeys<typeof Math>;
+type MathConstructor = typeof Math;
+export type MathMethod = ExtractFunctionKeys<MathConstructor>;
 export type MathMethodInfo<M extends MathMethod> = {
   method: M;
   node: TSESTree.Expression;
   argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
 };
-export type MathPropertyInfo<M extends keyof typeof Math> = {
+export type MathPropertyInfo<M extends keyof MathConstructor> = {
   property: M;
   node: TSESTree.Expression;
 };
