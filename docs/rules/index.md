@@ -27,7 +27,7 @@ The rules with the following star ⭐ are included in the `plugin:math/recommend
 | [math/prefer-math-sqrt1-2](./prefer-math-sqrt1-2.md) | enforce the use of Math.SQRT1_2 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-sqrt2](./prefer-math-sqrt2.md) | enforce the use of Math.SQRT2 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-trunc](./prefer-math-trunc.md) | enforce the use of Math.trunc() instead of other truncations | 🔧 | ⭐ |
-| [math/prefer-number-epsilon](./prefer-number-epsilon.md) | enforce the use of Number.EPSILON instead of literal number | 🔧 | ⭐ |
+| [math/prefer-number-epsilon](./prefer-number-epsilon.md) | enforce the use of Number.EPSILON instead of other ways | 🔧 | ⭐ |
 | [math/prefer-number-is-finite](./prefer-number-is-finite.md) | enforce the use of Number.isFinite() instead of other checking ways | 🔧 | ⭐ |
 | [math/prefer-number-is-integer](./prefer-number-is-integer.md) | enforce the use of Number.isInteger() instead of other checking ways | 🔧 | ⭐ |
 | [math/prefer-number-is-nan](./prefer-number-is-nan.md) | enforce the use of Number.isNaN() instead of other checking ways | 🔧 | ⭐ |

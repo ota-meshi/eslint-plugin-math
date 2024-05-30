@@ -2,12 +2,12 @@
 pageClass: "rule-details"
 sidebarDepth: 0
 title: "math/prefer-number-epsilon"
-description: "enforce the use of Number.EPSILON instead of literal number"
+description: "enforce the use of Number.EPSILON instead of other ways"
 ---
 
 # math/prefer-number-epsilon
 
-> enforce the use of Number.EPSILON instead of literal number
+> enforce the use of Number.EPSILON instead of other ways
 
 - ❗ <badge text="This rule has not been released yet." vertical="middle" type="error"> **_This rule has not been released yet._** </badge>
 - ⚙️ This rule is included in `"plugin:math/recommended"`.
@@ -15,7 +15,7 @@ description: "enforce the use of Number.EPSILON instead of literal number"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of `Number.EPSILON` instead of literal number.
+This rule aims to enforce the use of `Number.EPSILON` instead of other ways.
 
 <eslint-code-block fix>
 

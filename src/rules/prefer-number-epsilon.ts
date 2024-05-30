@@ -8,8 +8,7 @@ import { getInfoForTransformingToNumberEPSILON } from "../utils/number";
 export default createRule("prefer-number-epsilon", {
   meta: {
     docs: {
-      description:
-        "enforce the use of Number.EPSILON instead of literal number",
+      description: "enforce the use of Number.EPSILON instead of other ways",
       categories: ["recommended"],
     },
     fixable: "code",
