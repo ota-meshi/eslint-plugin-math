@@ -24,7 +24,7 @@ export type TransformingToExponentiation =
       right: number;
     })
   | (OperatorInfo<"**"> & {
-      from: "**";
+      from: "nesting**";
       node: TSESTree.BinaryExpression;
       right: number;
     });
@@ -52,7 +52,7 @@ export function getInfoForTransformingToExponentiation(
       for (const exponentiation of parseExponentiation(node, sourceCode)) {
         if (exponentiation.right !== right.value) {
           return {
-            from: "**",
+            from: "nesting**",
             operator: "**",
             left: exponentiation.left,
             right: exponentiation.right,

@@ -45,7 +45,7 @@ export default createRule("prefer-exponentiation-operator", {
       );
       if (!transform) return;
 
-      if (transform.from === "*" || transform.from === "**") {
+      if (transform.from === "*" || transform.from === "nesting**") {
         reportedBinaryExpressions.add(transform.node);
         const { parent } = transform.node;
         if (
@@ -62,7 +62,7 @@ export default createRule("prefer-exponentiation-operator", {
       const fix = (fixer: Rule.RuleFixer) => {
         let left = sourceCode.getText(transform.left);
         let right =
-          transform.from === "*" || transform.from === "**"
+          transform.from === "*" || transform.from === "nesting**"
             ? String(transform.right)
             : sourceCode.getText(transform.right);
         const leftPrecedence = getPrecedence(transform.left, sourceCode);
@@ -110,7 +110,7 @@ export default createRule("prefer-exponentiation-operator", {
       context.report({
         node,
         messageId:
-          transform.from === "*" || transform.from === "**"
+          transform.from === "*" || transform.from === "nesting**"
             ? "canUseExponentiationInsteadOfExpression"
             : "canUseExponentiationInsteadOfMathPow",
         data,
@@ -124,9 +124,10 @@ export default createRule("prefer-exponentiation-operator", {
      */
     function getMessageData(info: TransformingToExponentiation) {
       const id = getIdText(info.left, "n");
-      const exponent = info.from === "*" || info.from === "**" ? info.right : 0;
+      const exponent =
+        info.from === "*" || info.from === "nesting**" ? info.right : 0;
       const num =
-        info.from === "*" || info.from === "**"
+        info.from === "*" || info.from === "nesting**"
           ? String(info.right)
           : info.right.type === "Literal"
             ? info.right.raw

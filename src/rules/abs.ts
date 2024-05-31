@@ -34,8 +34,7 @@ export default createRule("abs", {
     ],
     messages: {
       canUseX: "Can use '{{prefer}}' instead of {{expression}}.",
-      replaceWithAbs: "Replace using 'Math.abs()'.",
-      replaceWithExpression: "Replace using 'n < 0 ? -n : n'.",
+      replace: "Replace using '{{prefer}}'.",
     },
     type: "suggestion",
   },
@@ -81,6 +80,7 @@ export default createRule("abs", {
               return fixer.replaceText(node, expression);
             };
 
+      const data = getMessageData(transform);
       context.report({
         node,
         messageId: "canUseX",
@@ -89,10 +89,8 @@ export default createRule("abs", {
         suggest: hasComment
           ? [
               {
-                messageId:
-                  prefer === "Math.abs"
-                    ? "replaceWithAbs"
-                    : "replaceWithExpression",
+                messageId: "replace",
+                data,
                 fix,
               },
             ]
