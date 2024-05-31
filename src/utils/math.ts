@@ -1084,19 +1084,19 @@ export function getInfoForMathAbs(
   return getInfoForMathX(node, "abs", sourceCode);
 }
 
+export type MathAbsOrLike =
+  | (MathMethodInfo<"abs"> & {
+      node: TSESTree.CallExpression;
+      from: "abs";
+    })
+  | TransformingToMathAbs;
 /**
  * Returns information if the given expression is a Math.abs() expression or such an expression.
  */
 export function getInfoForMathAbsOrLike(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
-):
-  | (MathMethodInfo<"abs"> & {
-      node: TSESTree.CallExpression;
-      from: "abs";
-    })
-  | TransformingToMathAbs
-  | null {
+): MathAbsOrLike | null {
   const abs = getInfoForMathAbs(node, sourceCode);
   return abs
     ? { ...abs, from: "abs" }

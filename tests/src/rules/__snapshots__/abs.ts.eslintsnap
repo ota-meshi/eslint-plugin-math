@@ -25,7 +25,7 @@ Output:
   6 | x = Math.abs(n);
   7 |
 
-[1] Can use 'Math.abs()' instead of n < 0 ? n * -1 : n.
+[1] Can use 'Math.abs(n)' instead of n < 0 ? n * -1 : n.
 ---
 
 
@@ -56,7 +56,7 @@ Output:
   7 | x = n < 0 ? -n : n;
   8 |
 
-[1] Can use 'n < 0 ? -n : n' instead of Math.abs().
+[1] Can use 'n < 0 ? -n : n' instead of Math.abs(n).
 [2] Can use 'n < 0 ? -n : n' instead of n < 0 ? n * -1 : n.
 ---
 
@@ -100,14 +100,14 @@ Output:
  10 | x = (n < 0 ? -n : n)``;
  11 |
 
-[1] Can use 'n < 0 ? -n : n' instead of Math.abs().
-[2] Can use 'n < 0 ? -n : n' instead of Math.abs().
-[3] Can use 'n < 0 ? -n : n' instead of Math.abs().
-[4] Can use 'n < 0 ? -n : n' instead of Math.abs().
-[5] Can use 'n < 0 ? -n : n' instead of Math.abs().
-[6] Can use 'n < 0 ? -n : n' instead of Math.abs().
-[7] Can use 'n < 0 ? -n : n' instead of Math.abs().
-[8] Can use 'n < 0 ? -n : n' instead of Math.abs().
+[1] Can use 'n < 0 ? -n : n' instead of Math.abs(n).
+[2] Can use 'n < 0 ? -n : n' instead of Math.abs(n).
+[3] Can use 'n < 0 ? -n : n' instead of Math.abs(n).
+[4] Can use 'n < 0 ? -n : n' instead of Math.abs(n).
+[5] Can use 'n < 0 ? -n : n' instead of Math.abs(n).
+[6] Can use 'n < 0 ? -n : n' instead of Math.abs(n).
+[7] Can use 'n < 0 ? -n : n' instead of Math.abs(n).
+[8] Can use 'n < 0 ? -n : n' instead of Math.abs(n).
 ---
 
 
@@ -129,7 +129,7 @@ Output:
   3 | x = class extends (n < 0 ? -n : n) {};
   4 |
 
-[1] Can use 'n < 0 ? -n : n' instead of Math.abs().
+[1] Can use 'n < 0 ? -n : n' instead of Math.abs(n).
 ---
 
 
@@ -153,5 +153,5 @@ Output:
   4 | class A extends (n < 0 ? -n : n) {}
   5 |
 
-[1] Can use 'n < 0 ? -n : n' instead of Math.abs().
+[1] Can use 'n < 0 ? -n : n' instead of Math.abs(n).
 ---

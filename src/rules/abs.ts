@@ -1,5 +1,6 @@
 import type { TSESTree } from "@typescript-eslint/types";
 import { createRule } from "../utils";
+import type { MathAbsOrLike } from "../utils/math";
 import { getInfoForMathAbsOrLike } from "../utils/math";
 import {
   Precedence,
@@ -8,6 +9,7 @@ import {
   isWrappedInParenOrComma,
 } from "../utils/ast";
 import type { Rule } from "eslint";
+import { getIdText } from "../utils/messages";
 
 export default createRule("abs", {
   meta: {
@@ -82,15 +84,7 @@ export default createRule("abs", {
       context.report({
         node,
         messageId: "canUseX",
-        data: {
-          prefer: prefer === "Math.abs" ? "Math.abs()" : "n < 0 ? -n : n",
-          expression:
-            transform.from === "abs"
-              ? "Math.abs()"
-              : transform.from === "*-1"
-                ? "n < 0 ? n * -1 : n"
-                : "n < 0 ? -n : n",
-        },
+        data: getMessageData(transform),
         fix: !hasComment ? fix : null,
         suggest: hasComment
           ? [
@@ -104,6 +98,25 @@ export default createRule("abs", {
             ]
           : null,
       });
+    }
+
+    /**
+     * Get the message data from the given information.
+     */
+    function getMessageData(info: MathAbsOrLike) {
+      const id = getIdText(info.argument, "n");
+      return {
+        prefer:
+          prefer === "Math.abs"
+            ? `Math.abs(${id})`
+            : `${id} < 0 ? -${id} : ${id}`,
+        expression:
+          info.from === "abs"
+            ? `Math.abs(${id})`
+            : info.from === "*-1"
+              ? `${id} < 0 ? ${id} * -1 : ${id}`
+              : `${id} < 0 ? -${id} : ${id}`,
+      };
     }
 
     return {

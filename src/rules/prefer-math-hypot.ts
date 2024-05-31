@@ -55,10 +55,7 @@ export default createRule("prefer-math-hypot", {
     /**
      * Get the message data from the given information.
      */
-    function getMessageData(info: TransformingToMathHypot): {
-      expression: string;
-      idList: string;
-    } {
+    function getMessageData(info: TransformingToMathHypot) {
       const idList = getIdTextList(info.arguments);
       const operands = idList
         .map((id, index) => {
