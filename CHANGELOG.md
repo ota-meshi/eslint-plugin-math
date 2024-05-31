@@ -1,5 +1,19 @@
 # eslint-plugin-math
 
+## 0.6.0
+
+### Minor Changes
+
+- [#28](https://github.com/ota-meshi/eslint-plugin-math/pull/28) [`31d915a`](https://github.com/ota-meshi/eslint-plugin-math/commit/31d915a64c49ffd8c6be52a083dc2b81c0e8f1bb) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/prefer-exponentiation-operator` rule
+
+- [#28](https://github.com/ota-meshi/eslint-plugin-math/pull/28) [`31d915a`](https://github.com/ota-meshi/eslint-plugin-math/commit/31d915a64c49ffd8c6be52a083dc2b81c0e8f1bb) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/prefer-math-hypot` rule
+
+- [#28](https://github.com/ota-meshi/eslint-plugin-math/pull/28) [`31d915a`](https://github.com/ota-meshi/eslint-plugin-math/commit/31d915a64c49ffd8c6be52a083dc2b81c0e8f1bb) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: improve message
+
+### Patch Changes
+
+- [#28](https://github.com/ota-meshi/eslint-plugin-math/pull/28) [`31d915a`](https://github.com/ota-meshi/eslint-plugin-math/commit/31d915a64c49ffd8c6be52a083dc2b81c0e8f1bb) Thanks [@ota-meshi](https://github.com/ota-meshi)! - fix: wrong auto-fix for precedence in`math/abs` rule
+
 ## 0.5.0
 
 ### Minor Changes
