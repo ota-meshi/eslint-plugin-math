@@ -59,3 +59,75 @@ Output:
 [1] Can use 'n < 0 ? -n : n' instead of Math.abs().
 [2] Can use 'n < 0 ? -n : n' instead of n < 0 ? n * -1 : n.
 ---
+
+
+Test: abs >> invalid
+Filename: abs/invalid/expression/precedence1-input.js
+Options:
+  - prefer: expression
+
+Code:
+  1 | /* abs/invalid/expression/precedence1-input.js */
+  2 | /* {} */
+  3 | x = +Math.abs(n);
+    |      ^~~~~~~~~~~ [1]
+  4 | x = -Math.abs(n);
+    |      ^~~~~~~~~~~ [2]
+  5 | x = !Math.abs(n);
+    |      ^~~~~~~~~~~ [3]
+  6 | x = typeof Math.abs(n);
+    |            ^~~~~~~~~~~ [4]
+  7 | x = void Math.abs(n);
+    |          ^~~~~~~~~~~ [5]
+  8 | x = Math.abs(n).toString();
+    |     ^~~~~~~~~~~ [6]
+  9 | x = Math.abs(n)();
+    |     ^~~~~~~~~~~ [7]
+ 10 | x = Math.abs(n)``;
+    |     ^~~~~~~~~~~ [8]
+ 11 |
+
+Output:
+  1 | /* abs/invalid/expression/precedence1-input.js */
+  2 | /* {} */
+  3 | x = +(n < 0 ? -n : n);
+  4 | x = -(n < 0 ? -n : n);
+  5 | x = !(n < 0 ? -n : n);
+  6 | x = typeof (n < 0 ? -n : n);
+  7 | x = void (n < 0 ? -n : n);
+  8 | x = (n < 0 ? -n : n).toString();
+  9 | x = (n < 0 ? -n : n)();
+ 10 | x = (n < 0 ? -n : n)``;
+ 11 |
+
+[1] Can use 'n < 0 ? -n : n' instead of Math.abs().
+[2] Can use 'n < 0 ? -n : n' instead of Math.abs().
+[3] Can use 'n < 0 ? -n : n' instead of Math.abs().
+[4] Can use 'n < 0 ? -n : n' instead of Math.abs().
+[5] Can use 'n < 0 ? -n : n' instead of Math.abs().
+[6] Can use 'n < 0 ? -n : n' instead of Math.abs().
+[7] Can use 'n < 0 ? -n : n' instead of Math.abs().
+[8] Can use 'n < 0 ? -n : n' instead of Math.abs().
+---
+
+
+Test: abs >> invalid
+Filename: abs/invalid/expression/precedence2-input.js
+Options:
+  - prefer: expression
+
+Code:
+  1 | /* abs/invalid/expression/precedence2-input.js */
+  2 | /* {} */
+  3 | x = class extends Math.abs(n) {};
+    |                   ^~~~~~~~~~~ [1]
+  4 |
+
+Output:
+  1 | /* abs/invalid/expression/precedence2-input.js */
+  2 | /* {} */
+  3 | x = class extends (n < 0 ? -n : n) {};
+  4 |
+
+[1] Can use 'n < 0 ? -n : n' instead of Math.abs().
+---
