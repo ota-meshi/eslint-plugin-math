@@ -5,6 +5,7 @@ import type { RuleModule } from "../types";
 import abs from "../rules/abs";
 import noStaticInfinityCalculations from "../rules/no-static-infinity-calculations";
 import noStaticNanCalculations from "../rules/no-static-nan-calculations";
+import preferExponentiationOperator from "../rules/prefer-exponentiation-operator";
 import preferMathCbrt from "../rules/prefer-math-cbrt";
 import preferMathE from "../rules/prefer-math-e";
 import preferMathLn10 from "../rules/prefer-math-ln10";
@@ -31,6 +32,7 @@ export const rules = [
   abs,
   noStaticInfinityCalculations,
   noStaticNanCalculations,
+  preferExponentiationOperator,
   preferMathCbrt,
   preferMathE,
   preferMathLn10,

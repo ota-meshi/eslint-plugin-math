@@ -4,6 +4,7 @@ import type { Scope } from "eslint";
 export {
   ReferenceTracker,
   TrackedReferences,
+  isParenthesized,
 } from "../../../node_modules/@types/eslint-utils";
 
 export function findVariable(

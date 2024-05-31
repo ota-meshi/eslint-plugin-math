@@ -1,0 +1,711 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: prefer-exponentiation-operator >> invalid
+Filename: prefer-exponentiation-operator/invalid/example-input.js
+
+Code:
+  1 | /*prefer-exponentiation-operator/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = a ** b;
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = Math.pow(a, b);
+    |     ^~~~~~~~~~~~~~ [1]
+  7 |
+  8 | /* ✓ GOOD */
+  9 | x = a ** 3;
+ 10 |
+ 11 | /* ✗ BAD */
+ 12 | x = a * a * a;
+    |     ^~~~~~~~~ [2]
+ 13 |
+
+Output:
+  1 | /*prefer-exponentiation-operator/invalid/example-input.js*/
+  2 | /* ✓ GOOD */
+  3 | x = a ** b;
+  4 |
+  5 | /* ✗ BAD */
+  6 | x = a ** b;
+  7 |
+  8 | /* ✓ GOOD */
+  9 | x = a ** 3;
+ 10 |
+ 11 | /* ✗ BAD */
+ 12 | x = a ** 3;
+ 13 |
+
+[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[2] Can use 'n ** 3' instead of 'n * n * n'.
+---
+
+
+Test: prefer-exponentiation-operator >> invalid
+Filename: prefer-exponentiation-operator/invalid/multiplication-input.js
+
+Code:
+  1 | /*prefer-exponentiation-operator/invalid/multiplication-input.js*/
+  2 |
+  3 | x = a * a;
+    |     ^~~~~ [1]
+  4 | x = a * a * a;
+    |     ^~~~~~~~~ [2]
+  5 | x = a * (a * a);
+    |     ^~~~~~~~~~~ [3]
+  6 | x = a * (a * a) * a * a;
+    |     ^~~~~~~~~~~~~~~~~~~ [4]
+  7 | x = a * b * (a * b) * (a * b);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~ [5]
+  8 | x = a * a() * b * (a * a * b);
+    |                    ^~~~~ [6]
+  9 |
+ 10 | x = a ** 2 * a;
+    |     ^~~~~~~~~~ [7]
+ 11 |
+
+Output:
+  1 | /*prefer-exponentiation-operator/invalid/multiplication-input.js*/
+  2 |
+  3 | x = a ** 2;
+  4 | x = a ** 3;
+  5 | x = a ** 3;
+  6 | x = a ** 5;
+  7 | x = (a * b) ** 3;
+  8 | x = a * a() * b * (a ** 2 * b);
+  9 |
+ 10 | x = a ** 3;
+ 11 |
+
+[1] Can use 'n ** 2' instead of 'n * n'.
+[2] Can use 'n ** 3' instead of 'n * n * n'.
+[3] Can use 'n ** 3' instead of 'n * n * n'.
+[4] Can use 'n ** 5' instead of 'n * n * n * n * n'.
+[5] Can use 'n ** 3' instead of 'n * n * n'.
+[6] Can use 'n ** 2' instead of 'n * n'.
+[7] Can use 'n ** 3' instead of 'n * n * n'.
+---
+
+
+Test: prefer-exponentiation-operator >> invalid
+Filename: prefer-exponentiation-operator/invalid/precedence-parens-ignore-format-input.js
+
+Code:
+  1 | /*prefer-exponentiation-operator/invalid/precedence-parens-ignore-format-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // already parenthesised, shouldn't insert extra parens
+  8 | x = +(Math.pow(a, b))
+    |       ^~~~~~~~~~~~~~ [1]
+  9 | x = (Math.pow(a, b)).toString()
+    |      ^~~~~~~~~~~~~~ [2]
+ 10 | x = (class extends (Math.pow(a, b)) {})
+    |                     ^~~~~~~~~~~~~~ [3]
+ 11 | x = class C extends (Math.pow(a, b)) {}
+    |                      ^~~~~~~~~~~~~~ [4]
+ 12 |
+ 13 | // doesn't remove already existing unnecessary parens around the whole expression
+ 14 | x = (Math.pow(a, b))
+    |      ^~~~~~~~~~~~~~ [5]
+ 15 | x = foo + (Math.pow(a, b))
+    |            ^~~~~~~~~~~~~~ [6]
+ 16 | x = (Math.pow(a, b)) + foo
+    |      ^~~~~~~~~~~~~~ [7]
+ 17 | x = `${(Math.pow(a, b))}`
+    |         ^~~~~~~~~~~~~~ [8]
+ 18 |
+ 19 | // base and exponent with a lower precedence
+ 20 | x = Math.pow(a = b, c = d);
+    |     ^~~~~~~~~~~~~~~~~~~~~~ [9]
+ 21 | x = Math.pow(a += b, c -= d);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~ [10]
+ 22 |
+ 23 | // doesn't put extra parens
+ 24 | x = Math.pow((a + b), (c + d));
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~ [11]
+ 25 |
+ 26 | // tokens that cannot be adjacent
+ 27 | x = (a)+(Math).pow((++b), c)
+    |         ^~~~~~~~~~~~~~~~~~~~ [12]
+ 28 | x = Math.pow(a, (b))in (c)
+    |     ^~~~~~~~~~~~~~~~ [13]
+ 29 |
+ 30 | // tokens that cannot be adjacent, but there is already space or something else between
+ 31 | x = a+(Math.pow(++b, c))in d
+    |        ^~~~~~~~~~~~~~~~ [14]
+ 32 |
+
+Output:
+  1 | /*prefer-exponentiation-operator/invalid/precedence-parens-ignore-format-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // already parenthesised, shouldn't insert extra parens
+  8 | x = +(a ** b)
+  9 | x = (a ** b).toString()
+ 10 | x = (class extends (a ** b) {})
+ 11 | x = class C extends (a ** b) {}
+ 12 |
+ 13 | // doesn't remove already existing unnecessary parens around the whole expression
+ 14 | x = (a ** b)
+ 15 | x = foo + (a ** b)
+ 16 | x = (a ** b) + foo
+ 17 | x = `${(a ** b)}`
+ 18 |
+ 19 | // base and exponent with a lower precedence
+ 20 | x = (a = b) ** (c = d);
+ 21 | x = (a += b) ** (c -= d);
+ 22 |
+ 23 | // doesn't put extra parens
+ 24 | x = (a + b) ** (c + d);
+ 25 |
+ 26 | // tokens that cannot be adjacent
+ 27 | x = (a)+(++b) ** c
+ 28 | x = a ** bin (c)
+ 29 |
+ 30 | // tokens that cannot be adjacent, but there is already space or something else between
+ 31 | x = a+((++b) ** c)in d
+ 32 |
+
+[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[4] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[5] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[6] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[7] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[8] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[9] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[10] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[11] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[12] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[13] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[14] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+---
+
+
+Test: prefer-exponentiation-operator >> invalid
+Filename: prefer-exponentiation-operator/invalid/precedence1-input.js
+
+Code:
+  1 | /*prefer-exponentiation-operator/invalid/precedence1-input.js*/
+  2 | x = Math.pow(a ** b, c);
+    |     ^~~~~~~~~~~~~~~~~~~ [1]
+  3 |
+
+Output:
+  1 | /*prefer-exponentiation-operator/invalid/precedence1-input.js*/
+  2 | x = (a ** b) ** c;
+  3 |
+
+[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+---
+
+
+Test: prefer-exponentiation-operator >> invalid
+Filename: prefer-exponentiation-operator/invalid/precedence10-input.js
+
+Code:
+  1 | /*prefer-exponentiation-operator/invalid/precedence10-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // tokens that cannot be adjacent, but there is already space or something else between
+  8 | x = a + Math.pow(++b, c) in d;
+    |         ^~~~~~~~~~~~~~~~ [1]
+  9 | x = a + /**/ Math.pow(++b, c) /**/ in d;
+    |              ^~~~~~~~~~~~~~~~ [2]
+ 10 | x = a + Math.pow(++b, c) in d;
+    |         ^~~~~~~~~~~~~~~~ [3]
+ 11 |
+
+Output:
+  1 | /*prefer-exponentiation-operator/invalid/precedence10-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // tokens that cannot be adjacent, but there is already space or something else between
+  8 | x = a + (++b) ** c in d;
+  9 | x = a + /**/ (++b) ** c /**/ in d;
+ 10 | x = a + (++b) ** c in d;
+ 11 |
+
+[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+---
+
+
+Test: prefer-exponentiation-operator >> invalid
+Filename: prefer-exponentiation-operator/invalid/precedence11-input.js
+
+Code:
+  1 | /*prefer-exponentiation-operator/invalid/precedence11-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // tokens that cannot be adjacent, but the autofix inserts parens required for precedence, so there is no need for an extra space
+  8 | x = +Math.pow(++a, b);
+    |      ^~~~~~~~~~~~~~~~ [1]
+  9 | x = Math.pow(a, b + c) in d;
+    |     ^~~~~~~~~~~~~~~~~~ [2]
+ 10 |
+
+Output:
+  1 | /*prefer-exponentiation-operator/invalid/precedence11-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // tokens that cannot be adjacent, but the autofix inserts parens required for precedence, so there is no need for an extra space
+  8 | x = +((++a) ** b);
+  9 | x = a ** (b + c) in d;
+ 10 |
+
+[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+---
+
+
+Test: prefer-exponentiation-operator >> invalid
+Filename: prefer-exponentiation-operator/invalid/precedence2-input.js
+
+Code:
+  1 | /*prefer-exponentiation-operator/invalid/precedence2-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // parents with a higher precedence
+  8 | x = +Math.pow(a, b);
+    |      ^~~~~~~~~~~~~~ [1]
+  9 | x = -Math.pow(a, b);
+    |      ^~~~~~~~~~~~~~ [2]
+ 10 | x = !Math.pow(a, b);
+    |      ^~~~~~~~~~~~~~ [3]
+ 11 | x = typeof Math.pow(a, b);
+    |            ^~~~~~~~~~~~~~ [4]
+ 12 | x = void Math.pow(a, b);
+    |          ^~~~~~~~~~~~~~ [5]
+ 13 | x = Math.pow(a, b).toString();
+    |     ^~~~~~~~~~~~~~ [6]
+ 14 | x = Math.pow(a, b)();
+    |     ^~~~~~~~~~~~~~ [7]
+ 15 | x = Math.pow(a, b)``;
+    |     ^~~~~~~~~~~~~~ [8]
+ 16 | x = class extends Math.pow(a, b) {};
+    |                   ^~~~~~~~~~~~~~ [9]
+ 17 |
+
+Output:
+  1 | /*prefer-exponentiation-operator/invalid/precedence2-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // parents with a higher precedence
+  8 | x = +(a ** b);
+  9 | x = -(a ** b);
+ 10 | x = !(a ** b);
+ 11 | x = typeof (a ** b);
+ 12 | x = void (a ** b);
+ 13 | x = (a ** b).toString();
+ 14 | x = (a ** b)();
+ 15 | x = (a ** b)``;
+ 16 | x = class extends (a ** b) {};
+ 17 |
+
+[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[4] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[5] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[6] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[7] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[8] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[9] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+---
+
+
+Test: prefer-exponentiation-operator >> invalid
+Filename: prefer-exponentiation-operator/invalid/precedence3-input.js
+
+Code:
+  1 | /*prefer-exponentiation-operator/invalid/precedence3-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // parents with a lower precedence
+  8 | x = a * Math.pow(b, c);
+    |         ^~~~~~~~~~~~~~ [1]
+  9 | x = Math.pow(a, b) * c;
+    |     ^~~~~~~~~~~~~~ [2]
+ 10 | x = a + Math.pow(b, c);
+    |         ^~~~~~~~~~~~~~ [3]
+ 11 | x = Math.pow(a, b) / c;
+    |     ^~~~~~~~~~~~~~ [4]
+ 12 | x = a < Math.pow(b, c);
+    |         ^~~~~~~~~~~~~~ [5]
+ 13 | x = Math.pow(a, b) > c;
+    |     ^~~~~~~~~~~~~~ [6]
+ 14 | x = a === Math.pow(b, c);
+    |           ^~~~~~~~~~~~~~ [7]
+ 15 | x = a ? Math.pow(b, c) : d;
+    |         ^~~~~~~~~~~~~~ [8]
+ 16 | x = a = Math.pow(b, c);
+    |         ^~~~~~~~~~~~~~ [9]
+ 17 | x = a += Math.pow(b, c);
+    |          ^~~~~~~~~~~~~~ [10]
+ 18 | x = function* f() {
+ 19 |   yield Math.pow(a, b);
+    |         ^~~~~~~~~~~~~~ [11]
+ 20 | };
+ 21 | x = (a, Math.pow(b, c), d);
+    |         ^~~~~~~~~~~~~~ [12]
+ 22 |
+
+Output:
+  1 | /*prefer-exponentiation-operator/invalid/precedence3-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // parents with a lower precedence
+  8 | x = a * b ** c;
+  9 | x = a ** b * c;
+ 10 | x = a + b ** c;
+ 11 | x = a ** b / c;
+ 12 | x = a < b ** c;
+ 13 | x = a ** b > c;
+ 14 | x = a === b ** c;
+ 15 | x = a ? b ** c : d;
+ 16 | x = a = b ** c;
+ 17 | x = a += b ** c;
+ 18 | x = function* f() {
+ 19 |   yield a ** b;
+ 20 | };
+ 21 | x = (a, b ** c, d);
+ 22 |
+
+[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[4] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[5] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[6] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[7] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[8] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[9] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[10] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[11] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[12] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+---
+
+
+Test: prefer-exponentiation-operator >> invalid
+Filename: prefer-exponentiation-operator/invalid/precedence4-input.js
+
+Code:
+  1 | /*prefer-exponentiation-operator/invalid/precedence4-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // '**' is right-associative, that applies to both parent and child nodes
+  8 | x = a ** Math.pow(b, c);
+    |          ^~~~~~~~~~~~~~ [1]
+  9 | x = Math.pow(a, b) ** c;
+    |     ^~~~~~~~~~~~~~ [2]
+ 10 | x = Math.pow(a, b ** c);
+    |     ^~~~~~~~~~~~~~~~~~~ [3]
+ 11 | x = Math.pow(a ** b, c);
+    |     ^~~~~~~~~~~~~~~~~~~ [4]
+ 12 | x = a ** (Math.pow(b ** c, d ** e) ** f);
+    |           ^~~~~~~~~~~~~~~~~~~~~~~~ [5]
+ 13 |
+
+Output:
+  1 | /*prefer-exponentiation-operator/invalid/precedence4-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // '**' is right-associative, that applies to both parent and child nodes
+  8 | x = a ** b ** c;
+  9 | x = (a ** b) ** c;
+ 10 | x = a ** b ** c;
+ 11 | x = (a ** b) ** c;
+ 12 | x = a ** (((b ** c) ** d ** e) ** f);
+ 13 |
+
+[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[4] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[5] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+---
+
+
+Test: prefer-exponentiation-operator >> invalid
+Filename: prefer-exponentiation-operator/invalid/precedence5-input.js
+
+Code:
+  1 | /*prefer-exponentiation-operator/invalid/precedence5-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // doesn't remove already existing unnecessary parens around the whole expression
+  8 | x = Math.pow(a, b);
+    |     ^~~~~~~~~~~~~~ [1]
+  9 | x = foo + Math.pow(a, b);
+    |           ^~~~~~~~~~~~~~ [2]
+ 10 | x = Math.pow(a, b) + foo;
+    |     ^~~~~~~~~~~~~~ [3]
+ 11 | x = `${Math.pow(a, b)}`;
+    |        ^~~~~~~~~~~~~~ [4]
+ 12 |
+
+Output:
+  1 | /*prefer-exponentiation-operator/invalid/precedence5-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // doesn't remove already existing unnecessary parens around the whole expression
+  8 | x = a ** b;
+  9 | x = foo + a ** b;
+ 10 | x = a ** b + foo;
+ 11 | x = `${a ** b}`;
+ 12 |
+
+[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[4] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+---
+
+
+Test: prefer-exponentiation-operator >> invalid
+Filename: prefer-exponentiation-operator/invalid/precedence6-input.js
+
+Code:
+  1 | /*prefer-exponentiation-operator/invalid/precedence6-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // unary expressions are exception by the language - parens are required for the base to disambiguate operator precedence
+  8 | x = Math.pow(+a, b);
+    |     ^~~~~~~~~~~~~~~ [1]
+  9 | x = Math.pow(a, +b);
+    |     ^~~~~~~~~~~~~~~ [2]
+ 10 | x = Math.pow(-a, b);
+    |     ^~~~~~~~~~~~~~~ [3]
+ 11 | x = Math.pow(a, -b);
+    |     ^~~~~~~~~~~~~~~ [4]
+ 12 | x = Math.pow(-2, 3);
+    |     ^~~~~~~~~~~~~~~ [5]
+ 13 | x = Math.pow(2, -3);
+    |     ^~~~~~~~~~~~~~~ [6]
+ 14 | x = async () => Math.pow(await a, b);
+    |                 ^~~~~~~~~~~~~~~~~~~~ [7]
+ 15 | x = async () => Math.pow(a, await b);
+    |                 ^~~~~~~~~~~~~~~~~~~~ [8]
+ 16 |
+
+Output:
+  1 | /*prefer-exponentiation-operator/invalid/precedence6-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // unary expressions are exception by the language - parens are required for the base to disambiguate operator precedence
+  8 | x = (+a) ** b;
+  9 | x = a ** +b;
+ 10 | x = (-a) ** b;
+ 11 | x = a ** -b;
+ 12 | x = (-2) ** 3;
+ 13 | x = 2 ** -3;
+ 14 | x = async () => (await a) ** b;
+ 15 | x = async () => a ** await b;
+ 16 |
+
+[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[4] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[5] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[6] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[7] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[8] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+---
+
+
+Test: prefer-exponentiation-operator >> invalid
+Filename: prefer-exponentiation-operator/invalid/precedence7-input.js
+
+Code:
+  1 | /*prefer-exponentiation-operator/invalid/precedence7-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // base and exponent with a lower precedence
+  8 | x = Math.pow(a * b, c);
+    |     ^~~~~~~~~~~~~~~~~~ [1]
+  9 | x = Math.pow(a, b * c);
+    |     ^~~~~~~~~~~~~~~~~~ [2]
+ 10 | x = Math.pow(a / b, c);
+    |     ^~~~~~~~~~~~~~~~~~ [3]
+ 11 | x = Math.pow(a, b / c);
+    |     ^~~~~~~~~~~~~~~~~~ [4]
+ 12 | x = Math.pow(a + b, 3);
+    |     ^~~~~~~~~~~~~~~~~~ [5]
+ 13 | x = Math.pow(2, a - b);
+    |     ^~~~~~~~~~~~~~~~~~ [6]
+ 14 | x = Math.pow(a + b, c + d);
+    |     ^~~~~~~~~~~~~~~~~~~~~~ [7]
+ 15 | x = Math.pow((a = b), (c = d));
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~ [8]
+ 16 | x = Math.pow((a += b), (c -= d));
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~ [9]
+ 17 | x = Math.pow((a, b), (c, d));
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~ [10]
+ 18 | x = function* f() {
+ 19 |   Math.pow(yield, yield);
+    |   ^~~~~~~~~~~~~~~~~~~~~~ [11]
+ 20 | };
+ 21 |
+
+Output:
+  1 | /*prefer-exponentiation-operator/invalid/precedence7-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // base and exponent with a lower precedence
+  8 | x = (a * b) ** c;
+  9 | x = a ** (b * c);
+ 10 | x = (a / b) ** c;
+ 11 | x = a ** (b / c);
+ 12 | x = (a + b) ** 3;
+ 13 | x = 2 ** (a - b);
+ 14 | x = (a + b) ** (c + d);
+ 15 | x = (a = b) ** (c = d);
+ 16 | x = (a += b) ** (c -= d);
+ 17 | x = (a, b) ** (c, d);
+ 18 | x = function* f() {
+ 19 |   (yield) ** (yield);
+ 20 | };
+ 21 |
+
+[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[4] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[5] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[6] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[7] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[8] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[9] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[10] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[11] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+---
+
+
+Test: prefer-exponentiation-operator >> invalid
+Filename: prefer-exponentiation-operator/invalid/precedence8-input.js
+
+Code:
+  1 | /*prefer-exponentiation-operator/invalid/precedence8-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // tokens that can be adjacent
+  8 | x = a + Math.pow(b, c) + d;
+    |         ^~~~~~~~~~~~~~ [1]
+  9 |
+
+Output:
+  1 | /*prefer-exponentiation-operator/invalid/precedence8-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // tokens that can be adjacent
+  8 | x = a + b ** c + d;
+  9 |
+
+[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+---
+
+
+Test: prefer-exponentiation-operator >> invalid
+Filename: prefer-exponentiation-operator/invalid/precedence9-input.js
+
+Code:
+  1 | /*prefer-exponentiation-operator/invalid/precedence9-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // tokens that cannot be adjacent
+  8 | x = a + Math.pow(++b, c);
+    |         ^~~~~~~~~~~~~~~~ [1]
+  9 | x = Math.pow(a, b) in c;
+    |     ^~~~~~~~~~~~~~ [2]
+ 10 | x = a + Math.pow(++b, c) in d;
+    |         ^~~~~~~~~~~~~~~~ [3]
+ 11 | x = a + Math.pow(++b, c) in d;
+    |         ^~~~~~~~~~~~~~~~ [4]
+ 12 |
+
+Output:
+  1 | /*prefer-exponentiation-operator/invalid/precedence9-input.js*/
+  2 | /**
+  3 |  * These test cases were heavily inspired by ESLint test cases.
+  4 |  * https://github.com/eslint/eslint/blob/main/tests/lib/rules/prefer-exponentiation-operator.js
+  5 |  */
+  6 |
+  7 | // tokens that cannot be adjacent
+  8 | x = a + (++b) ** c;
+  9 | x = a ** b in c;
+ 10 | x = a + (++b) ** c in d;
+ 11 | x = a + (++b) ** c in d;
+ 12 |
+
+[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[4] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+---

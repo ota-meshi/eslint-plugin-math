@@ -68,6 +68,14 @@ export default [
       "no-empty": "off",
       "no-self-compare": "off",
       radix: "off",
+      "no-implicit-coercion": "off",
+      "no-void": "off",
+    },
+  },
+  {
+    files: ["tests/fixtures/**/*ignore-format*.js"],
+    rules: {
+      "prettier/prettier": "off",
     },
   },
   {
