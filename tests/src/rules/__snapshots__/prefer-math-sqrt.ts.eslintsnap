@@ -33,7 +33,7 @@ Output:
  10 |
 
 [1] Can use 'Math.sqrt(n)' instead of 'Math.pow(n, 1 / 2)'.
-[2] Can use 'Math.sqrt(n)' instead of 'Math.pow(n, 1 / 2)'.
+[2] Can use 'Math.sqrt(n)' instead of 'Math.pow(n, 0.5)'.
 [3] Can use 'Math.sqrt(n)' instead of 'n ** (1 / 2)'.
-[4] Can use 'Math.sqrt(n)' instead of 'n ** (1 / 2)'.
+[4] Can use 'Math.sqrt(n)' instead of 'n ** 0.5'.
 ---

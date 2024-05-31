@@ -4,6 +4,7 @@ import { existComment } from "../utils/ast";
 import type { Rule } from "eslint";
 import type { TransformingToMathHypot } from "../utils/math";
 import { getInfoForTransformingToMathHypot } from "../utils/math";
+import { getIdTextList } from "../utils/messages";
 
 export default createRule("prefer-math-hypot", {
   meta: {
@@ -17,7 +18,7 @@ export default createRule("prefer-math-hypot", {
     schema: [],
     messages: {
       canUseMathHypot:
-        "Can use 'Math.hypot(a, b)' instead of '{{expression}}'.",
+        "Can use 'Math.hypot({{idList}})' instead of '{{expression}}'.",
       replace: "Replace using 'Math.hypot()'.",
     },
     type: "suggestion",
@@ -45,27 +46,45 @@ export default createRule("prefer-math-hypot", {
       context.report({
         node,
         messageId: "canUseMathHypot",
-        data: {
-          expression: getMessageExpression(transform),
-        },
+        data: getMessageData(transform),
         fix: !hasComment ? fix : null,
         suggest: hasComment ? [{ messageId: "replace", fix }] : null,
       });
     }
 
     /**
-     * Get the expression text in the message for the given information.
+     * Get the message data from the given information.
      */
-    function getMessageExpression(info: TransformingToMathHypot): string {
+    function getMessageData(info: TransformingToMathHypot): {
+      expression: string;
+      idList: string;
+    } {
+      const idList = getIdTextList(info.arguments);
+      const operands = idList
+        .map((id, index) => {
+          const meta = info.argumentsMeta[index];
+          if (meta.from === "pow") return `Math.pow(${id}, 2)`;
+          if (meta.from === "multiplication") return `${id} * ${id}`;
+          // if (meta.from === "exponentiation") return `${id} ** 2`;
+          return `${id} ** 2`;
+        })
+        .join(" + ");
+      let expression = "";
       switch (info.from) {
         case "sqrt":
-          return "Math.sqrt(a ** 2 + b ** 2)";
+          expression = `Math.sqrt(${operands})`;
+          break;
         case "exponentiation":
-          return "(a ** 2 + b ** 2) ** (1 / 2)";
+          expression = `(${operands}) ** ${info.exponentMeta.type === "Literal" ? info.exponentMeta.raw : "(1 / 2)"}`;
+          break;
         case "pow":
-          return "Math.pow(a ** 2 + b ** 2, 1 / 2)";
+          expression = `Math.pow(${operands}, ${info.exponentMeta.type === "Literal" ? info.exponentMeta.raw : "1 / 2"})`;
+          break;
       }
-      return "";
+      return {
+        expression,
+        idList: idList.join(", "),
+      };
     }
 
     return {

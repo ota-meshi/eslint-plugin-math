@@ -22,6 +22,7 @@ import {
 } from "./number";
 import type { ExtractFunctionKeys } from "./type";
 import { processLR } from "./process";
+import type { ExponentiationOrLike } from "./operator";
 import { getInfoForExponentiationOrLike } from "./operator";
 
 type MathConstructor = typeof Math;
@@ -275,10 +276,12 @@ export type TransformingToMathSqrt =
   | (MathMethodInfo<"sqrt"> & {
       from: "exponentiation";
       node: TSESTree.BinaryExpression;
+      exponentMeta: TSESTree.Expression;
     })
   | (MathMethodInfo<"sqrt"> & {
       from: "pow";
       node: TSESTree.CallExpression;
+      exponentMeta: TSESTree.Expression;
     });
 /**
  * Returns information if the given expression can be transformed to Math.sqrt().
@@ -292,7 +295,13 @@ export function getInfoForTransformingToMathSqrt(
       for (const [left, right] of processLR(node)) {
         if (!isHalf(right, sourceCode)) continue;
         // n ** (1/2)
-        return { from: "exponentiation", method: "sqrt", node, argument: left };
+        return {
+          from: "exponentiation",
+          method: "sqrt",
+          node,
+          argument: left,
+          exponentMeta: right,
+        };
       }
     }
     return null;
@@ -308,6 +317,7 @@ export function getInfoForTransformingToMathSqrt(
       method: "sqrt",
       node,
       argument,
+      exponentMeta: exponent,
     };
   }
   return null;
@@ -960,15 +970,21 @@ export function getInfoForTransformingToMathE(
 export type TransformingToMathHypot =
   | (MathMethodWithArgsInfo<"hypot"> & {
       from: "sqrt";
-      node: TSESTree.CallExpression | TSESTree.BinaryExpression;
+      node: TSESTree.CallExpression;
+      argumentsMeta: ExponentiationOrLike[];
+      exponentMeta?: undefined;
     })
   | (MathMethodWithArgsInfo<"hypot"> & {
       from: "exponentiation";
-      node: TSESTree.CallExpression | TSESTree.BinaryExpression;
+      node: TSESTree.BinaryExpression;
+      argumentsMeta: ExponentiationOrLike[];
+      exponentMeta: TSESTree.Expression;
     })
   | (MathMethodWithArgsInfo<"hypot"> & {
       from: "pow";
-      node: TSESTree.CallExpression | TSESTree.BinaryExpression;
+      node: TSESTree.CallExpression;
+      argumentsMeta: ExponentiationOrLike[];
+      exponentMeta: TSESTree.Expression;
     });
 /**
  * Returns information if the given expression can be transformed to Math.Hypot().
@@ -1000,8 +1016,7 @@ export function getInfoForTransformingToMathHypot(
   }
   if (plusOperands.length < 2) return null;
 
-  const argumentNodes: (TSESTree.Expression | TSESTree.PrivateIdentifier)[] =
-    [];
+  const argumentsMeta: ExponentiationOrLike[] = [];
 
   for (const operand of plusOperands) {
     const exponentiation = getInfoForExponentiationOrLike(operand, sourceCode);
@@ -1011,14 +1026,16 @@ export function getInfoForTransformingToMathHypot(
     } else if (getStaticValue(exponentiation.right, sourceCode)?.value !== 2) {
       return null;
     }
-    argumentNodes.push(exponentiation.left);
+    argumentsMeta.push(exponentiation);
   }
 
   return {
     method: "hypot",
-    node: sqrt.node,
+    node: sqrt.node as never,
     from: sqrt.from,
-    arguments: argumentNodes,
+    arguments: argumentsMeta.map((meta) => meta.left),
+    argumentsMeta,
+    exponentMeta: sqrt.exponentMeta as never,
   };
 }
 /**
@@ -1125,6 +1142,7 @@ function getInfoForMathSqrtOrLike(
   | (MathMethodInfo<"sqrt"> & {
       from: "sqrt";
       node: TSESTree.CallExpression;
+      exponentMeta?: undefined;
     })
   | TransformingToMathSqrt
   | null {

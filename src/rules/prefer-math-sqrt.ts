@@ -1,8 +1,10 @@
 import type { TSESTree } from "@typescript-eslint/types";
 import { createRule } from "../utils";
+import type { TransformingToMathSqrt } from "../utils/math";
 import { getInfoForTransformingToMathSqrt } from "../utils/math";
 import { existComment } from "../utils/ast";
 import type { Rule } from "eslint";
+import { getIdText } from "../utils/messages";
 
 export default createRule("prefer-math-sqrt", {
   meta: {
@@ -16,9 +18,9 @@ export default createRule("prefer-math-sqrt", {
     schema: [],
     messages: {
       canUseSqrtInsteadOfExponentiation:
-        "Can use 'Math.sqrt(n)' instead of 'n ** (1 / 2)'.",
+        "Can use 'Math.sqrt({{id}})' instead of '{{id}} ** {{exponent}}'.",
       canUseSqrtInsteadOfMathPow:
-        "Can use 'Math.sqrt(n)' instead of 'Math.pow(n, 1 / 2)'.",
+        "Can use 'Math.sqrt({{id}})' instead of 'Math.pow({{id}}, {{exponent}})'.",
       replace: "Replace using 'Math.sqrt()'.",
     },
     type: "suggestion",
@@ -47,9 +49,25 @@ export default createRule("prefer-math-sqrt", {
           transform.from === "exponentiation"
             ? "canUseSqrtInsteadOfExponentiation"
             : "canUseSqrtInsteadOfMathPow",
+        data: getMessageData(transform),
         fix: !hasComment ? fix : null,
         suggest: hasComment ? [{ messageId: "replace", fix }] : null,
       });
+    }
+
+    /**
+     * Get the message data from the given information.
+     */
+    function getMessageData(info: TransformingToMathSqrt) {
+      return {
+        id: getIdText(info.argument, "n"),
+        exponent:
+          info.exponentMeta.type === "Literal"
+            ? info.exponentMeta.raw
+            : info.from === "exponentiation"
+              ? "(1 / 2)"
+              : "1 / 2",
+      };
     }
 
     return {

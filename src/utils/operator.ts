@@ -61,19 +61,19 @@ export function getInfoForTransformingToExponentiation(
   return null;
 }
 
+export type ExponentiationOrLike =
+  | (OperatorInfo<"**"> & {
+      from: "exponentiation";
+      right: TSESTree.Expression;
+    })
+  | TransformingToExponentiation;
 /**
  * Returns information if the given expression is `x ** y` or like.
  */
 export function getInfoForExponentiationOrLike(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
-):
-  | (OperatorInfo<"**"> & {
-      from: "exponentiation";
-      right: TSESTree.Expression;
-    })
-  | null
-  | TransformingToExponentiation {
+): ExponentiationOrLike | null {
   if (node.type === "BinaryExpression" && node.operator === "**") {
     return {
       from: "exponentiation",
