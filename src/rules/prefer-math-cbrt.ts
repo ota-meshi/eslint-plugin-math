@@ -44,7 +44,7 @@ export default createRule("prefer-math-cbrt", {
       context.report({
         node,
         messageId:
-          transform.from === "exponentiation"
+          transform.from === "**"
             ? "canUseCbrtInsteadOfExponentiation"
             : "canUseCbrtInsteadOfMathPow",
         fix: !hasComment ? fix : null,

@@ -49,7 +49,7 @@ export default createRule("abs", {
       const transform = getInfoForMathAbsOrLike(node, sourceCode);
       if (!transform) return;
       const needTransform =
-        transform.from === "multiply" ||
+        transform.from === "*-1" ||
         (prefer === "expression" && transform.from === "abs");
       if (!needTransform) return;
       const hasComment = existComment(node, sourceCode);
@@ -87,7 +87,7 @@ export default createRule("abs", {
           expression:
             transform.from === "abs"
               ? "Math.abs()"
-              : transform.from === "multiply"
+              : transform.from === "*-1"
                 ? "n < 0 ? n * -1 : n"
                 : "n < 0 ? -n : n",
         },

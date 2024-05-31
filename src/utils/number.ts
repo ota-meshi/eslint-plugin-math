@@ -77,16 +77,16 @@ export function getInfoForToNegative(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | {
-  from: "multiply" | "minus";
+  from: "*-1" | "-";
   argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
 } {
   if (node.type === "UnaryExpression" && node.operator === "-") {
-    return { from: "minus", argument: node.argument };
+    return { from: "-", argument: node.argument };
   }
   if (node.type === "BinaryExpression" && node.operator === "*") {
     for (const [left, right] of processLR(node)) {
       if (isMinusOne(right, sourceCode)) {
-        return { from: "multiply", argument: left };
+        return { from: "*-1", argument: left };
       }
     }
     return null;
@@ -526,7 +526,7 @@ export function getInfoForTransformingToNumberIsNaN(
 
 export type TransformingToNumberEPSILON =
   | (NumberPropertyInfo<"EPSILON"> & {
-      from: "exponentiation";
+      from: "**";
       node: TSESTree.BinaryExpression;
     })
   | (NumberPropertyInfo<"EPSILON"> & {
@@ -551,7 +551,7 @@ export function getInfoForTransformingToNumberEPSILON(
       isStaticValue(node.right, -52, sourceCode)
     ) {
       return {
-        from: "exponentiation",
+        from: "**",
         node,
         property: "EPSILON",
       };

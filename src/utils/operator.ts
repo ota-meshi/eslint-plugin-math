@@ -19,7 +19,7 @@ export type TransformingToExponentiation =
       right: TSESTree.Expression;
     })
   | (OperatorInfo<"**"> & {
-      from: "multiplication";
+      from: "*";
       node: TSESTree.BinaryExpression;
       right: number;
     });
@@ -34,7 +34,7 @@ export function getInfoForTransformingToExponentiation(
     if (node.operator === "*") {
       for (const exponentiation of parseExponentiation(node, sourceCode)) {
         return {
-          from: "multiplication",
+          from: "*",
           operator: "**",
           left: exponentiation.left,
           right: exponentiation.right,
@@ -63,7 +63,7 @@ export function getInfoForTransformingToExponentiation(
 
 export type ExponentiationOrLike =
   | (OperatorInfo<"**"> & {
-      from: "exponentiation";
+      from: "**";
       right: TSESTree.Expression;
     })
   | TransformingToExponentiation;
@@ -76,7 +76,7 @@ export function getInfoForExponentiationOrLike(
 ): ExponentiationOrLike | null {
   if (node.type === "BinaryExpression" && node.operator === "**") {
     return {
-      from: "exponentiation",
+      from: "**",
       operator: "**",
       left: node.left,
       right: node.right,

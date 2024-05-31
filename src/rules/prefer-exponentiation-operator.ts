@@ -43,7 +43,7 @@ export default createRule("prefer-exponentiation-operator", {
       );
       if (!transform) return;
 
-      if (transform.from === "multiplication") {
+      if (transform.from === "*") {
         reportedBinaryExpressions.add(transform.node);
         const { parent } = transform.node;
         if (
@@ -60,7 +60,7 @@ export default createRule("prefer-exponentiation-operator", {
       const fix = (fixer: Rule.RuleFixer) => {
         let left = sourceCode.getText(transform.left);
         let right =
-          transform.from === "multiplication"
+          transform.from === "*"
             ? String(transform.right)
             : sourceCode.getText(transform.right);
         const leftPrecedence = getPrecedence(transform.left, sourceCode);
@@ -71,7 +71,7 @@ export default createRule("prefer-exponentiation-operator", {
         ) {
           left = `(${left})`;
         }
-        if (transform.from !== "multiplication") {
+        if (transform.from !== "*") {
           if (
             Precedence.exponentiation >
             getPrecedence(transform.right, sourceCode).precedence
@@ -107,11 +107,11 @@ export default createRule("prefer-exponentiation-operator", {
       context.report({
         node,
         messageId:
-          transform.from === "multiplication"
+          transform.from === "*"
             ? "canUseExponentiationInsteadOfMultiplication"
             : "canUseExponentiationInsteadOfMathPow",
         data:
-          transform.from === "multiplication"
+          transform.from === "*"
             ? {
                 num: String(transform.right),
                 expression: "n".repeat(transform.right).split("").join(" * "),

@@ -64,8 +64,8 @@ export default createRule("prefer-math-hypot", {
         .map((id, index) => {
           const meta = info.argumentsMeta[index];
           if (meta.from === "pow") return `Math.pow(${id}, 2)`;
-          if (meta.from === "multiplication") return `${id} * ${id}`;
-          // if (meta.from === "exponentiation") return `${id} ** 2`;
+          if (meta.from === "*") return `${id} * ${id}`;
+          // if (meta.from === "**") return `${id} ** 2`;
           return `${id} ** 2`;
         })
         .join(" + ");
@@ -74,7 +74,7 @@ export default createRule("prefer-math-hypot", {
         case "sqrt":
           expression = `Math.sqrt(${operands})`;
           break;
-        case "exponentiation":
+        case "**":
           expression = `(${operands}) ** ${info.exponentMeta.type === "Literal" ? info.exponentMeta.raw : "(1 / 2)"}`;
           break;
         case "pow":

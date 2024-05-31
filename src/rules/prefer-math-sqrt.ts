@@ -46,7 +46,7 @@ export default createRule("prefer-math-sqrt", {
       context.report({
         node,
         messageId:
-          transform.from === "exponentiation"
+          transform.from === "**"
             ? "canUseSqrtInsteadOfExponentiation"
             : "canUseSqrtInsteadOfMathPow",
         data: getMessageData(transform),
@@ -64,7 +64,7 @@ export default createRule("prefer-math-sqrt", {
         exponent:
           info.exponentMeta.type === "Literal"
             ? info.exponentMeta.raw
-            : info.from === "exponentiation"
+            : info.from === "**"
               ? "(1 / 2)"
               : "1 / 2",
       };

@@ -274,7 +274,7 @@ export function* extractTransformingToMathTruncStatements(
 
 export type TransformingToMathSqrt =
   | (MathMethodInfo<"sqrt"> & {
-      from: "exponentiation";
+      from: "**";
       node: TSESTree.BinaryExpression;
       exponentMeta: TSESTree.Expression;
     })
@@ -296,7 +296,7 @@ export function getInfoForTransformingToMathSqrt(
         if (!isHalf(right, sourceCode)) continue;
         // n ** (1/2)
         return {
-          from: "exponentiation",
+          from: "**",
           method: "sqrt",
           node,
           argument: left,
@@ -323,7 +323,7 @@ export function getInfoForTransformingToMathSqrt(
   return null;
 }
 export type TransformingToMathAbs = MathMethodInfo<"abs"> & {
-  from: "multiply" | "minus";
+  from: "*-1" | "-";
   node: TSESTree.ConditionalExpression;
 };
 /**
@@ -383,7 +383,7 @@ export function getInfoForTransformingToMathAbs(
 
 export type TransformingToMathCbrt =
   | (MathMethodInfo<"cbrt"> & {
-      from: "exponentiation";
+      from: "**";
       node: TSESTree.BinaryExpression;
     })
   | (MathMethodInfo<"cbrt"> & {
@@ -402,7 +402,7 @@ export function getInfoForTransformingToMathCbrt(
       for (const [left, right] of processLR(node)) {
         if (!isOneThird(right, sourceCode)) continue;
         // n ** (1/3)
-        return { from: "exponentiation", method: "cbrt", node, argument: left };
+        return { from: "**", method: "cbrt", node, argument: left };
       }
     }
     return null;
@@ -975,7 +975,7 @@ export type TransformingToMathHypot =
       exponentMeta?: undefined;
     })
   | (MathMethodWithArgsInfo<"hypot"> & {
-      from: "exponentiation";
+      from: "**";
       node: TSESTree.BinaryExpression;
       argumentsMeta: ExponentiationOrLike[];
       exponentMeta: TSESTree.Expression;
@@ -1021,7 +1021,7 @@ export function getInfoForTransformingToMathHypot(
   for (const operand of plusOperands) {
     const exponentiation = getInfoForExponentiationOrLike(operand, sourceCode);
     if (!exponentiation) return null;
-    if (exponentiation.from === "multiplication") {
+    if (exponentiation.from === "*") {
       if (exponentiation.right !== 2) return null;
     } else if (getStaticValue(exponentiation.right, sourceCode)?.value !== 2) {
       return null;
