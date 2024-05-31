@@ -41,7 +41,7 @@ Output:
 
 [1] Can use 'Math.LN2' instead of 'Math.log(2)'.
 [2] Can use 'Math.LN2' instead of '1 / Math.LOG2E'.
-[3] Can use 'Math.LN2' instead of 'x / Math.LOG2E'.
+[3] Can use 'Math.LN2' instead of 'y / Math.LOG2E'.
 ---
 
 
@@ -70,8 +70,8 @@ Output:
 
 [1] Can use 'Math.LN2' instead of '1 / Math.LOG2E'.
 [2] Can use 'Math.LN2' instead of '1 / Math.LOG2E'.
-[3] Can use 'Math.LN2' instead of 'x / Math.LOG2E'.
-[4] Can use 'Math.LN2' instead of 'x / Math.LOG2E'.
+[3] Can use 'Math.LN2' instead of 'y / Math.LOG2E'.
+[4] Can use 'Math.LN2' instead of 'y / Math.LOG2E'.
 ---
 
 

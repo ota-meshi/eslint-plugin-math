@@ -4,6 +4,7 @@ import type { TransformingToMathLog2 } from "../utils/math";
 import { getInfoForTransformingToMathLog2 } from "../utils/math";
 import { existComment } from "../utils/ast";
 import type { Rule } from "eslint";
+import { getIdText } from "../utils/messages";
 
 export default createRule("prefer-math-log2", {
   meta: {
@@ -16,8 +17,8 @@ export default createRule("prefer-math-log2", {
     hasSuggestions: true,
     schema: [],
     messages: {
-      canUseLog2: "Can use 'Math.log2(n)' instead of '{{expression}}'.",
-      replace: "Replace using 'Math.log2()'.",
+      canUseLog2: "Can use 'Math.log2({{id}})' instead of '{{expression}}'.",
+      replace: "Replace using 'Math.log2({{id}})'.",
     },
     type: "suggestion",
   },
@@ -39,28 +40,34 @@ export default createRule("prefer-math-log2", {
         );
       };
 
+      const data = getMessageData(transform);
       context.report({
         node,
         messageId: "canUseLog2",
-        data: {
-          expression: getMessageExpression(transform),
-        },
+        data,
         fix: !hasComment ? fix : null,
-        suggest: hasComment ? [{ messageId: "replace", fix }] : null,
+        suggest: hasComment ? [{ messageId: "replace", data, fix }] : null,
       });
     }
 
     /**
-     * Get the expression text in the message for the given information.
+     * Get the message data from the given information.
      */
-    function getMessageExpression(info: TransformingToMathLog2): string {
+    function getMessageData(info: TransformingToMathLog2) {
+      const id = getIdText(info.argument, "n");
+      let expression = "";
       switch (info.from) {
         case "logWithLOG2E":
-          return `Math.log(n) * Math.LOG2E`;
+          expression = `Math.log(${id}) * Math.LOG2E`;
+          break;
         case "logWithLN2":
-          return `Math.log(n) / Math.LN2`;
+          expression = `Math.log(${id}) / Math.LN2`;
+          break;
       }
-      return "";
+      return {
+        id,
+        expression,
+      };
     }
 
     return {
