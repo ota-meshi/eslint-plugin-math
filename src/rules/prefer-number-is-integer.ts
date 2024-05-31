@@ -4,6 +4,7 @@ import type { TransformingToNumberIsInteger } from "../utils/number";
 import { getInfoForTransformingToNumberIsInteger } from "../utils/number";
 import type { Rule } from "eslint";
 import { existComment } from "../utils/ast";
+import { getIdText } from "../utils/messages";
 
 export default createRule("prefer-number-is-integer", {
   meta: {
@@ -17,10 +18,10 @@ export default createRule("prefer-number-is-integer", {
     schema: [],
     messages: {
       canUseIsInteger:
-        "Can use 'Number.isInteger(n)' instead of {{expression}}.",
+        "Can use 'Number.isInteger({{id}})' instead of {{expression}}.",
       canUseNotIsInteger:
-        "Can use '!Number.isInteger(n)' instead of {{expression}}.",
-      replace: "Replace using 'Number.isInteger()'.",
+        "Can use '!Number.isInteger({{id}})' instead of {{expression}}.",
+      replace: "Replace using 'Number.isInteger({{id}})'.",
     },
     type: "suggestion",
   },
@@ -45,40 +46,61 @@ export default createRule("prefer-number-is-integer", {
         );
       };
 
+      const data = getMessageData(transform);
       context.report({
         node,
         messageId: !transform.not ? "canUseIsInteger" : "canUseNotIsInteger",
-        data: {
-          expression: getMessageExpression(transform),
-        },
+        data,
         fix: !hasComment ? fix : null,
-        suggest: hasComment ? [{ messageId: "replace", fix }] : null,
+        suggest: hasComment ? [{ messageId: "replace", data, fix }] : null,
       });
     }
 
     /**
-     * Get the expression text in the message for the given information.
+     * Get the message data from the given information.
      */
-    function getMessageExpression(info: TransformingToNumberIsInteger): string {
+    function getMessageData(info: TransformingToNumberIsInteger) {
+      const id = getIdText(info.argument, "n");
+      let expression = "";
       switch (info.from) {
         case "trunc":
-          return !info.not ? "'Math.trunc(n) === n'" : "'Math.trunc(n) !== n'";
+          expression = !info.not
+            ? `'Math.trunc(${id}) === ${id}'`
+            : `'Math.trunc(${id}) !== ${id}'`;
+          break;
         case "floor":
-          return !info.not ? "'Math.floor(n) === n'" : "'Math.floor(n) !== n'";
+          expression = !info.not
+            ? `'Math.floor(${id}) === ${id}'`
+            : `'Math.floor(${id}) !== ${id}'`;
+          break;
         case "ceil":
-          return !info.not ? "'Math.ceil(n) === n'" : "'Math.ceil(n) !== n'";
+          expression = !info.not
+            ? `'Math.ceil(${id}) === ${id}'`
+            : `'Math.ceil(${id}) !== ${id}'`;
+          break;
         case "round":
-          return !info.not ? "'Math.round(n) === n'" : "'Math.round(n) !== n'";
+          expression = !info.not
+            ? `'Math.round(${id}) === ${id}'`
+            : `'Math.round(${id}) !== ${id}'`;
+          break;
         case "truncLike":
-          return !info.not
-            ? "'Math.trunc(n) === n' like expression"
-            : "'Math.trunc(n) !== n' like expression";
+          expression = !info.not
+            ? `'Math.trunc(${id}) === ${id}' like expression`
+            : `'Math.trunc(${id}) !== ${id}' like expression`;
+          break;
         case "modulo":
-          return !info.not ? "'n % 1 !== 0'" : "'n % 1 === 0'";
+          expression = !info.not ? `'${id} % 1 !== 0'` : `'${id} % 1 === 0'`;
+          break;
         case "parseInt":
-          return !info.not ? "'parseInt(n) === n'" : "'parseInt(n) !== n'";
+          expression = !info.not
+            ? `'parseInt(${id}) === ${id}'`
+            : `'parseInt(${id}) !== ${id}'`;
+          break;
       }
-      return "";
+      return {
+        id,
+        expression,
+      };
     }
 
     return {

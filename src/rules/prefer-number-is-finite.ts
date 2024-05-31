@@ -4,6 +4,7 @@ import type { TransformingToNumberIsFinite } from "../utils/number";
 import { getInfoForTransformingToNumberIsFinite } from "../utils/number";
 import { existComment } from "../utils/ast";
 import type { Rule } from "eslint";
+import { getIdText } from "../utils/messages";
 
 export default createRule("prefer-number-is-finite", {
   meta: {
@@ -16,10 +17,11 @@ export default createRule("prefer-number-is-finite", {
     hasSuggestions: true,
     schema: [],
     messages: {
-      canUseIsFinite: "Can use 'Number.isFinite(n)' instead of {{expression}}.",
+      canUseIsFinite:
+        "Can use 'Number.isFinite({{id}})' instead of {{expression}}.",
       canUseNotIsFinite:
-        "Can use '!Number.isFinite(n)' instead of {{expression}}.",
-      replace: "Replace using 'Number.isFinite()'.",
+        "Can use '!Number.isFinite({{id}})' instead of {{expression}}.",
+      replace: "Replace using 'Number.isFinite({{id}})'.",
     },
     type: "suggestion",
   },
@@ -44,28 +46,33 @@ export default createRule("prefer-number-is-finite", {
         );
       };
 
+      const data = getMessageData(transform);
       context.report({
         node,
         messageId: !transform.not ? "canUseIsFinite" : "canUseNotIsFinite",
-        data: {
-          expression: getMessageExpression(transform),
-        },
+        data,
         fix: !hasComment ? fix : null,
-        suggest: hasComment ? [{ messageId: "replace", fix }] : null,
+        suggest: hasComment ? [{ messageId: "replace", data, fix }] : null,
       });
     }
 
     /**
-     * Get the expression text in the message for the given information.
+     * Get the message data from the given information.
      */
-    function getMessageExpression(info: TransformingToNumberIsFinite): string {
+    function getMessageData(info: TransformingToNumberIsFinite) {
+      const id = getIdText(info.argument, "n");
+      let expression = "";
       switch (info.from) {
         case "global.isFinite":
-          return !info.not
-            ? "'typeof n === \"number\" && isFinite(n)'"
-            : "'typeof n !== \"number\" || !isFinite(n)'";
+          expression = !info.not
+            ? `'typeof ${id} === "number" && isFinite(${id})'`
+            : `'typeof ${id} !== "number" || !isFinite(${id})'`;
+          break;
       }
-      return "";
+      return {
+        id,
+        expression,
+      };
     }
 
     return {

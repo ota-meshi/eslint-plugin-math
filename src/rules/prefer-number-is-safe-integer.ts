@@ -6,6 +6,7 @@ import {
 } from "../utils/number";
 import { existComment } from "../utils/ast";
 import type { Rule } from "eslint";
+import { getIdText } from "../utils/messages";
 
 export default createRule("prefer-number-is-safe-integer", {
   meta: {
@@ -19,10 +20,10 @@ export default createRule("prefer-number-is-safe-integer", {
     schema: [],
     messages: {
       canUseIsSafeInteger:
-        "Can use 'Number.isSafeInteger()' instead of {{expression}}.",
+        "Can use 'Number.isSafeInteger({{id}})' instead of {{expression}}.",
       canUseNotIsSafeInteger:
-        "Can use '!Number.isSafeInteger()' instead of {{expression}}.",
-      replace: "Replace using 'Number.isSafeInteger()'.",
+        "Can use '!Number.isSafeInteger({{id}})' instead of {{expression}}.",
+      replace: "Replace using 'Number.isSafeInteger({{id}})'.",
     },
     type: "suggestion",
   },
@@ -47,37 +48,38 @@ export default createRule("prefer-number-is-safe-integer", {
         );
       };
 
+      const data = getMessageData(transform);
       context.report({
         node,
         messageId: !transform.not
           ? "canUseIsSafeInteger"
           : "canUseNotIsSafeInteger",
-        data: {
-          expression: getMessageExpression(transform),
-        },
+        data,
         fix: !hasComment ? fix : null,
-        suggest: hasComment ? [{ messageId: "replace", fix }] : null,
+        suggest: hasComment ? [{ messageId: "replace", data, fix }] : null,
       });
     }
 
     /**
-     * Get the expression text in the message for the given information.
+     * Get the message data from the given information.
      */
-    function getMessageExpression(
-      info: TransformingToNumberIsSafeInteger,
-    ): string {
+    function getMessageData(info: TransformingToNumberIsSafeInteger) {
+      const id = getIdText(info.argument, "n");
       const suffix = !info.not
-        ? " && Math.abs(n) <= Number.MAX_SAFE_INTEGER"
-        : " || Math.abs(n) > Number.MAX_SAFE_INTEGER";
+        ? ` && Math.abs(${id}) <= Number.MAX_SAFE_INTEGER`
+        : ` || Math.abs(${id}) > Number.MAX_SAFE_INTEGER`;
+      let expression = `'${info.not ? "!" : ""}Number.isInteger(${id})${suffix}'`;
       switch (info.from) {
         case "isInteger":
-          return `'${!info.not ? "Number.isInteger(n)" : "!Number.isInteger(n)"}${suffix}'`;
+          break;
         case "isIntegerLike":
-          return `'${
-            !info.not ? "Number.isInteger(n)" : "!Number.isInteger(n)"
-          }${suffix}' like expression`;
+          expression += ` like expression`;
+          break;
       }
-      return "";
+      return {
+        id,
+        expression,
+      };
     }
 
     return {
