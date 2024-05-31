@@ -21,7 +21,7 @@ export default createRule("prefer-math-sqrt", {
         "Can use 'Math.sqrt({{id}})' instead of '{{id}} ** {{exponent}}'.",
       canUseSqrtInsteadOfMathPow:
         "Can use 'Math.sqrt({{id}})' instead of 'Math.pow({{id}}, {{exponent}})'.",
-      replace: "Replace using 'Math.sqrt()'.",
+      replace: "Replace using 'Math.sqrt({{id}})'.",
     },
     type: "suggestion",
   },
@@ -43,15 +43,16 @@ export default createRule("prefer-math-sqrt", {
         );
       };
 
+      const data = getMessageData(transform);
       context.report({
         node,
         messageId:
           transform.from === "**"
             ? "canUseSqrtInsteadOfExponentiation"
             : "canUseSqrtInsteadOfMathPow",
-        data: getMessageData(transform),
+        data,
         fix: !hasComment ? fix : null,
-        suggest: hasComment ? [{ messageId: "replace", fix }] : null,
+        suggest: hasComment ? [{ messageId: "replace", data, fix }] : null,
       });
     }
 

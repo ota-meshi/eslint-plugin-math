@@ -80,7 +80,7 @@ Output: unchanged
 
 [1] Can use 'Math.trunc(n)', instead of branching on value and using 'Math.floor(n)' / 'Math.ceil(n)'.
     Suggestions:
-      - Replace using 'Math.trunc()'.
+      - Replace using 'Math.trunc(n)'.
         Output:
           1 | /*prefer-math-trunc/invalid/comment-input.js*/
           2 | x = Math.trunc(n);
@@ -92,7 +92,7 @@ Output: unchanged
           8 |
 [2] Can use 'Math.trunc(n)' instead of '~~n'.
     Suggestions:
-      - Replace using 'Math.trunc()'.
+      - Replace using 'Math.trunc(n)'.
         Output:
           1 | /*prefer-math-trunc/invalid/comment-input.js*/
           2 | x = n >= 0 ? Math.floor(n) /* x */ : Math.ceil(n);
@@ -104,7 +104,7 @@ Output: unchanged
           8 |
 [3] Can use 'Math.trunc(n)' instead of 'n & -1'.
     Suggestions:
-      - Replace using 'Math.trunc()'.
+      - Replace using 'Math.trunc(n)'.
         Output:
           1 | /*prefer-math-trunc/invalid/comment-input.js*/
           2 | x = n >= 0 ? Math.floor(n) /* x */ : Math.ceil(n);
@@ -116,7 +116,7 @@ Output: unchanged
           8 |
 [4] Can use 'Math.trunc(n)' instead of 'n | 0'.
     Suggestions:
-      - Replace using 'Math.trunc()'.
+      - Replace using 'Math.trunc(n)'.
         Output:
           1 | /*prefer-math-trunc/invalid/comment-input.js*/
           2 | x = n >= 0 ? Math.floor(n) /* x */ : Math.ceil(n);
@@ -128,7 +128,7 @@ Output: unchanged
           8 |
 [5] Can use 'Math.trunc(n)' instead of 'n ^ 0'.
     Suggestions:
-      - Replace using 'Math.trunc()'.
+      - Replace using 'Math.trunc(n)'.
         Output:
           1 | /*prefer-math-trunc/invalid/comment-input.js*/
           2 | x = n >= 0 ? Math.floor(n) /* x */ : Math.ceil(n);
@@ -140,7 +140,7 @@ Output: unchanged
           8 |
 [6] Can use 'Math.trunc(n)' instead of 'n >> 0'.
     Suggestions:
-      - Replace using 'Math.trunc()'.
+      - Replace using 'Math.trunc(n)'.
         Output:
           1 | /*prefer-math-trunc/invalid/comment-input.js*/
           2 | x = n >= 0 ? Math.floor(n) /* x */ : Math.ceil(n);
@@ -341,7 +341,7 @@ Output:
 
 [1] Can use 'Math.trunc(n)', instead of branching on value and using 'Math.floor(n)' / 'Math.ceil(n)'.
     Suggestions:
-      - Replace using 'Math.trunc()'.
+      - Replace using 'Math.trunc(n)'.
         Output:
           1 | /*prefer-math-trunc/invalid/if-block-input.js*/
           2 | let x, y;
@@ -379,7 +379,7 @@ Output:
 [2] Can use 'Math.trunc(n)', instead of branching on value and using 'Math.floor(n)' / 'Math.ceil(n)'.
 [3] Can use 'Math.trunc(n)', instead of branching on value and using 'Math.floor(n)' / 'Math.ceil(n)'.
     Suggestions:
-      - Replace using 'Math.trunc()'.
+      - Replace using 'Math.trunc(n)'.
         Output:
           1 | /*prefer-math-trunc/invalid/if-block-input.js*/
           2 | let x, y;
