@@ -1,8 +1,15 @@
 import type { TSESTree } from "@typescript-eslint/types";
 import { createRule } from "../utils";
+import type { MathAbsOrLike } from "../utils/math";
 import { getInfoForMathAbsOrLike } from "../utils/math";
-import { existComment } from "../utils/ast";
+import {
+  Precedence,
+  existComment,
+  getPrecedence,
+  isWrappedInParenOrComma,
+} from "../utils/ast";
 import type { Rule } from "eslint";
+import { getIdText } from "../utils/messages";
 
 export default createRule("abs", {
   meta: {
@@ -27,8 +34,7 @@ export default createRule("abs", {
     ],
     messages: {
       canUseX: "Can use '{{prefer}}' instead of {{expression}}.",
-      replaceWithAbs: "Replace using 'Math.abs()'.",
-      replaceWithExpression: "Replace using 'n < 0 ? -n : n'.",
+      replace: "Replace using '{{prefer}}'.",
     },
     type: "suggestion",
   },
@@ -44,7 +50,7 @@ export default createRule("abs", {
       const transform = getInfoForMathAbsOrLike(node, sourceCode);
       if (!transform) return;
       const needTransform =
-        transform.from === "multiply" ||
+        transform.from === "*-1" ||
         (prefer === "expression" && transform.from === "abs");
       if (!needTransform) return;
       const hasComment = existComment(node, sourceCode);
@@ -56,34 +62,59 @@ export default createRule("abs", {
               return fixer.replaceText(node, `Math.abs(${n})`);
             }
           : (fixer: Rule.RuleFixer) => {
-              return fixer.replaceText(node, `${n} < 0 ? -${n} : ${n}`);
+              let expression = `${n} < 0 ? -${n} : ${n}`;
+              if (!isWrappedInParenOrComma(node, sourceCode)) {
+                const parent = node.parent;
+                if (parent.type === "ClassDeclaration") {
+                  expression = `(${expression})`;
+                } else if (parent.type.endsWith("Expression")) {
+                  const parentPrecedence = getPrecedence(parent, sourceCode);
+                  if (
+                    parentPrecedence.precedence >
+                    Precedence.assignmentAndMiscellaneous
+                  ) {
+                    expression = `(${expression})`;
+                  }
+                }
+              }
+              return fixer.replaceText(node, expression);
             };
 
+      const data = getMessageData(transform);
       context.report({
         node,
         messageId: "canUseX",
-        data: {
-          prefer: prefer === "Math.abs" ? "Math.abs()" : "n < 0 ? -n : n",
-          expression:
-            transform.from === "abs"
-              ? "Math.abs()"
-              : transform.from === "multiply"
-                ? "n < 0 ? n * -1 : n"
-                : "n < 0 ? -n : n",
-        },
+        data: getMessageData(transform),
         fix: !hasComment ? fix : null,
         suggest: hasComment
           ? [
               {
-                messageId:
-                  prefer === "Math.abs"
-                    ? "replaceWithAbs"
-                    : "replaceWithExpression",
+                messageId: "replace",
+                data,
                 fix,
               },
             ]
           : null,
       });
+    }
+
+    /**
+     * Get the message data from the given information.
+     */
+    function getMessageData(info: MathAbsOrLike) {
+      const id = getIdText(info.argument, "n");
+      return {
+        prefer:
+          prefer === "Math.abs"
+            ? `Math.abs(${id})`
+            : `${id} < 0 ? -${id} : ${id}`,
+        expression:
+          info.from === "abs"
+            ? `Math.abs(${id})`
+            : info.from === "*-1"
+              ? `${id} < 0 ? ${id} * -1 : ${id}`
+              : `${id} < 0 ? -${id} : ${id}`,
+      };
     }
 
     return {

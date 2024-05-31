@@ -4,6 +4,7 @@ import { existComment } from "../utils/ast";
 import type { Rule } from "eslint";
 import type { TransformingToMathLN2 } from "../utils/math";
 import { getInfoForTransformingToMathLN2 } from "../utils/math";
+import { getIdText } from "../utils/messages";
 
 export default createRule("prefer-math-ln2", {
   meta: {
@@ -63,7 +64,9 @@ export default createRule("prefer-math-ln2", {
         case "literal":
           return `${Math.LN2}`;
         case "LOG2E":
-          return !info.inverse ? "1 / Math.LOG2E" : "x / Math.LOG2E";
+          return !info.inverse
+            ? "1 / Math.LOG2E"
+            : `${getIdText(info.parent.left, "x")} / Math.LOG2E`;
       }
       return "";
     }

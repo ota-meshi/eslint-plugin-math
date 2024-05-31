@@ -1,6 +1,10 @@
 import type { TSESTree } from "@typescript-eslint/types";
 import { createRule } from "../utils/index";
-import type { MathMethodInfo } from "../utils/math";
+import type {
+  MathMethodInfo,
+  TransformingToMathTrunc,
+  TransformingToMathTruncStatement,
+} from "../utils/math";
 import {
   extractTransformingToMathTruncStatements,
   getInfoForMathCeil,
@@ -9,6 +13,7 @@ import {
 } from "../utils/math";
 import type { Rule } from "eslint";
 import { existComment, existCommentBetween } from "../utils/ast";
+import { getIdText } from "../utils/messages";
 
 export default createRule("prefer-math-trunc", {
   meta: {
@@ -22,10 +27,10 @@ export default createRule("prefer-math-trunc", {
     schema: [],
     messages: {
       canUseTruncInsteadOfBitwise:
-        "Can use 'Math.trunc(n)' instead of '{{expression}}'.",
+        "Can use 'Math.trunc({{id}})' instead of '{{expression}}'.",
       canUseTruncInsteadOfConditional:
-        "Can use 'Math.trunc(n)', instead of branching on value and using 'Math.floor(n)' / 'Math.ceil(n)'.",
-      replace: "Replace using 'Math.trunc()'.",
+        "Can use 'Math.trunc({{id}})', instead of branching on value and using 'Math.floor({{id}})' / 'Math.ceil({{id}})'.",
+      replace: "Replace using 'Math.trunc({{id}})'.",
     },
     type: "suggestion",
   },
@@ -52,23 +57,16 @@ export default createRule("prefer-math-trunc", {
         );
       };
 
+      const data = getMessageData(transform);
       context.report({
         node,
         messageId:
           transform.from === "bitwise"
             ? "canUseTruncInsteadOfBitwise"
             : "canUseTruncInsteadOfConditional",
-        data:
-          transform.from === "bitwise"
-            ? {
-                expression:
-                  transform.node.type === "UnaryExpression"
-                    ? `~~n`
-                    : `n ${transform.node.operator} ${sourceCode.getText(transform.node.right)}`,
-              }
-            : {},
+        data,
         fix: !hasComment ? fix : null,
-        suggest: hasComment ? [{ messageId: "replace", fix }] : null,
+        suggest: hasComment ? [{ messageId: "replace", data, fix }] : null,
       });
     }
 
@@ -117,12 +115,14 @@ export default createRule("prefer-math-trunc", {
           yield fixer.removeRange([item.block.range[1], info.node.range[1]]);
         };
 
+        const data = getMessageDataFromStatement(info);
         context.report({
           node: info.node,
           messageId: "canUseTruncInsteadOfConditional",
+          data,
           fix: !hasCommentOrShadowed ? fix : null,
           suggest: hasCommentOrShadowed
-            ? [{ messageId: "replace", fix }]
+            ? [{ messageId: "replace", data, fix }]
             : null,
         });
       }
@@ -139,6 +139,36 @@ export default createRule("prefer-math-trunc", {
         }
       }
       return false;
+    }
+
+    /**
+     * Get the message data from the given information.
+     */
+    function getMessageData(info: TransformingToMathTrunc) {
+      const id = getIdText(info.argument, "n");
+      let expression = "";
+      if (info.from === "bitwise") {
+        expression =
+          info.node.type === "UnaryExpression"
+            ? `~~${id}`
+            : `${id} ${info.node.operator} ${sourceCode.getText(info.node.right)}`;
+      }
+      return {
+        id,
+        expression,
+      };
+    }
+
+    /**
+     * Get the message data from the given information.
+     */
+    function getMessageDataFromStatement(
+      info: TransformingToMathTruncStatement,
+    ) {
+      const id = getIdText(info.argument, "n");
+      return {
+        id,
+      };
     }
 
     return {

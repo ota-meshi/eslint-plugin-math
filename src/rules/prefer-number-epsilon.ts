@@ -52,7 +52,7 @@ export default createRule("prefer-number-epsilon", {
      */
     function getMessageExpression(info: TransformingToNumberEPSILON): string {
       switch (info.from) {
-        case "exponentiation":
+        case "**":
           return "2 ** -52";
         case "pow":
           return "Math.pow(2, -52)";

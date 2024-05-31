@@ -2,6 +2,38 @@
 
 
 Test: prefer-math-log2 >> invalid
+Filename: prefer-math-log2/invalid/comment-input.js
+
+Code:
+  1 | /*prefer-math-log2/invalid/comment-input.js*/
+  2 | x = Math.log(foo) /* comment */ * Math.LOG2E;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+  3 | x = Math.log(n) /* comment */ / Math.LN2;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [2]
+  4 |
+
+Output: unchanged
+
+[1] Can use 'Math.log2(foo)' instead of 'Math.log(foo) * Math.LOG2E'.
+    Suggestions:
+      - Replace using 'Math.log2(foo)'.
+        Output:
+          1 | /*prefer-math-log2/invalid/comment-input.js*/
+          2 | x = Math.log2(foo);
+          3 | x = Math.log(n) /* comment */ / Math.LN2;
+          4 |
+[2] Can use 'Math.log2(n)' instead of 'Math.log(n) / Math.LN2'.
+    Suggestions:
+      - Replace using 'Math.log2(n)'.
+        Output:
+          1 | /*prefer-math-log2/invalid/comment-input.js*/
+          2 | x = Math.log(foo) /* comment */ * Math.LOG2E;
+          3 | x = Math.log2(n);
+          4 |
+---
+
+
+Test: prefer-math-log2 >> invalid
 Filename: prefer-math-log2/invalid/example-input.js
 
 Code:

@@ -323,3 +323,240 @@ function isGlobalNamespace(
   }
   return false;
 }
+
+export const enum Associativity {
+  leftToRight,
+  rightToLeft,
+  na,
+}
+export const enum Precedence {
+  comma = 1,
+  assignmentAndMiscellaneous = 2,
+  logicalORAndNullishCoalescing = 3,
+  logicalAND = 4,
+  bitwiseOR = 5,
+  bitwiseXOR = 6,
+  bitwiseAND = 7,
+  equalityOperators = 8,
+  relationalOperators = 9,
+  bitwiseShift = 10,
+  additiveOperators = 11,
+  multiplicativeOperators = 12,
+  exponentiation = 13,
+  prefixOperators = 14,
+  postfixOperators = 15,
+  new = 16,
+  accessAndCall = 17,
+  unknown = 20,
+}
+
+/**
+ * Get the precedence level from the given node.
+ * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_precedence
+ */
+export function getPrecedence(
+  node: TSESTree.Node,
+  sourceCode: SourceCode,
+): { precedence: Precedence; associativity: Associativity } {
+  // 18: grouping
+  // if (isParenthesized(node, sourceCode)) return{precedence:18, associativity: Associativity.na];
+
+  switch (node.type) {
+    // 1: comma
+    case "SequenceExpression":
+      return {
+        precedence: Precedence.comma,
+        associativity: Associativity.leftToRight,
+      };
+    // 2: assignment and miscellaneous
+    case "AssignmentExpression":
+    case "ArrowFunctionExpression":
+    case "ConditionalExpression":
+      return {
+        precedence: Precedence.assignmentAndMiscellaneous,
+        associativity: Associativity.rightToLeft,
+      };
+    case "YieldExpression":
+      return {
+        precedence: Precedence.assignmentAndMiscellaneous,
+        associativity: Associativity.na,
+      };
+    // 3: logical OR, nullish coalescing
+    case "LogicalExpression":
+      switch (node.operator) {
+        case "||":
+        case "??":
+          return {
+            precedence: Precedence.logicalORAndNullishCoalescing,
+            associativity: Associativity.leftToRight,
+          };
+        // 4: logical AND
+        case "&&":
+          return {
+            precedence: Precedence.logicalAND,
+            associativity: Associativity.leftToRight,
+          };
+      }
+      break;
+    case "BinaryExpression":
+      switch (node.operator) {
+        // 3: logical OR, nullish coalescing
+        case "||":
+          return {
+            precedence: Precedence.logicalORAndNullishCoalescing,
+            associativity: Associativity.leftToRight,
+          };
+        // 4: logical AND
+        case "&&":
+          return {
+            precedence: Precedence.logicalAND,
+            associativity: Associativity.leftToRight,
+          };
+        // 5: bitwise OR
+        case "|":
+          return {
+            precedence: Precedence.bitwiseOR,
+            associativity: Associativity.leftToRight,
+          };
+        // 6: bitwise XOR
+        case "^":
+          return {
+            precedence: Precedence.bitwiseXOR,
+            associativity: Associativity.leftToRight,
+          };
+        // 7: bitwise AND
+        case "&":
+          return {
+            precedence: Precedence.bitwiseAND,
+            associativity: Associativity.leftToRight,
+          };
+        // 8: equality operators
+        case "==":
+        case "!=":
+        case "===":
+        case "!==":
+          return {
+            precedence: Precedence.equalityOperators,
+            associativity: Associativity.leftToRight,
+          };
+        // 9: relational operators
+        case "<":
+        case "<=":
+        case ">":
+        case ">=":
+        case "in":
+        case "instanceof":
+          return {
+            precedence: Precedence.relationalOperators,
+            associativity: Associativity.leftToRight,
+          };
+        // 10: bitwise shift
+        case "<<":
+        case ">>":
+        case ">>>":
+          return {
+            precedence: Precedence.bitwiseShift,
+            associativity: Associativity.leftToRight,
+          };
+        // 11: additive operators
+        case "+":
+        case "-":
+          return {
+            precedence: Precedence.additiveOperators,
+            associativity: Associativity.leftToRight,
+          };
+        // 12: multiplicative operators
+        case "*":
+        case "/":
+        case "%":
+          return {
+            precedence: Precedence.multiplicativeOperators,
+            associativity: Associativity.leftToRight,
+          };
+        // 13: exponentiation
+        case "**":
+          return {
+            precedence: Precedence.exponentiation,
+            associativity: Associativity.rightToLeft,
+          };
+      }
+      break;
+    // 14: prefix operators
+    case "UnaryExpression":
+    case "AwaitExpression":
+      return {
+        precedence: Precedence.prefixOperators,
+        associativity: Associativity.na,
+      };
+    case "UpdateExpression":
+      if (node.prefix) {
+        return {
+          precedence: Precedence.prefixOperators,
+          associativity: Associativity.na,
+        };
+      }
+      // 15: postfix operators
+      return {
+        precedence: Precedence.postfixOperators,
+        associativity: Associativity.na,
+      };
+
+    case "NewExpression":
+      if (sourceCode.getTokenAfter(node)?.value !== "(") {
+        // 16: new (`new` without argument list `new x`)
+        return { precedence: Precedence.new, associativity: Associativity.na };
+      }
+      // 17: access and call
+      return {
+        precedence: Precedence.accessAndCall,
+        associativity: Associativity.na,
+      };
+    // 17: access and call
+    case "CallExpression":
+    case "ImportExpression":
+      return {
+        precedence: Precedence.accessAndCall,
+        associativity: Associativity.na,
+      };
+    case "ChainExpression":
+      return {
+        precedence: Precedence.accessAndCall,
+        associativity: Associativity.leftToRight,
+      };
+    case "MemberExpression":
+      if (node.computed) {
+        return {
+          precedence: Precedence.accessAndCall,
+          associativity: Associativity.leftToRight,
+        };
+      }
+      return {
+        precedence: Precedence.accessAndCall,
+        associativity: Associativity.na,
+      };
+    default:
+  }
+  // Unknown
+  return { precedence: Precedence.unknown, associativity: Associativity.na };
+}
+
+/**
+ * Checks whether the given node is wrapped in parentheses or commas.
+ */
+export function isWrappedInParenOrComma(
+  node: TSESTree.Node,
+  sourceCode: SourceCode,
+): boolean {
+  const beforeToken = sourceCode.getTokenBefore(node);
+  const afterToken = sourceCode.getTokenAfter(node);
+  return Boolean(
+    beforeToken &&
+      afterToken &&
+      (beforeToken.value === "(" ||
+        beforeToken.value === "[" ||
+        beforeToken.value === ",") &&
+      (afterToken.value === ")" ||
+        afterToken.value === "]" ||
+        afterToken.value === ","),
+  );
+}

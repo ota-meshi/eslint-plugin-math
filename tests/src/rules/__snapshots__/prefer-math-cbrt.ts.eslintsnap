@@ -2,6 +2,51 @@
 
 
 Test: prefer-math-cbrt >> invalid
+Filename: prefer-math-cbrt/invalid/comment-input.js
+
+Code:
+  1 | /*prefer-math-cbrt/invalid/comment-input.js*/
+  2 | x = Math.pow(n, /* comment */ 1 / 3);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+  3 | x = n ** /* comment */ (1 / 3);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~ [2]
+  4 | x = n ** /* comment */ 0.3333333333333333;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [3]
+  5 |
+
+Output: unchanged
+
+[1] Can use 'Math.cbrt(n)' instead of 'Math.pow(n, 1 / 3)'.
+    Suggestions:
+      - Replace using 'Math.cbrt(n)'.
+        Output:
+          1 | /*prefer-math-cbrt/invalid/comment-input.js*/
+          2 | x = Math.cbrt(n);
+          3 | x = n ** /* comment */ (1 / 3);
+          4 | x = n ** /* comment */ 0.3333333333333333;
+          5 |
+[2] Can use 'Math.cbrt(n)' instead of 'n ** (1 / 3)'.
+    Suggestions:
+      - Replace using 'Math.cbrt(n)'.
+        Output:
+          1 | /*prefer-math-cbrt/invalid/comment-input.js*/
+          2 | x = Math.pow(n, /* comment */ 1 / 3);
+          3 | x = Math.cbrt(n);
+          4 | x = n ** /* comment */ 0.3333333333333333;
+          5 |
+[3] Can use 'Math.cbrt(n)' instead of 'n ** (1 / 3)'.
+    Suggestions:
+      - Replace using 'Math.cbrt(n)'.
+        Output:
+          1 | /*prefer-math-cbrt/invalid/comment-input.js*/
+          2 | x = Math.pow(n, /* comment */ 1 / 3);
+          3 | x = n ** /* comment */ (1 / 3);
+          4 | x = Math.cbrt(n);
+          5 |
+---
+
+
+Test: prefer-math-cbrt >> invalid
 Filename: prefer-math-cbrt/invalid/example-input.js
 
 Code:

@@ -37,7 +37,7 @@ export default createRule("prefer-math-sqrt1-2", {
       if (transform) {
         if (!isHalf(transform.argument, sourceCode)) return;
         expression =
-          transform.from === "exponentiation"
+          transform.from === "**"
             ? "(1 / 2) ** (1 / 2)"
             : "Math.pow(1 / 2, 1 / 2)";
       } else if (isGlobalObjectMethodCall(node, "Math", "sqrt", sourceCode)) {

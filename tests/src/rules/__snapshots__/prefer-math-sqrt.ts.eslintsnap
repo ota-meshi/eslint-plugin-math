@@ -2,6 +2,66 @@
 
 
 Test: prefer-math-sqrt >> invalid
+Filename: prefer-math-sqrt/invalid/comment-input.js
+
+Code:
+  1 | /*prefer-math-sqrt/invalid/comment-input.js*/
+  2 | x = Math.pow(n, /* comment */ 1 / 2);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+  3 | x = Math.pow(/* comment */ n, 0.5);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [2]
+  4 | x = n ** /* comment */ (1 / 2);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~ [3]
+  5 | x = n /* comment */ ** 0.5;
+    |     ^~~~~~~~~~~~~~~~~~~~~~ [4]
+  6 |
+
+Output: unchanged
+
+[1] Can use 'Math.sqrt(n)' instead of 'Math.pow(n, 1 / 2)'.
+    Suggestions:
+      - Replace using 'Math.sqrt(n)'.
+        Output:
+          1 | /*prefer-math-sqrt/invalid/comment-input.js*/
+          2 | x = Math.sqrt(n);
+          3 | x = Math.pow(/* comment */ n, 0.5);
+          4 | x = n ** /* comment */ (1 / 2);
+          5 | x = n /* comment */ ** 0.5;
+          6 |
+[2] Can use 'Math.sqrt(n)' instead of 'Math.pow(n, 0.5)'.
+    Suggestions:
+      - Replace using 'Math.sqrt(n)'.
+        Output:
+          1 | /*prefer-math-sqrt/invalid/comment-input.js*/
+          2 | x = Math.pow(n, /* comment */ 1 / 2);
+          3 | x = Math.sqrt(n);
+          4 | x = n ** /* comment */ (1 / 2);
+          5 | x = n /* comment */ ** 0.5;
+          6 |
+[3] Can use 'Math.sqrt(n)' instead of 'n ** (1 / 2)'.
+    Suggestions:
+      - Replace using 'Math.sqrt(n)'.
+        Output:
+          1 | /*prefer-math-sqrt/invalid/comment-input.js*/
+          2 | x = Math.pow(n, /* comment */ 1 / 2);
+          3 | x = Math.pow(/* comment */ n, 0.5);
+          4 | x = Math.sqrt(n);
+          5 | x = n /* comment */ ** 0.5;
+          6 |
+[4] Can use 'Math.sqrt(n)' instead of 'n ** 0.5'.
+    Suggestions:
+      - Replace using 'Math.sqrt(n)'.
+        Output:
+          1 | /*prefer-math-sqrt/invalid/comment-input.js*/
+          2 | x = Math.pow(n, /* comment */ 1 / 2);
+          3 | x = Math.pow(/* comment */ n, 0.5);
+          4 | x = n ** /* comment */ (1 / 2);
+          5 | x = Math.sqrt(n);
+          6 |
+---
+
+
+Test: prefer-math-sqrt >> invalid
 Filename: prefer-math-sqrt/invalid/example-input.js
 
 Code:
@@ -33,7 +93,7 @@ Output:
  10 |
 
 [1] Can use 'Math.sqrt(n)' instead of 'Math.pow(n, 1 / 2)'.
-[2] Can use 'Math.sqrt(n)' instead of 'Math.pow(n, 1 / 2)'.
+[2] Can use 'Math.sqrt(n)' instead of 'Math.pow(n, 0.5)'.
 [3] Can use 'Math.sqrt(n)' instead of 'n ** (1 / 2)'.
-[4] Can use 'Math.sqrt(n)' instead of 'n ** (1 / 2)'.
+[4] Can use 'Math.sqrt(n)' instead of 'n ** 0.5'.
 ---

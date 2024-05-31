@@ -1,0 +1,89 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: prefer-math-hypot >> invalid
+Filename: prefer-math-hypot/invalid/example-input.js
+
+Code:
+  1 | /*prefer-math-hypot/invalid/example-input.js*/
+  2 |
+  3 | /* ✓ GOOD */
+  4 | x = Math.hypot(a, b);
+  5 |
+  6 | /* ✗ BAD */
+  7 | x = Math.sqrt(a * a + b * b);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~ [1]
+  8 | x = (a * a + b * b) ** (1 / 2);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~ [2]
+  9 | x = Math.sqrt(a ** 2 + b ** 2);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~ [3]
+ 10 | x = (a ** 2 + b ** 2) ** (1 / 2);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~ [4]
+ 11 | x = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [5]
+ 12 | x = Math.pow(a ** 2 + b ** 2, 1 / 2);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [6]
+ 13 |
+
+Output:
+  1 | /*prefer-math-hypot/invalid/example-input.js*/
+  2 |
+  3 | /* ✓ GOOD */
+  4 | x = Math.hypot(a, b);
+  5 |
+  6 | /* ✗ BAD */
+  7 | x = Math.hypot(a, b);
+  8 | x = Math.hypot(a, b);
+  9 | x = Math.hypot(a, b);
+ 10 | x = Math.hypot(a, b);
+ 11 | x = Math.hypot(a, b);
+ 12 | x = Math.hypot(a, b);
+ 13 |
+
+[1] Can use 'Math.hypot(a, b)' instead of 'Math.sqrt(a * a + b * b)'.
+[2] Can use 'Math.hypot(a, b)' instead of '(a * a + b * b) ** (1 / 2)'.
+[3] Can use 'Math.hypot(a, b)' instead of 'Math.sqrt(a ** 2 + b ** 2)'.
+[4] Can use 'Math.hypot(a, b)' instead of '(a ** 2 + b ** 2) ** (1 / 2)'.
+[5] Can use 'Math.hypot(a, b)' instead of 'Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2))'.
+[6] Can use 'Math.hypot(a, b)' instead of 'Math.pow(a ** 2 + b ** 2, 1 / 2)'.
+---
+
+
+Test: prefer-math-hypot >> invalid
+Filename: prefer-math-hypot/invalid/other-messages-input.js
+
+Code:
+  1 | /*prefer-math-hypot/invalid/other-messages-input.js*/
+  2 |
+  3 | /* ✓ GOOD */
+  4 | x = Math.hypot(a, b);
+  5 |
+  6 | /* ✗ BAD */
+  7 | x = (a * a + b * b) ** 0.5;
+    |     ^~~~~~~~~~~~~~~~~~~~~~ [1]
+  8 | x = (a ** 2 + b ** 2) ** 0.5;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~ [2]
+  9 | x = (Math.pow(a, 2) + b ** 2 + Math.pow(c, 2) + d * d) ** 0.5;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [3]
+ 10 | x = Math.pow(a ** 2 + b ** 2, 0.5);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [4]
+ 11 |
+
+Output:
+  1 | /*prefer-math-hypot/invalid/other-messages-input.js*/
+  2 |
+  3 | /* ✓ GOOD */
+  4 | x = Math.hypot(a, b);
+  5 |
+  6 | /* ✗ BAD */
+  7 | x = Math.hypot(a, b);
+  8 | x = Math.hypot(a, b);
+  9 | x = Math.hypot(a, b, c, d);
+ 10 | x = Math.hypot(a, b);
+ 11 |
+
+[1] Can use 'Math.hypot(a, b)' instead of '(a * a + b * b) ** 0.5'.
+[2] Can use 'Math.hypot(a, b)' instead of '(a ** 2 + b ** 2) ** 0.5'.
+[3] Can use 'Math.hypot(a, b, c, d)' instead of '(Math.pow(a, 2) + b ** 2 + Math.pow(c, 2) + d * d) ** 0.5'.
+[4] Can use 'Math.hypot(a, b)' instead of 'Math.pow(a ** 2 + b ** 2, 0.5)'.
+---

@@ -2,6 +2,27 @@
 
 
 Test: prefer-number-is-finite >> invalid
+Filename: prefer-number-is-finite/invalid/comment-input.js
+
+Code:
+  1 | /*prefer-number-is-finite/invalid/comment-input.js*/
+  2 | x = typeof foo === /* comment */ "number" && isFinite(foo);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+  3 |
+
+Output: unchanged
+
+[1] Can use 'Number.isFinite(foo)' instead of 'typeof foo === "number" && isFinite(foo)'.
+    Suggestions:
+      - Replace using 'Number.isFinite(foo)'.
+        Output:
+          1 | /*prefer-number-is-finite/invalid/comment-input.js*/
+          2 | x = Number.isFinite(foo);
+          3 |
+---
+
+
+Test: prefer-number-is-finite >> invalid
 Filename: prefer-number-is-finite/invalid/example-input.js
 
 Code:

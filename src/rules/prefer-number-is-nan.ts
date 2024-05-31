@@ -6,6 +6,7 @@ import {
 } from "../utils/number";
 import { existComment } from "../utils/ast";
 import type { Rule } from "eslint";
+import { getIdText } from "../utils/messages";
 
 export default createRule("prefer-number-is-nan", {
   meta: {
@@ -18,9 +19,10 @@ export default createRule("prefer-number-is-nan", {
     hasSuggestions: true,
     schema: [],
     messages: {
-      canUseIsNaN: "Can use 'Number.isNaN()' instead of {{expression}}.",
-      canUseNotIsNaN: "Can use '!Number.isNaN()' instead of {{expression}}.",
-      replace: "Replace using 'Number.isNaN()'.",
+      canUseIsNaN: "Can use 'Number.isNaN({{id}})' instead of {{expression}}.",
+      canUseNotIsNaN:
+        "Can use '!Number.isNaN({{id}})' instead of {{expression}}.",
+      replace: "Replace using 'Number.isNaN({{id}})'.",
     },
     type: "suggestion",
   },
@@ -42,32 +44,39 @@ export default createRule("prefer-number-is-nan", {
         );
       };
 
+      const data = getMessageData(transform);
       context.report({
         node,
         messageId: !transform.not ? "canUseIsNaN" : "canUseNotIsNaN",
-        data: {
-          expression: getMessageExpression(transform),
-        },
+        data,
         fix: !hasComment ? fix : null,
-        suggest: hasComment ? [{ messageId: "replace", fix }] : null,
+        suggest: hasComment ? [{ messageId: "replace", data, fix }] : null,
       });
     }
 
     /**
-     * Get the expression text in the message for the given information.
+     * Get the message data from the given information.
      */
-    function getMessageExpression(info: TransformingToNumberIsNaN): string {
+    function getMessageData(info: TransformingToNumberIsNaN) {
+      const id = getIdText(info.argument, "n");
+      let expression = "";
       switch (info.from) {
         case "global.isNaN":
-          return !info.not
-            ? "'typeof n === \"number\" && isNaN(n)'"
-            : "'typeof n !== \"number\" || !isNaN(n)'";
+          expression = !info.not
+            ? `'typeof ${id} === "number" && isNaN(${id})'`
+            : `'typeof ${id} !== "number" || !isNaN(${id})'`;
+          break;
         case "notEquals":
-          return "'n !== n'";
+          expression = `'${id} !== ${id}'`;
+          break;
         case "Object.is":
-          return "'Object.is(n, NaN)'";
+          expression = `'Object.is(${id}, NaN)'`;
+          break;
       }
-      return "";
+      return {
+        id,
+        expression,
+      };
     }
 
     return {

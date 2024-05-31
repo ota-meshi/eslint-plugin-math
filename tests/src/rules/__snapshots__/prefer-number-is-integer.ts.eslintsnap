@@ -18,7 +18,7 @@ Output: unchanged
 
 [1] Can use 'Number.isInteger(n)' instead of 'Math.floor(n) === n'.
     Suggestions:
-      - Replace using 'Number.isInteger()'.
+      - Replace using 'Number.isInteger(n)'.
         Output:
           1 | /*prefer-number-is-integer/invalid/comment-input.js*/
           2 | x = Number.isInteger(n);
@@ -27,7 +27,7 @@ Output: unchanged
           5 |
 [2] Can use 'Number.isInteger(n)' instead of 'Math.ceil(n) === n'.
     Suggestions:
-      - Replace using 'Number.isInteger()'.
+      - Replace using 'Number.isInteger(n)'.
         Output:
           1 | /*prefer-number-is-integer/invalid/comment-input.js*/
           2 | x = Math.floor(n) /* x */ === n;
@@ -36,7 +36,7 @@ Output: unchanged
           5 |
 [3] Can use 'Number.isInteger(n)' instead of 'Math.trunc(n) === n'.
     Suggestions:
-      - Replace using 'Number.isInteger()'.
+      - Replace using 'Number.isInteger(n)'.
         Output:
           1 | /*prefer-number-is-integer/invalid/comment-input.js*/
           2 | x = Math.floor(n) /* x */ === n;

@@ -4,6 +4,7 @@ import type { TransformingToMathLog10 } from "../utils/math";
 import { getInfoForTransformingToMathLog10 } from "../utils/math";
 import { existComment } from "../utils/ast";
 import type { Rule } from "eslint";
+import { getIdText } from "../utils/messages";
 
 export default createRule("prefer-math-log10", {
   meta: {
@@ -16,8 +17,8 @@ export default createRule("prefer-math-log10", {
     hasSuggestions: true,
     schema: [],
     messages: {
-      canUseLog10: "Can use 'Math.log10(n)' instead of '{{expression}}'.",
-      replace: "Replace using 'Math.log10()'.",
+      canUseLog10: "Can use 'Math.log10({{id}})' instead of '{{expression}}'.",
+      replace: "Replace using 'Math.log10({{id}})'.",
     },
     type: "suggestion",
   },
@@ -39,28 +40,34 @@ export default createRule("prefer-math-log10", {
         );
       };
 
+      const data = getMessageData(transform);
       context.report({
         node,
         messageId: "canUseLog10",
-        data: {
-          expression: getMessageExpression(transform),
-        },
+        data,
         fix: !hasComment ? fix : null,
-        suggest: hasComment ? [{ messageId: "replace", fix }] : null,
+        suggest: hasComment ? [{ messageId: "replace", data, fix }] : null,
       });
     }
 
     /**
-     * Get the expression text in the message for the given information.
+     * Get the message data from the given information.
      */
-    function getMessageExpression(info: TransformingToMathLog10): string {
+    function getMessageData(info: TransformingToMathLog10) {
+      const id = getIdText(info.argument, "n");
+      let expression = "";
       switch (info.from) {
         case "logWithLOG10E":
-          return `Math.log(n) * Math.LOG10E`;
+          expression = `Math.log(${id}) * Math.LOG10E`;
+          break;
         case "logWithLN10":
-          return `Math.log(n) / Math.LN10`;
+          expression = `Math.log(${id}) / Math.LN10`;
+          break;
       }
-      return "";
+      return {
+        id,
+        expression,
+      };
     }
 
     return {

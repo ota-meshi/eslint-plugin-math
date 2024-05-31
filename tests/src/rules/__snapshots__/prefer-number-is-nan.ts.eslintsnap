@@ -2,6 +2,51 @@
 
 
 Test: prefer-number-is-nan >> invalid
+Filename: prefer-number-is-nan/invalid/comment-input.js
+
+Code:
+  1 | /*prefer-number-is-nan/invalid/comment-input.js*/
+  2 | x = typeof n === /* comment */ "number" && isNaN(n);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+  3 | x = n !== /* comment */ n;
+    |     ^~~~~~~~~~~~~~~~~~~~~ [2]
+  4 | x = Object.is(n, /* comment */ NaN);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [3]
+  5 |
+
+Output: unchanged
+
+[1] Can use 'Number.isNaN(n)' instead of 'typeof n === "number" && isNaN(n)'.
+    Suggestions:
+      - Replace using 'Number.isNaN(n)'.
+        Output:
+          1 | /*prefer-number-is-nan/invalid/comment-input.js*/
+          2 | x = Number.isNaN(n);
+          3 | x = n !== /* comment */ n;
+          4 | x = Object.is(n, /* comment */ NaN);
+          5 |
+[2] Can use 'Number.isNaN(n)' instead of 'n !== n'.
+    Suggestions:
+      - Replace using 'Number.isNaN(n)'.
+        Output:
+          1 | /*prefer-number-is-nan/invalid/comment-input.js*/
+          2 | x = typeof n === /* comment */ "number" && isNaN(n);
+          3 | x = Number.isNaN(n);
+          4 | x = Object.is(n, /* comment */ NaN);
+          5 |
+[3] Can use 'Number.isNaN(n)' instead of 'Object.is(n, NaN)'.
+    Suggestions:
+      - Replace using 'Number.isNaN(n)'.
+        Output:
+          1 | /*prefer-number-is-nan/invalid/comment-input.js*/
+          2 | x = typeof n === /* comment */ "number" && isNaN(n);
+          3 | x = n !== /* comment */ n;
+          4 | x = Number.isNaN(n);
+          5 |
+---
+
+
+Test: prefer-number-is-nan >> invalid
 Filename: prefer-number-is-nan/invalid/example-input.js
 
 Code:
@@ -31,9 +76,9 @@ Output:
   9 | x = Number.isNaN(n);
  10 |
 
-[1] Can use 'Number.isNaN()' instead of 'typeof n === "number" && isNaN(n)'.
-[2] Can use 'Number.isNaN()' instead of 'n !== n'.
-[3] Can use 'Number.isNaN()' instead of 'Object.is(n, NaN)'.
+[1] Can use 'Number.isNaN(n)' instead of 'typeof n === "number" && isNaN(n)'.
+[2] Can use 'Number.isNaN(n)' instead of 'n !== n'.
+[3] Can use 'Number.isNaN(n)' instead of 'Object.is(n, NaN)'.
 ---
 
 
@@ -57,9 +102,9 @@ Output:
   4 | x = !Number.isNaN(n);
   5 |
 
-[1] Can use '!Number.isNaN()' instead of 'typeof n !== "number" || !isNaN(n)'.
-[2] Can use 'Number.isNaN()' instead of 'n !== n'.
-[3] Can use 'Number.isNaN()' instead of 'Object.is(n, NaN)'.
+[1] Can use '!Number.isNaN(n)' instead of 'typeof n !== "number" || !isNaN(n)'.
+[2] Can use 'Number.isNaN(n)' instead of 'n !== n'.
+[3] Can use 'Number.isNaN(n)' instead of 'Object.is(n, NaN)'.
 ---
 
 
@@ -104,10 +149,10 @@ Output:
  13 | x = !isNaN(n) && typeof n !== "number";
  14 |
 
-[1] Can use 'Number.isNaN()' instead of 'typeof n === "number" && isNaN(n)'.
-[2] Can use 'Number.isNaN()' instead of 'typeof n === "number" && isNaN(n)'.
-[3] Can use '!Number.isNaN()' instead of 'typeof n !== "number" || !isNaN(n)'.
-[4] Can use '!Number.isNaN()' instead of 'typeof n !== "number" || !isNaN(n)'.
-[5] Can use 'Number.isNaN()' instead of 'Object.is(n, NaN)'.
-[6] Can use 'Number.isNaN()' instead of 'Object.is(n, NaN)'.
+[1] Can use 'Number.isNaN(n)' instead of 'typeof n === "number" && isNaN(n)'.
+[2] Can use 'Number.isNaN(n)' instead of 'typeof n === "number" && isNaN(n)'.
+[3] Can use '!Number.isNaN(n)' instead of 'typeof n !== "number" || !isNaN(n)'.
+[4] Can use '!Number.isNaN(n)' instead of 'typeof n !== "number" || !isNaN(n)'.
+[5] Can use 'Number.isNaN(n)' instead of 'Object.is(n, NaN)'.
+[6] Can use 'Number.isNaN(n)' instead of 'Object.is(n, NaN)'.
 ---
