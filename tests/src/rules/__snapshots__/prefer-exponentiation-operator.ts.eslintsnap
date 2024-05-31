@@ -62,7 +62,9 @@ Code:
   9 |
  10 | x = a ** 2 * a;
     |     ^~~~~~~~~~ [7]
- 11 |
+ 11 | x = (a ** 3) ** 2 * a;
+    |     ^~~~~~~~~~~~~~~~~ [8]
+ 12 |
 
 Output:
   1 | /*prefer-exponentiation-operator/invalid/multiplication-input.js*/
@@ -75,7 +77,8 @@ Output:
   8 | x = a * a() * b * (a ** 2 * b);
   9 |
  10 | x = a ** 3;
- 11 |
+ 11 | x = a ** 7;
+ 12 |
 
 [1] Can use 'n ** 2' instead of 'n * n'.
 [2] Can use 'n ** 3' instead of 'n * n * n'.
@@ -84,6 +87,7 @@ Output:
 [5] Can use 'n ** 3' instead of 'n * n * n'.
 [6] Can use 'n ** 2' instead of 'n * n'.
 [7] Can use 'n ** 3' instead of 'n * n * n'.
+[8] Can use 'n ** 7' instead of 'n * n * n * n * n * n * n'.
 ---
 
 

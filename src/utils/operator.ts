@@ -32,8 +32,7 @@ export function getInfoForTransformingToExponentiation(
 ): null | TransformingToExponentiation {
   if (node.type === "BinaryExpression") {
     if (node.operator === "*") {
-      const exponentiation = parseMultiplication(node, sourceCode);
-      if (exponentiation) {
+      for (const exponentiation of parseExponentiation(node, sourceCode)) {
         return {
           from: "multiplication",
           operator: "**",
@@ -68,75 +67,88 @@ type Exponentiation = {
 };
 
 /**
- * Parse the given multiplication expression to the exponentiation info.
+ * Parses the given expression and iterates over the unified exponentiation information.
  */
-function parseMultiplication(
+function* parseExponentiation(
   node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
-): Exponentiation | null {
-  if (node.type !== "BinaryExpression" || node.operator !== "*") return null;
-  for (const operands of parseMultiplicationInternal(node)) {
-    return operands;
+): Iterable<Exponentiation> {
+  if (node.type !== "BinaryExpression") return;
+
+  const cached = new Map<
+    TSESTree.Expression | TSESTree.PrivateIdentifier,
+    Exponentiation[]
+  >();
+  const iterateWithCache = function* (
+    op: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  ) {
+    let cache = cached.get(op);
+    if (cache) {
+      yield* cache;
+      return;
+    }
+    cache = [];
+    cached.set(op, cache);
+    for (const operands of parseExponentiation(op, sourceCode)) {
+      cache.push(operands);
+      yield operands;
+    }
+  };
+
+  if (node.operator === "**") {
+    const right = getStaticValue(node.right, sourceCode);
+    if (typeof right?.value === "number") {
+      for (const leftOperand of iterateWithCache(node.left)) {
+        yield {
+          left: leftOperand.left,
+          right: leftOperand.right * right.value,
+        };
+      }
+      yield {
+        left: node.left,
+        right: right.value,
+      };
+    }
+    return;
   }
-  return null;
+  if (node.operator === "*") {
+    const { left, right } = node;
 
-  /** Internal iterate function. */
-  function* parseMultiplicationInternal(
-    operand: TSESTree.Expression | TSESTree.PrivateIdentifier,
-  ): Iterable<Exponentiation> {
-    if (operand.type !== "BinaryExpression") return;
-
-    if (operand.operator === "*") {
-      const { left, right } = operand;
-      const leftOperandsList = [...parseMultiplicationInternal(left)];
-      const rightOperandsList = [...parseMultiplicationInternal(right)];
-
-      for (const leftOperands of leftOperandsList) {
-        for (const rightOperands of rightOperandsList) {
-          if (
-            equalNodeTokens(leftOperands.left, rightOperands.left, sourceCode)
-          ) {
-            // (a * a) * (a * a)
-            yield {
-              left: leftOperands.left,
-              right: leftOperands.right + rightOperands.right,
-            };
-          }
-        }
-      }
-      for (const leftOperands of leftOperandsList) {
-        if (equalNodeTokens(leftOperands.left, right, sourceCode)) {
-          // (a * a) * a
+    for (const leftOperand of iterateWithCache(left)) {
+      for (const rightOperand of iterateWithCache(right)) {
+        if (equalNodeTokens(leftOperand.left, rightOperand.left, sourceCode)) {
+          // (a * a) * (a * a)
           yield {
-            left: leftOperands.left,
-            right: leftOperands.right + 1,
+            left: leftOperand.left,
+            right: rightOperand.right + rightOperand.right,
           };
         }
       }
-      for (const rightOperands of rightOperandsList) {
-        if (equalNodeTokens(left, rightOperands.left, sourceCode)) {
-          // a * (a * a)
-          yield {
-            left,
-            right: 1 + rightOperands.right,
-          };
-        }
+    }
+    for (const leftOperand of iterateWithCache(left)) {
+      if (equalNodeTokens(leftOperand.left, right, sourceCode)) {
+        // (a * a) * a
+        yield {
+          left: leftOperand.left,
+          right: leftOperand.right + 1,
+        };
       }
-      if (equalNodeTokens(left, right, sourceCode)) {
-        // a * a
+    }
+    for (const rightOperand of iterateWithCache(right)) {
+      if (equalNodeTokens(left, rightOperand.left, sourceCode)) {
+        // a * (a * a)
         yield {
           left,
-          right: 2,
+          right: 1 + rightOperand.right,
         };
       }
-    } else if (operand.operator === "**") {
-      const right = getStaticValue(operand.right, sourceCode);
-      if (typeof right?.value === "number") {
-        yield {
-          left: operand.left,
-          right: right.value,
-        };
-      }
+    }
+    if (equalNodeTokens(left, right, sourceCode)) {
+      // a * a
+      yield {
+        left,
+        right: 2,
+      };
     }
   }
 }
