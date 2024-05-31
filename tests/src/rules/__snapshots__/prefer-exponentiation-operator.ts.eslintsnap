@@ -713,3 +713,23 @@ Output:
 [3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
 [4] Can use 'n ** x' instead of 'Math.pow(n, x)'.
 ---
+
+
+Test: prefer-exponentiation-operator >> invalid
+Filename: prefer-exponentiation-operator/invalid/within-class-input.js
+
+Code:
+  1 | /*prefer-exponentiation-operator/invalid/within-class-input.js*/
+  2 |
+  3 | class A extends Math.pow(a, b) {}
+    |                 ^~~~~~~~~~~~~~ [1]
+  4 |
+
+Output:
+  1 | /*prefer-exponentiation-operator/invalid/within-class-input.js*/
+  2 |
+  3 | class A extends (a ** b) {}
+  4 |
+
+[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+---

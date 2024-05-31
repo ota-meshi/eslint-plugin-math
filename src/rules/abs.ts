@@ -63,23 +63,16 @@ export default createRule("abs", {
           : (fixer: Rule.RuleFixer) => {
               let expression = `${n} < 0 ? -${n} : ${n}`;
               if (!isWrappedInParenOrComma(node, sourceCode)) {
-                let target: TSESTree.Node = transform.node;
-                let parent = target.parent;
-                while (parent?.type === "ChainExpression") {
-                  target = parent;
-                  parent = target.parent;
-                }
-                if (parent) {
-                  if (parent.type === "ClassDeclaration") {
+                const parent = node.parent;
+                if (parent.type === "ClassDeclaration") {
+                  expression = `(${expression})`;
+                } else if (parent.type.endsWith("Expression")) {
+                  const parentPrecedence = getPrecedence(parent, sourceCode);
+                  if (
+                    parentPrecedence.precedence >
+                    Precedence.assignmentAndMiscellaneous
+                  ) {
                     expression = `(${expression})`;
-                  } else if (parent.type.endsWith("Expression")) {
-                    const parentPrecedence = getPrecedence(parent, sourceCode);
-                    if (
-                      parentPrecedence.precedence >
-                      Precedence.assignmentAndMiscellaneous
-                    ) {
-                      expression = `(${expression})`;
-                    }
                   }
                 }
               }

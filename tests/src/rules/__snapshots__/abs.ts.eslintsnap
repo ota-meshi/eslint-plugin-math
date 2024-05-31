@@ -131,3 +131,27 @@ Output:
 
 [1] Can use 'n < 0 ? -n : n' instead of Math.abs().
 ---
+
+
+Test: abs >> invalid
+Filename: abs/invalid/expression/within-class-input.js
+Options:
+  - prefer: expression
+
+Code:
+  1 | /* abs/invalid/expression/within-class-input.js */
+  2 | /* {} */
+  3 |
+  4 | class A extends Math.abs(n) {}
+    |                 ^~~~~~~~~~~ [1]
+  5 |
+
+Output:
+  1 | /* abs/invalid/expression/within-class-input.js */
+  2 | /* {} */
+  3 |
+  4 | class A extends (n < 0 ? -n : n) {}
+  5 |
+
+[1] Can use 'n < 0 ? -n : n' instead of Math.abs().
+---

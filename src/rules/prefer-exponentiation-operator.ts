@@ -81,12 +81,7 @@ export default createRule("prefer-exponentiation-operator", {
         }
         let expression = `${left} ** ${right}`;
         if (!isWrappedInParenOrComma(node, sourceCode)) {
-          let target: TSESTree.Node = transform.node;
-          let parent = target.parent;
-          while (parent.type === "ChainExpression") {
-            target = parent;
-            parent = target.parent;
-          }
+          const parent = node.parent;
           if (parent.type === "ClassDeclaration") {
             expression = `(${expression})`;
           } else if (parent.type.endsWith("Expression")) {
@@ -98,7 +93,7 @@ export default createRule("prefer-exponentiation-operator", {
               !(
                 parent.type === "BinaryExpression" &&
                 parent.operator === "**" &&
-                parent.right === target
+                parent.right === node
               )
             ) {
               expression = `(${expression})`;
