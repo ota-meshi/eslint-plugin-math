@@ -17,6 +17,8 @@ jobs:
         run: pnpm install -f
       - name: Lint
         run: pnpm run lint
+      - name: tsc
+        run: pnpm run tsc
   test:
     runs-on: ubuntu-latest
     strategy:

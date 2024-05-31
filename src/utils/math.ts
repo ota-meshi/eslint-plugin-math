@@ -1021,7 +1021,7 @@ export function getInfoForTransformingToMathHypot(
   for (const operand of plusOperands) {
     const exponentiation = getInfoForExponentiationOrLike(operand, sourceCode);
     if (!exponentiation) return null;
-    if (exponentiation.from === "*") {
+    if (exponentiation.from === "*" || exponentiation.from === "**") {
       if (exponentiation.right !== 2) return null;
     } else if (getStaticValue(exponentiation.right, sourceCode)?.value !== 2) {
       return null;
