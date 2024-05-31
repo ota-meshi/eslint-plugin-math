@@ -1,5 +1,6 @@
 import type { TSESTree } from "@typescript-eslint/types";
 import { createRule } from "../utils";
+import type { TransformingToExponentiation } from "../utils/operator";
 import { getInfoForTransformingToExponentiation } from "../utils/operator";
 import {
   Precedence,
@@ -8,6 +9,7 @@ import {
   isWrappedInParenOrComma,
 } from "../utils/ast";
 import type { Rule } from "eslint";
+import { getIdText } from "../utils/messages";
 
 export default createRule("prefer-exponentiation-operator", {
   meta: {
@@ -20,11 +22,11 @@ export default createRule("prefer-exponentiation-operator", {
     hasSuggestions: true,
     schema: [],
     messages: {
-      canUseExponentiationInsteadOfMultiplication:
-        "Can use 'n ** {{num}}' instead of '{{expression}}'.",
+      canUseExponentiationInsteadOfExpression:
+        "Can use '{{id}} ** {{num}}' instead of '{{expression}}'.",
       canUseExponentiationInsteadOfMathPow:
-        "Can use 'n ** x' instead of 'Math.pow(n, x)'.",
-      replace: "Replace using 'n ** x'.",
+        "Can use '{{id}} ** {{num}}' instead of 'Math.pow({{id}}, {{num}})'.",
+      replace: "Replace using '{{id}} ** {{num}}'.",
     },
     type: "suggestion",
   },
@@ -43,7 +45,7 @@ export default createRule("prefer-exponentiation-operator", {
       );
       if (!transform) return;
 
-      if (transform.from === "*") {
+      if (transform.from === "*" || transform.from === "**") {
         reportedBinaryExpressions.add(transform.node);
         const { parent } = transform.node;
         if (
@@ -60,7 +62,7 @@ export default createRule("prefer-exponentiation-operator", {
       const fix = (fixer: Rule.RuleFixer) => {
         let left = sourceCode.getText(transform.left);
         let right =
-          transform.from === "*"
+          transform.from === "*" || transform.from === "**"
             ? String(transform.right)
             : sourceCode.getText(transform.right);
         const leftPrecedence = getPrecedence(transform.left, sourceCode);
@@ -71,7 +73,7 @@ export default createRule("prefer-exponentiation-operator", {
         ) {
           left = `(${left})`;
         }
-        if (transform.from !== "*") {
+        if (transform.from === "pow") {
           if (
             Precedence.exponentiation >
             getPrecedence(transform.right, sourceCode).precedence
@@ -104,22 +106,39 @@ export default createRule("prefer-exponentiation-operator", {
         return fixer.replaceText(node, expression);
       };
 
+      const data = getMessageData(transform);
       context.report({
         node,
         messageId:
-          transform.from === "*"
-            ? "canUseExponentiationInsteadOfMultiplication"
+          transform.from === "*" || transform.from === "**"
+            ? "canUseExponentiationInsteadOfExpression"
             : "canUseExponentiationInsteadOfMathPow",
-        data:
-          transform.from === "*"
-            ? {
-                num: String(transform.right),
-                expression: "n".repeat(transform.right).split("").join(" * "),
-              }
-            : {},
+        data,
         fix: !hasComment ? fix : null,
-        suggest: hasComment ? [{ messageId: "replace", fix }] : null,
+        suggest: hasComment ? [{ messageId: "replace", data, fix }] : null,
       });
+    }
+
+    /**
+     * Get the message data from the given information.
+     */
+    function getMessageData(info: TransformingToExponentiation) {
+      const id = getIdText(info.left, "n");
+      const exponent = info.from === "*" || info.from === "**" ? info.right : 0;
+      const num =
+        info.from === "*" || info.from === "**"
+          ? String(info.right)
+          : info.right.type === "Literal"
+            ? info.right.raw
+            : getIdText(info.right, "x");
+      return {
+        id,
+        num,
+        expression:
+          info.from === "*"
+            ? id.repeat(exponent).split("").join(" * ")
+            : `${id} ** ${exponent}`,
+      };
     }
 
     return {

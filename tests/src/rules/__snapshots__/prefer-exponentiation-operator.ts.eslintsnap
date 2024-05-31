@@ -36,8 +36,8 @@ Output:
  12 | x = a ** 3;
  13 |
 
-[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[2] Can use 'n ** 3' instead of 'n * n * n'.
+[1] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[2] Can use 'a ** 3' instead of 'a * a * a'.
 ---
 
 
@@ -64,7 +64,9 @@ Code:
     |     ^~~~~~~~~~ [7]
  11 | x = (a ** 3) ** 2 * a;
     |     ^~~~~~~~~~~~~~~~~ [8]
- 12 |
+ 12 | x = (a ** 3) ** 2;
+    |     ^~~~~~~~~~~~~ [9]
+ 13 |
 
 Output:
   1 | /*prefer-exponentiation-operator/invalid/multiplication-input.js*/
@@ -78,16 +80,18 @@ Output:
   9 |
  10 | x = a ** 3;
  11 | x = a ** 7;
- 12 |
+ 12 | x = a ** 6;
+ 13 |
 
-[1] Can use 'n ** 2' instead of 'n * n'.
-[2] Can use 'n ** 3' instead of 'n * n * n'.
-[3] Can use 'n ** 3' instead of 'n * n * n'.
-[4] Can use 'n ** 5' instead of 'n * n * n * n * n'.
+[1] Can use 'a ** 2' instead of 'a * a'.
+[2] Can use 'a ** 3' instead of 'a * a * a'.
+[3] Can use 'a ** 3' instead of 'a * a * a'.
+[4] Can use 'a ** 5' instead of 'a * a * a * a * a'.
 [5] Can use 'n ** 3' instead of 'n * n * n'.
-[6] Can use 'n ** 2' instead of 'n * n'.
-[7] Can use 'n ** 3' instead of 'n * n * n'.
-[8] Can use 'n ** 7' instead of 'n * n * n * n * n * n * n'.
+[6] Can use 'a ** 2' instead of 'a * a'.
+[7] Can use 'a ** 3' instead of 'a * a * a'.
+[8] Can use 'a ** 7' instead of 'a * a * a * a * a * a * a'.
+[9] Can use 'a ** 6' instead of 'a ** 6'.
 ---
 
 
@@ -176,20 +180,20 @@ Output:
  31 | x = a+((++b) ** c)in d
  32 |
 
-[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[4] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[5] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[6] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[7] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[8] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[1] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[2] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[3] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[4] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[5] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[6] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[7] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[8] Can use 'a ** b' instead of 'Math.pow(a, b)'.
 [9] Can use 'n ** x' instead of 'Math.pow(n, x)'.
 [10] Can use 'n ** x' instead of 'Math.pow(n, x)'.
 [11] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[12] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[13] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[14] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[12] Can use 'n ** c' instead of 'Math.pow(n, c)'.
+[13] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[14] Can use 'n ** c' instead of 'Math.pow(n, c)'.
 ---
 
 
@@ -207,7 +211,7 @@ Output:
   2 | x = (a ** b) ** c;
   3 |
 
-[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[1] Can use 'n ** c' instead of 'Math.pow(n, c)'.
 ---
 
 
@@ -243,9 +247,9 @@ Output:
  10 | x = a + (++b) ** c in d;
  11 |
 
-[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[1] Can use 'n ** c' instead of 'Math.pow(n, c)'.
+[2] Can use 'n ** c' instead of 'Math.pow(n, c)'.
+[3] Can use 'n ** c' instead of 'Math.pow(n, c)'.
 ---
 
 
@@ -278,8 +282,8 @@ Output:
   9 | x = a ** (b + c) in d;
  10 |
 
-[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[1] Can use 'n ** b' instead of 'Math.pow(n, b)'.
+[2] Can use 'a ** x' instead of 'Math.pow(a, x)'.
 ---
 
 
@@ -333,15 +337,15 @@ Output:
  16 | x = class extends (a ** b) {};
  17 |
 
-[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[4] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[5] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[6] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[7] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[8] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[9] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[1] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[2] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[3] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[4] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[5] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[6] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[7] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[8] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[9] Can use 'a ** b' instead of 'Math.pow(a, b)'.
 ---
 
 
@@ -408,18 +412,18 @@ Output:
  21 | x = (a, b ** c, d);
  22 |
 
-[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[4] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[5] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[6] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[7] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[8] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[9] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[10] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[11] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[12] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[1] Can use 'b ** c' instead of 'Math.pow(b, c)'.
+[2] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[3] Can use 'b ** c' instead of 'Math.pow(b, c)'.
+[4] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[5] Can use 'b ** c' instead of 'Math.pow(b, c)'.
+[6] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[7] Can use 'b ** c' instead of 'Math.pow(b, c)'.
+[8] Can use 'b ** c' instead of 'Math.pow(b, c)'.
+[9] Can use 'b ** c' instead of 'Math.pow(b, c)'.
+[10] Can use 'b ** c' instead of 'Math.pow(b, c)'.
+[11] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[12] Can use 'b ** c' instead of 'Math.pow(b, c)'.
 ---
 
 
@@ -461,10 +465,10 @@ Output:
  12 | x = a ** (((b ** c) ** d ** e) ** f);
  13 |
 
-[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[4] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[1] Can use 'b ** c' instead of 'Math.pow(b, c)'.
+[2] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[3] Can use 'a ** x' instead of 'Math.pow(a, x)'.
+[4] Can use 'n ** c' instead of 'Math.pow(n, c)'.
 [5] Can use 'n ** x' instead of 'Math.pow(n, x)'.
 ---
 
@@ -504,10 +508,10 @@ Output:
  11 | x = `${a ** b}`;
  12 |
 
-[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[4] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[1] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[2] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[3] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[4] Can use 'a ** b' instead of 'Math.pow(a, b)'.
 ---
 
 
@@ -558,14 +562,14 @@ Output:
  15 | x = async () => a ** await b;
  16 |
 
-[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[4] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[5] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[1] Can use 'n ** b' instead of 'Math.pow(n, b)'.
+[2] Can use 'a ** x' instead of 'Math.pow(a, x)'.
+[3] Can use 'n ** b' instead of 'Math.pow(n, b)'.
+[4] Can use 'a ** x' instead of 'Math.pow(a, x)'.
+[5] Can use 'n ** 3' instead of 'Math.pow(n, 3)'.
 [6] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[7] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[8] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[7] Can use 'n ** b' instead of 'Math.pow(n, b)'.
+[8] Can use 'a ** x' instead of 'Math.pow(a, x)'.
 ---
 
 
@@ -629,11 +633,11 @@ Output:
  20 | };
  21 |
 
-[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[4] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[5] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[1] Can use 'n ** c' instead of 'Math.pow(n, c)'.
+[2] Can use 'a ** x' instead of 'Math.pow(a, x)'.
+[3] Can use 'n ** c' instead of 'Math.pow(n, c)'.
+[4] Can use 'a ** x' instead of 'Math.pow(a, x)'.
+[5] Can use 'n ** 3' instead of 'Math.pow(n, 3)'.
 [6] Can use 'n ** x' instead of 'Math.pow(n, x)'.
 [7] Can use 'n ** x' instead of 'Math.pow(n, x)'.
 [8] Can use 'n ** x' instead of 'Math.pow(n, x)'.
@@ -669,7 +673,7 @@ Output:
   8 | x = a + b ** c + d;
   9 |
 
-[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[1] Can use 'b ** c' instead of 'Math.pow(b, c)'.
 ---
 
 
@@ -708,10 +712,10 @@ Output:
  11 | x = a + (++b) ** c in d;
  12 |
 
-[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[2] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[3] Can use 'n ** x' instead of 'Math.pow(n, x)'.
-[4] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[1] Can use 'n ** c' instead of 'Math.pow(n, c)'.
+[2] Can use 'a ** b' instead of 'Math.pow(a, b)'.
+[3] Can use 'n ** c' instead of 'Math.pow(n, c)'.
+[4] Can use 'n ** c' instead of 'Math.pow(n, c)'.
 ---
 
 
@@ -731,5 +735,5 @@ Output:
   3 | class A extends (a ** b) {}
   4 |
 
-[1] Can use 'n ** x' instead of 'Math.pow(n, x)'.
+[1] Can use 'a ** b' instead of 'Math.pow(a, b)'.
 ---

@@ -22,6 +22,11 @@ export type TransformingToExponentiation =
       from: "*";
       node: TSESTree.BinaryExpression;
       right: number;
+    })
+  | (OperatorInfo<"**"> & {
+      from: "**";
+      node: TSESTree.BinaryExpression;
+      right: number;
     });
 /**
  * Returns information if the given expression can be transformed to `x ** y`.
@@ -40,6 +45,20 @@ export function getInfoForTransformingToExponentiation(
           right: exponentiation.right,
           node,
         };
+      }
+    } else if (node.operator === "**") {
+      const right = getStaticValue(node.right, sourceCode);
+      if (typeof right?.value !== "number") return null;
+      for (const exponentiation of parseExponentiation(node, sourceCode)) {
+        if (exponentiation.right !== right.value) {
+          return {
+            from: "**",
+            operator: "**",
+            left: exponentiation.left,
+            right: exponentiation.right,
+            node,
+          };
+        }
       }
     }
     return null;
