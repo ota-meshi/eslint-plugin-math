@@ -23,10 +23,10 @@ export default createRule("prefer-exponentiation-operator", {
     schema: [],
     messages: {
       canUseExponentiationInsteadOfExpression:
-        "Can use '{{id}} ** {{num}}' instead of '{{expression}}'.",
+        "Can use '{{id}} ** {{exponent}}' instead of '{{expression}}'.",
       canUseExponentiationInsteadOfMathPow:
-        "Can use '{{id}} ** {{num}}' instead of 'Math.pow({{id}}, {{num}})'.",
-      replace: "Replace using '{{id}} ** {{num}}'.",
+        "Can use '{{id}} ** {{exponent}}' instead of 'Math.pow({{id}}, {{exponent}})'.",
+      replace: "Replace using '{{id}} ** {{exponent}}'.",
     },
     type: "suggestion",
   },
@@ -124,21 +124,25 @@ export default createRule("prefer-exponentiation-operator", {
      */
     function getMessageData(info: TransformingToExponentiation) {
       const id = getIdText(info.left, "n");
-      const exponent =
-        info.from === "*" || info.from === "nesting**" ? info.right : 0;
-      const num =
-        info.from === "*" || info.from === "nesting**"
-          ? String(info.right)
-          : info.right.type === "Literal"
+      let expression: string, exponent: string;
+      if (info.from === "*" || info.from === "nesting**") {
+        const exponentNum = info.right;
+        expression =
+          info.from === "*"
+            ? id.repeat(exponentNum).split("").join(" * ")
+            : `${id} ** ${exponentNum}`;
+        exponent = String(exponentNum);
+      } else {
+        expression = "";
+        exponent =
+          info.right.type === "Literal"
             ? info.right.raw
-            : getIdText(info.right, "x");
+            : getIdText(info.right, id !== "x" ? "x" : "y");
+      }
       return {
         id,
-        num,
-        expression:
-          info.from === "*"
-            ? id.repeat(exponent).split("").join(" * ")
-            : `${id} ** ${exponent}`,
+        exponent,
+        expression,
       };
     }
 
