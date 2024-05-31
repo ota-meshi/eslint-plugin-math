@@ -118,6 +118,7 @@ The rules with the following star ⭐ are included in the configs.
 | [math/prefer-exponentiation-operator](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-exponentiation-operator.html) | enforce the use of exponentiation (`**`) operator instead of other calculations | 🔧 |  |
 | [math/prefer-math-cbrt](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-cbrt.html) | enforce the use of Math.cbrt() instead of other cube root calculations | 🔧 | ⭐ |
 | [math/prefer-math-e](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-e.html) | enforce the use of Math.E instead of other ways | 🔧 | ⭐ |
+| [math/prefer-math-hypot](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-hypot.html) | enforce the use of Math.hypot() instead of other hypotenuse calculations | 🔧 | ⭐ |
 | [math/prefer-math-ln10](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-ln10.html) | enforce the use of Math.LN10 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-ln2](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-ln2.html) | enforce the use of Math.LN2 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-log10](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-log10.html) | enforce the use of Math.log10() instead of other calculation methods. | 🔧 | ⭐ |

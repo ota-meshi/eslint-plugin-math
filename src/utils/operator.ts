@@ -27,7 +27,7 @@ export type TransformingToExponentiation =
  * Returns information if the given expression can be transformed to `x ** y`.
  */
 export function getInfoForTransformingToExponentiation(
-  node: TSESTree.Expression,
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
   sourceCode: SourceCode,
 ): null | TransformingToExponentiation {
   if (node.type === "BinaryExpression") {
@@ -49,7 +49,7 @@ export function getInfoForTransformingToExponentiation(
     const [argument, exponent] = node.arguments;
     if (argument.type === "SpreadElement" || exponent.type === "SpreadElement")
       return null;
-    // Math.pow(n, 1/3)
+    // Math.pow(x, y)
     return {
       from: "pow",
       operator: "**",
@@ -59,6 +59,30 @@ export function getInfoForTransformingToExponentiation(
     };
   }
   return null;
+}
+
+/**
+ * Returns information if the given expression is `x ** y` or like.
+ */
+export function getInfoForExponentiationOrLike(
+  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  sourceCode: SourceCode,
+):
+  | (OperatorInfo<"**"> & {
+      from: "exponentiation";
+      right: TSESTree.Expression;
+    })
+  | null
+  | TransformingToExponentiation {
+  if (node.type === "BinaryExpression" && node.operator === "**") {
+    return {
+      from: "exponentiation",
+      operator: "**",
+      left: node.left,
+      right: node.right,
+    };
+  }
+  return getInfoForTransformingToExponentiation(node, sourceCode);
 }
 
 type Exponentiation = {

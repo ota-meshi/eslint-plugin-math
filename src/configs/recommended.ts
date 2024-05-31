@@ -8,6 +8,7 @@ export const rules = {
   "math/no-static-nan-calculations": "error",
   "math/prefer-math-cbrt": "error",
   "math/prefer-math-e": "error",
+  "math/prefer-math-hypot": "error",
   "math/prefer-math-ln10": "error",
   "math/prefer-math-ln2": "error",
   "math/prefer-math-log10": "error",

@@ -19,6 +19,7 @@ The rules with the following star ⭐ are included in the `plugin:math/recommend
 | [math/prefer-exponentiation-operator](./prefer-exponentiation-operator.md) | enforce the use of exponentiation (`**`) operator instead of other calculations | 🔧 |  |
 | [math/prefer-math-cbrt](./prefer-math-cbrt.md) | enforce the use of Math.cbrt() instead of other cube root calculations | 🔧 | ⭐ |
 | [math/prefer-math-e](./prefer-math-e.md) | enforce the use of Math.E instead of other ways | 🔧 | ⭐ |
+| [math/prefer-math-hypot](./prefer-math-hypot.md) | enforce the use of Math.hypot() instead of other hypotenuse calculations | 🔧 | ⭐ |
 | [math/prefer-math-ln10](./prefer-math-ln10.md) | enforce the use of Math.LN10 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-ln2](./prefer-math-ln2.md) | enforce the use of Math.LN2 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-log10](./prefer-math-log10.md) | enforce the use of Math.log10() instead of other calculation methods. | 🔧 | ⭐ |

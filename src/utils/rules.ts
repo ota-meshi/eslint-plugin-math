@@ -8,6 +8,7 @@ import noStaticNanCalculations from "../rules/no-static-nan-calculations";
 import preferExponentiationOperator from "../rules/prefer-exponentiation-operator";
 import preferMathCbrt from "../rules/prefer-math-cbrt";
 import preferMathE from "../rules/prefer-math-e";
+import preferMathHypot from "../rules/prefer-math-hypot";
 import preferMathLn10 from "../rules/prefer-math-ln10";
 import preferMathLn2 from "../rules/prefer-math-ln2";
 import preferMathLog10 from "../rules/prefer-math-log10";
@@ -35,6 +36,7 @@ export const rules = [
   preferExponentiationOperator,
   preferMathCbrt,
   preferMathE,
+  preferMathHypot,
   preferMathLn10,
   preferMathLn2,
   preferMathLog10,
