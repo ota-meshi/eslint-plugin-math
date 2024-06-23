@@ -287,7 +287,7 @@ export function getInfoForTransformingToNumberIsInteger(
   }
   if (node.type === "UnaryExpression") {
     if (node.operator !== "!") return null;
-    const argument = node.argument as TSESTree.Expression; /* Maybe type bug */
+    const argument = node.argument;
     if (!isModuloOne(argument, sourceCode)) return null;
     // !(n % 1)
     return {
