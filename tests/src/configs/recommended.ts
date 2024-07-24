@@ -10,6 +10,7 @@ describe("`recommended` config", () => {
         math: plugin as never,
       },
       baseConfig: {
+        // @ts-expect-error -- Legacy  config
         parserOptions: {
           ecmaVersion: 2020,
         },
@@ -38,9 +39,7 @@ describe("`recommended` config", () => {
   });
   it("`recommended` config should work. ", async () => {
     const linter = new ESLint({
-      // @ts-expect-error -- typing bug
       overrideConfigFile: true,
-      // @ts-expect-error -- typing bug
       overrideConfig: [plugin.configs.recommended],
     });
     const result = await linter.lintText(code, { filePath: "test.js" });
