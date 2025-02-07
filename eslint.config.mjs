@@ -25,6 +25,7 @@ export default [
         "error",
         {
           allowDefaultCaseForExhaustiveSwitch: false,
+          considerDefaultExhaustiveForUnions: true,
           requireDefaultForNonUnion: true,
         },
       ],
