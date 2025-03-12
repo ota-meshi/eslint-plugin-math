@@ -11,6 +11,10 @@ import {
 import type { Rule } from "eslint";
 import { getIdText } from "../utils/messages";
 
+type Option = {
+  prefer: "Math.abs" | "expression";
+};
+
 export default createRule("abs", {
   meta: {
     docs: {
@@ -41,7 +45,7 @@ export default createRule("abs", {
   create(context) {
     const sourceCode = context.sourceCode;
     const prefer: "Math.abs" | "expression" =
-      context.options[0]?.prefer ?? "expression";
+      (context.options[0] as Option | undefined)?.prefer ?? "expression";
 
     /**
      * Verify if the given node can be converted to Number.isSafeInteger().
