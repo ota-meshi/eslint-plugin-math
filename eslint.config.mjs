@@ -56,6 +56,11 @@ export default [
       // なぜ有効になっているか不明。要調査
       "vue/no-v-model-argument": "off",
     },
+    languageOptions: {
+      globals: {
+        window: "readonly",
+      },
+    },
   },
   {
     files: ["tests/fixtures/**/*.js"],

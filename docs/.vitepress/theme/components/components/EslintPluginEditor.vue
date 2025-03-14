@@ -25,9 +25,6 @@ import { rules } from "../../../../../src/utils/rules";
 export default {
   name: "EslintPluginEditor",
   components: { EslintEditor },
-  model: {
-    prop: "code",
-  },
   props: {
     code: {
       type: String,
