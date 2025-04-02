@@ -1,5 +1,11 @@
 # eslint-plugin-math
 
+## 0.6.1
+
+### Patch Changes
+
+- [#77](https://github.com/ota-meshi/eslint-plugin-math/pull/77) [`c72cfd9`](https://github.com/ota-meshi/eslint-plugin-math/commit/c72cfd94350209c5326a116ff5c33a088be66972) Thanks [@ota-meshi](https://github.com/ota-meshi)! - update tsup config
+
 ## 0.6.0
 
 ### Minor Changes
