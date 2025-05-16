@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
-import type { RuleTester } from "eslint";
+import type { Linter } from "eslint";
+import * as tsParser from "@typescript-eslint/parser";
+import type { TestCase } from "eslint-snapshot-rule-tester";
 
 /**
  * Prevents leading spaces in a multiline template literal from appearing in the resulting string
@@ -56,12 +58,12 @@ export function loadTestCases(
   ruleName: string,
   _options?: any,
   additionals?: {
-    valid?: (RuleTester.ValidTestCase | string)[];
-    invalid?: RuleTester.InvalidTestCase[];
+    valid?: TestCase[];
+    invalid?: TestCase[];
   },
 ): {
-  valid: RuleTester.ValidTestCase[];
-  invalid: RuleTester.InvalidTestCase[];
+  valid: TestCase[];
+  invalid: TestCase[];
 } {
   const validFixtureRoot = path.resolve(
     __dirname,
@@ -72,11 +74,11 @@ export function loadTestCases(
     `../fixtures/rules/${ruleName}/invalid/`,
   );
 
-  const valid = listupInput(validFixtureRoot).map((inputFile) =>
+  const valid: TestCase[] = listupInput(validFixtureRoot).map((inputFile) =>
     getConfig(ruleName, inputFile),
   );
 
-  const invalid = listupInput(invalidFixtureRoot).map((inputFile) =>
+  const invalid: TestCase[] = listupInput(invalidFixtureRoot).map((inputFile) =>
     getConfig(ruleName, inputFile),
   );
 
@@ -115,7 +117,11 @@ function* itrListupInput(rootDir: string): IterableIterator<string> {
       continue;
     }
     const abs = path.join(rootDir, filename);
-    if (filename.endsWith("input.js") || filename.endsWith("input.vue")) {
+    if (
+      filename.endsWith("input.js") ||
+      filename.endsWith("input.ts") ||
+      filename.endsWith("input.vue")
+    ) {
       yield abs;
     } else if (fs.statSync(abs).isDirectory()) {
       yield* itrListupInput(abs);
@@ -123,7 +129,16 @@ function* itrListupInput(rootDir: string): IterableIterator<string> {
   }
 }
 
-function getConfig(ruleName: string, inputFile: string) {
+function getConfig(
+  ruleName: string,
+  inputFile: string,
+): Linter.Config & { code: string; filename: string } {
+  const baseConfig: Linter.Config = {};
+  if (inputFile.endsWith(".ts")) {
+    baseConfig.languageOptions = {
+      parser: tsParser,
+    };
+  }
   const filename = inputFile.slice(inputFile.indexOf(ruleName));
   const code0 = fs.readFileSync(inputFile, "utf8");
   let code, config;
@@ -139,7 +154,20 @@ function getConfig(ruleName: string, inputFile: string) {
   }
   if (config && typeof config === "object") {
     code = `/* ${filename} */\n${code0}`;
-    return Object.assign({}, config, { code, filename });
+    return {
+      ...baseConfig,
+      ...config,
+      ...(baseConfig.languageOptions || config.languageOptions
+        ? {
+            languageOptions: {
+              ...baseConfig.languageOptions,
+              ...config.languageOptions,
+            },
+          }
+        : {}),
+      code,
+      filename,
+    };
   }
   // inline config
   const configStr = /^\/\*(.*?)\*\//u.exec(code0);
@@ -155,5 +183,18 @@ function getConfig(ruleName: string, inputFile: string) {
     }
   }
 
-  return Object.assign({}, config, { code, filename });
+  return {
+    ...baseConfig,
+    ...config,
+    ...(baseConfig.languageOptions || config.languageOptions
+      ? {
+          languageOptions: {
+            ...baseConfig.languageOptions,
+            ...config.languageOptions,
+          },
+        }
+      : {}),
+    code,
+    filename,
+  };
 }

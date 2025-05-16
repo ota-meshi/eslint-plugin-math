@@ -10,7 +10,6 @@ describe("`recommended` config", () => {
         math: plugin as never,
       },
       baseConfig: {
-        // @ts-expect-error -- Legacy  config
         parserOptions: {
           ecmaVersion: 2020,
         },

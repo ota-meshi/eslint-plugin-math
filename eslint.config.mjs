@@ -1,4 +1,5 @@
 import myPlugin from "@ota-meshi/eslint-plugin";
+import tseslint from "typescript-eslint";
 // import tseslint from "typescript-eslint";
 export default [
   ...myPlugin.config({
@@ -62,8 +63,9 @@ export default [
       },
     },
   },
-  {
-    files: ["tests/fixtures/**/*.js"],
+  ...tseslint.config({
+    files: ["tests/fixtures/**/*.{js,ts}"],
+    extends: [tseslint.configs.disableTypeChecked],
     rules: {
       "jsdoc/require-jsdoc": "off",
       "no-undef": "off",
@@ -76,8 +78,9 @@ export default [
       radix: "off",
       "no-implicit-coercion": "off",
       "no-void": "off",
+      "@typescript-eslint/no-unused-vars": "off",
     },
-  },
+  }),
   {
     files: ["tests/fixtures/**/*ignore-format*.js"],
     rules: {
