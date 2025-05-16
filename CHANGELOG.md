@@ -1,5 +1,11 @@
 # eslint-plugin-math
 
+## 0.6.2
+
+### Patch Changes
+
+- [#86](https://github.com/ota-meshi/eslint-plugin-math/pull/86) [`e4c31f3`](https://github.com/ota-meshi/eslint-plugin-math/commit/e4c31f3dde12a81175d29320610f4984734cac4d) Thanks [@ota-meshi](https://github.com/ota-meshi)! - fix(no-static-\*): false positive for ts expression
+
 ## 0.6.1
 
 ### Patch Changes
