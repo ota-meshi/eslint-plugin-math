@@ -6,6 +6,34 @@ import {
   isStaticValue,
 } from "../utils/ast";
 
+/**
+ * Check if the value of a given node is passed through to the `expression` syntax as-is.
+ * For example, `a` in (`a!` and `a as x`) are passed through.
+ * @param node A node to check.
+ * @returns `true` if the node is passed through.
+ */
+function isPassThrough(
+  node: TSESTree.Expression,
+): node is
+  | TSESTree.ChainExpression
+  | TSESTree.TSAsExpression
+  | TSESTree.TSSatisfiesExpression
+  | TSESTree.TSTypeAssertion
+  | TSESTree.TSNonNullExpression
+  | TSESTree.TSInstantiationExpression {
+  switch (node.type) {
+    case "ChainExpression":
+    case "TSAsExpression":
+    case "TSSatisfiesExpression":
+    case "TSTypeAssertion":
+    case "TSNonNullExpression":
+    case "TSInstantiationExpression":
+      return true;
+    default:
+      return false;
+  }
+}
+
 export default createRule("no-static-infinity-calculations", {
   meta: {
     docs: {
@@ -99,6 +127,9 @@ export default createRule("no-static-infinity-calculations", {
 
     return {
       ":expression"(node: TSESTree.Expression) {
+        if (isPassThrough(node)) {
+          return;
+        }
         verifyForExpression(node);
       },
     };

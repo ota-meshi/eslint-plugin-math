@@ -34,6 +34,7 @@
     "tsup.config.ts"
   ],
   "exclude": [
+    "tests/fixtures/**/*",
     "lib/**/*",
     "docs/.vitepress/cache/**/*",
     "docs/.vitepress/dist/**/*"
