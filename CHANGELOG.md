@@ -1,5 +1,11 @@
 # eslint-plugin-math
 
+## 0.6.3
+
+### Patch Changes
+
+- [#89](https://github.com/ota-meshi/eslint-plugin-math/pull/89) [`074a0d4`](https://github.com/ota-meshi/eslint-plugin-math/commit/074a0d4ae88aaca59f5ea23fb3f40ad2f465cecd) Thanks [@ota-meshi](https://github.com/ota-meshi)! - fix(prefer-exponentiation-operator): incorrect message
+
 ## 0.6.2
 
 ### Patch Changes
