@@ -129,7 +129,7 @@ export default createRule("prefer-exponentiation-operator", {
         const exponentNum = info.right;
         expression =
           info.from === "*"
-            ? Array<string>(exponentNum).fill(id, 0, exponentNum).join(" * ")
+            ? Array<string>(exponentNum).fill(id).join(" * ")
             : `${id} ** ${exponentNum}`;
         exponent = String(exponentNum);
       } else {
