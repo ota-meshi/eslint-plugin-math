@@ -42,6 +42,24 @@ Output:
 
 
 Test: prefer-exponentiation-operator >> invalid
+Filename: prefer-exponentiation-operator/invalid/issue88-input.js
+
+Code:
+  1 | /*prefer-exponentiation-operator/invalid/issue88-input.js*/
+  2 | x = it * it;
+    |     ^~~~~~~ [1]
+  3 |
+
+Output:
+  1 | /*prefer-exponentiation-operator/invalid/issue88-input.js*/
+  2 | x = it ** 2;
+  3 |
+
+[1] Can use 'it ** 2' instead of 'it * it'.
+---
+
+
+Test: prefer-exponentiation-operator >> invalid
 Filename: prefer-exponentiation-operator/invalid/multiplication-input.js
 
 Code:
