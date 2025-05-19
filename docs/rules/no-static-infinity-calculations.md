@@ -2,20 +2,20 @@
 pageClass: "rule-details"
 sidebarDepth: 0
 title: "math/no-static-infinity-calculations"
-description: "disallow static calculations that go to infinity"
+description: "disallow static calculations that result in infinity"
 since: "v0.5.0"
 ---
 
 # math/no-static-infinity-calculations
 
-> disallow static calculations that go to infinity
+> disallow static calculations that result in infinity
 
 - ⚙️ This rule is included in `"plugin:math/recommended"`.
 - 💡 Some problems reported by this rule are manually fixable by editor [suggestions](https://eslint.org/docs/developer-guide/working-with-rules#providing-suggestions).
 
 ## 📖 Rule Details
 
-This rule disallow static calculations that go to infinity.
+This rule disallow static calculations that result in infinity.
 
 <eslint-code-block>
 

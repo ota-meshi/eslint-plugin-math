@@ -37,7 +37,7 @@ function isPassThrough(
 export default createRule("no-static-infinity-calculations", {
   meta: {
     docs: {
-      description: "disallow static calculations that go to infinity",
+      description: "disallow static calculations that result in infinity",
       categories: ["recommended"],
     },
     hasSuggestions: true,

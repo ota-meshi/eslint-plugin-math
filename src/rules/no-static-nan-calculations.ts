@@ -63,7 +63,7 @@ TO_NUMBER_METHODS.set(
 export default createRule("no-static-nan-calculations", {
   meta: {
     docs: {
-      description: "disallow static calculations that go to NaN",
+      description: "disallow static calculations that result in NaN",
       categories: ["recommended"],
     },
     hasSuggestions: true,

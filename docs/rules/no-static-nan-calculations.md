@@ -2,20 +2,20 @@
 pageClass: "rule-details"
 sidebarDepth: 0
 title: "math/no-static-nan-calculations"
-description: "disallow static calculations that go to NaN"
+description: "disallow static calculations that result in NaN"
 since: "v0.5.0"
 ---
 
 # math/no-static-nan-calculations
 
-> disallow static calculations that go to NaN
+> disallow static calculations that result in NaN
 
 - ⚙️ This rule is included in `"plugin:math/recommended"`.
 - 💡 Some problems reported by this rule are manually fixable by editor [suggestions](https://eslint.org/docs/developer-guide/working-with-rules#providing-suggestions).
 
 ## 📖 Rule Details
 
-This rule disallow static calculations that go to NaN.
+This rule disallow static calculations that result in NaN.
 
 <eslint-code-block>
 
