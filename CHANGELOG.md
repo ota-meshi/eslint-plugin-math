@@ -1,5 +1,11 @@
 # eslint-plugin-math
 
+## 0.7.0
+
+### Minor Changes
+
+- [#94](https://github.com/ota-meshi/eslint-plugin-math/pull/94) [`807e7a4`](https://github.com/ota-meshi/eslint-plugin-math/commit/807e7a46daccc20153bacbacd2aa87feb5b76fa3) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: `math/prefer-number-min-value` rule
+
 ## 0.6.4
 
 ### Patch Changes
