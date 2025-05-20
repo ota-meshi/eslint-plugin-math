@@ -65,8 +65,11 @@ export default createRule("prefer-math-trunc", {
             ? "canUseTruncInsteadOfBitwise"
             : "canUseTruncInsteadOfConditional",
         data,
-        fix: !hasComment ? fix : null,
-        suggest: hasComment ? [{ messageId: "replace", data, fix }] : null,
+        fix: !hasComment && transform.from !== "bitwise" ? fix : null,
+        suggest:
+          hasComment || transform.from === "bitwise"
+            ? [{ messageId: "replace", data, fix }]
+            : null,
       });
     }
 

@@ -29,31 +29,170 @@ Code:
  13 | x = 0 << n;
  14 |
 
-Output:
-  1 | /*prefer-math-trunc/invalid/bitwise-input.js*/
-  2 | x = Math.trunc(n);
-  3 | x = Math.trunc(n);
-  4 | x = Math.trunc(n);
-  5 | x = Math.trunc(n);
-  6 | x = Math.trunc(n);
-  7 | x = Math.trunc(n);
-  8 |
-  9 | x = Math.trunc(n);
- 10 | x = Math.trunc(n);
- 11 | x = Math.trunc(n);
- 12 | x = 0 >> n;
- 13 | x = 0 << n;
- 14 |
+Output: unchanged
 
 [1] Can use 'Math.trunc(n)' instead of '~~n'.
+    Suggestions:
+      - Replace using 'Math.trunc(n)'.
+        Output:
+          1 | /*prefer-math-trunc/invalid/bitwise-input.js*/
+          2 | x = Math.trunc(n);
+          3 | x = n & -1;
+          4 | x = n | 0;
+          5 | x = n ^ 0;
+          6 | x = n >> 0;
+          7 | x = n << 0;
+          8 |
+          9 | x = -1 & n;
+         10 | x = 0 | n;
+         11 | x = 0 ^ n;
+         12 | x = 0 >> n;
+         13 | x = 0 << n;
+         14 |
 [2] Can use 'Math.trunc(n)' instead of 'n & -1'.
+    Suggestions:
+      - Replace using 'Math.trunc(n)'.
+        Output:
+          1 | /*prefer-math-trunc/invalid/bitwise-input.js*/
+          2 | x = ~~n;
+          3 | x = Math.trunc(n);
+          4 | x = n | 0;
+          5 | x = n ^ 0;
+          6 | x = n >> 0;
+          7 | x = n << 0;
+          8 |
+          9 | x = -1 & n;
+         10 | x = 0 | n;
+         11 | x = 0 ^ n;
+         12 | x = 0 >> n;
+         13 | x = 0 << n;
+         14 |
 [3] Can use 'Math.trunc(n)' instead of 'n | 0'.
+    Suggestions:
+      - Replace using 'Math.trunc(n)'.
+        Output:
+          1 | /*prefer-math-trunc/invalid/bitwise-input.js*/
+          2 | x = ~~n;
+          3 | x = n & -1;
+          4 | x = Math.trunc(n);
+          5 | x = n ^ 0;
+          6 | x = n >> 0;
+          7 | x = n << 0;
+          8 |
+          9 | x = -1 & n;
+         10 | x = 0 | n;
+         11 | x = 0 ^ n;
+         12 | x = 0 >> n;
+         13 | x = 0 << n;
+         14 |
 [4] Can use 'Math.trunc(n)' instead of 'n ^ 0'.
+    Suggestions:
+      - Replace using 'Math.trunc(n)'.
+        Output:
+          1 | /*prefer-math-trunc/invalid/bitwise-input.js*/
+          2 | x = ~~n;
+          3 | x = n & -1;
+          4 | x = n | 0;
+          5 | x = Math.trunc(n);
+          6 | x = n >> 0;
+          7 | x = n << 0;
+          8 |
+          9 | x = -1 & n;
+         10 | x = 0 | n;
+         11 | x = 0 ^ n;
+         12 | x = 0 >> n;
+         13 | x = 0 << n;
+         14 |
 [5] Can use 'Math.trunc(n)' instead of 'n >> 0'.
+    Suggestions:
+      - Replace using 'Math.trunc(n)'.
+        Output:
+          1 | /*prefer-math-trunc/invalid/bitwise-input.js*/
+          2 | x = ~~n;
+          3 | x = n & -1;
+          4 | x = n | 0;
+          5 | x = n ^ 0;
+          6 | x = Math.trunc(n);
+          7 | x = n << 0;
+          8 |
+          9 | x = -1 & n;
+         10 | x = 0 | n;
+         11 | x = 0 ^ n;
+         12 | x = 0 >> n;
+         13 | x = 0 << n;
+         14 |
 [6] Can use 'Math.trunc(n)' instead of 'n << 0'.
+    Suggestions:
+      - Replace using 'Math.trunc(n)'.
+        Output:
+          1 | /*prefer-math-trunc/invalid/bitwise-input.js*/
+          2 | x = ~~n;
+          3 | x = n & -1;
+          4 | x = n | 0;
+          5 | x = n ^ 0;
+          6 | x = n >> 0;
+          7 | x = Math.trunc(n);
+          8 |
+          9 | x = -1 & n;
+         10 | x = 0 | n;
+         11 | x = 0 ^ n;
+         12 | x = 0 >> n;
+         13 | x = 0 << n;
+         14 |
 [7] Can use 'Math.trunc(n)' instead of 'n & n'.
+    Suggestions:
+      - Replace using 'Math.trunc(n)'.
+        Output:
+          1 | /*prefer-math-trunc/invalid/bitwise-input.js*/
+          2 | x = ~~n;
+          3 | x = n & -1;
+          4 | x = n | 0;
+          5 | x = n ^ 0;
+          6 | x = n >> 0;
+          7 | x = n << 0;
+          8 |
+          9 | x = Math.trunc(n);
+         10 | x = 0 | n;
+         11 | x = 0 ^ n;
+         12 | x = 0 >> n;
+         13 | x = 0 << n;
+         14 |
 [8] Can use 'Math.trunc(n)' instead of 'n | n'.
+    Suggestions:
+      - Replace using 'Math.trunc(n)'.
+        Output:
+          1 | /*prefer-math-trunc/invalid/bitwise-input.js*/
+          2 | x = ~~n;
+          3 | x = n & -1;
+          4 | x = n | 0;
+          5 | x = n ^ 0;
+          6 | x = n >> 0;
+          7 | x = n << 0;
+          8 |
+          9 | x = -1 & n;
+         10 | x = Math.trunc(n);
+         11 | x = 0 ^ n;
+         12 | x = 0 >> n;
+         13 | x = 0 << n;
+         14 |
 [9] Can use 'Math.trunc(n)' instead of 'n ^ n'.
+    Suggestions:
+      - Replace using 'Math.trunc(n)'.
+        Output:
+          1 | /*prefer-math-trunc/invalid/bitwise-input.js*/
+          2 | x = ~~n;
+          3 | x = n & -1;
+          4 | x = n | 0;
+          5 | x = n ^ 0;
+          6 | x = n >> 0;
+          7 | x = n << 0;
+          8 |
+          9 | x = -1 & n;
+         10 | x = 0 | n;
+         11 | x = Math.trunc(n);
+         12 | x = 0 >> n;
+         13 | x = 0 << n;
+         14 |
 ---
 
 
@@ -215,19 +354,99 @@ Output:
   5 | /* ✗ BAD */
   6 | x = Math.trunc(n);
   7 | // Not strictly equivalent to Math.trunc(n).
-  8 | x = Math.trunc(n);
-  9 | x = Math.trunc(n);
- 10 | x = Math.trunc(n);
- 11 | x = Math.trunc(n);
- 12 | x = Math.trunc(n);
+  8 | x = ~~n;
+  9 | x = n & -1;
+ 10 | x = n | 0;
+ 11 | x = n ^ 0;
+ 12 | x = n >> 0;
  13 |
 
 [1] Can use 'Math.trunc(n)', instead of branching on value and using 'Math.floor(n)' / 'Math.ceil(n)'.
 [2] Can use 'Math.trunc(n)' instead of '~~n'.
+    Suggestions:
+      - Replace using 'Math.trunc(n)'.
+        Output:
+          1 | /*prefer-math-trunc/invalid/example-input.js*/
+          2 | /* ✓ GOOD */
+          3 | x = Math.trunc(n);
+          4 |
+          5 | /* ✗ BAD */
+          6 | x = n >= 0 ? Math.floor(n) : Math.ceil(n);
+          7 | // Not strictly equivalent to Math.trunc(n).
+          8 | x = Math.trunc(n);
+          9 | x = n & -1;
+         10 | x = n | 0;
+         11 | x = n ^ 0;
+         12 | x = n >> 0;
+         13 |
 [3] Can use 'Math.trunc(n)' instead of 'n & -1'.
+    Suggestions:
+      - Replace using 'Math.trunc(n)'.
+        Output:
+          1 | /*prefer-math-trunc/invalid/example-input.js*/
+          2 | /* ✓ GOOD */
+          3 | x = Math.trunc(n);
+          4 |
+          5 | /* ✗ BAD */
+          6 | x = n >= 0 ? Math.floor(n) : Math.ceil(n);
+          7 | // Not strictly equivalent to Math.trunc(n).
+          8 | x = ~~n;
+          9 | x = Math.trunc(n);
+         10 | x = n | 0;
+         11 | x = n ^ 0;
+         12 | x = n >> 0;
+         13 |
 [4] Can use 'Math.trunc(n)' instead of 'n | 0'.
+    Suggestions:
+      - Replace using 'Math.trunc(n)'.
+        Output:
+          1 | /*prefer-math-trunc/invalid/example-input.js*/
+          2 | /* ✓ GOOD */
+          3 | x = Math.trunc(n);
+          4 |
+          5 | /* ✗ BAD */
+          6 | x = n >= 0 ? Math.floor(n) : Math.ceil(n);
+          7 | // Not strictly equivalent to Math.trunc(n).
+          8 | x = ~~n;
+          9 | x = n & -1;
+         10 | x = Math.trunc(n);
+         11 | x = n ^ 0;
+         12 | x = n >> 0;
+         13 |
 [5] Can use 'Math.trunc(n)' instead of 'n ^ 0'.
+    Suggestions:
+      - Replace using 'Math.trunc(n)'.
+        Output:
+          1 | /*prefer-math-trunc/invalid/example-input.js*/
+          2 | /* ✓ GOOD */
+          3 | x = Math.trunc(n);
+          4 |
+          5 | /* ✗ BAD */
+          6 | x = n >= 0 ? Math.floor(n) : Math.ceil(n);
+          7 | // Not strictly equivalent to Math.trunc(n).
+          8 | x = ~~n;
+          9 | x = n & -1;
+         10 | x = n | 0;
+         11 | x = Math.trunc(n);
+         12 | x = n >> 0;
+         13 |
 [6] Can use 'Math.trunc(n)' instead of 'n >> 0'.
+    Suggestions:
+      - Replace using 'Math.trunc(n)'.
+        Output:
+          1 | /*prefer-math-trunc/invalid/example-input.js*/
+          2 | /* ✓ GOOD */
+          3 | x = Math.trunc(n);
+          4 |
+          5 | /* ✗ BAD */
+          6 | x = n >= 0 ? Math.floor(n) : Math.ceil(n);
+          7 | // Not strictly equivalent to Math.trunc(n).
+          8 | x = ~~n;
+          9 | x = n & -1;
+         10 | x = n | 0;
+         11 | x = n ^ 0;
+         12 | x = Math.trunc(n);
+         13 |
 ---
 
 
