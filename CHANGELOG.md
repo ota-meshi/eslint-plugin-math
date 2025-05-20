@@ -1,5 +1,11 @@
 # eslint-plugin-math
 
+## 0.6.4
+
+### Patch Changes
+
+- [#95](https://github.com/ota-meshi/eslint-plugin-math/pull/95) [`e1fe13b`](https://github.com/ota-meshi/eslint-plugin-math/commit/e1fe13b1320539cac884c1d598fff39746e244cb) Thanks [@ota-meshi](https://github.com/ota-meshi)! - fix(prefer-math-trunc): stop autofixing bitwise expressions and replace them with suggestions
+
 ## 0.6.3
 
 ### Patch Changes
