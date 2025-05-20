@@ -3,19 +3,19 @@ import { createRule } from "../utils";
 import { isGlobalObjectProperty, isStaticValue } from "../utils/ast";
 import type { Rule } from "eslint";
 
-export default createRule("prefer-number-max-value", {
+export default createRule("prefer-number-min-value", {
   meta: {
     docs: {
       description:
-        "enforce the use of Number.MAX_VALUE instead of literal number",
+        "enforce the use of Number.MIN_VALUE instead of literal number",
       categories: ["recommended"],
     },
     fixable: "code",
     hasSuggestions: false,
     schema: [],
     messages: {
-      canUseNumberMaxValue:
-        "Can use 'Number.MAX_VALUE' instead of '{{expression}}'.",
+      canUseNumberMinValue:
+        "Can use 'Number.MIN_VALUE' instead of '{{expression}}'.",
     },
     type: "suggestion",
   },
@@ -23,22 +23,22 @@ export default createRule("prefer-number-max-value", {
     const sourceCode = context.sourceCode;
 
     /**
-     * Verify if the given node can be converted to Number.MAX_VALUE.
+     * Verify if the given node can be converted to Number.MIN_VALUE.
      */
     function verifyForExpression(node: TSESTree.Expression) {
       if (
-        isStaticValue(node, Number.MAX_VALUE, sourceCode) &&
-        !isGlobalObjectProperty(node, "Number", "MAX_VALUE", sourceCode)
+        isStaticValue(node, Number.MIN_VALUE, sourceCode) &&
+        !isGlobalObjectProperty(node, "Number", "MIN_VALUE", sourceCode)
       ) {
         const fix = (fixer: Rule.RuleFixer) => {
-          return fixer.replaceText(node, `Number.MAX_VALUE`);
+          return fixer.replaceText(node, `Number.MIN_VALUE`);
         };
 
         context.report({
           node,
-          messageId: "canUseNumberMaxValue",
+          messageId: "canUseNumberMinValue",
           data: {
-            expression: `${Number.MAX_VALUE}`,
+            expression: `${Number.MIN_VALUE}`,
           },
           fix,
         });

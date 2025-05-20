@@ -138,6 +138,7 @@ The rules with the following star ⭐ are included in the configs.
 | [math/prefer-number-max-safe-integer](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-max-safe-integer.html) | enforce the use of Number.MAX_SAFE_INTEGER instead of other ways | 🔧 | ⭐ |
 | [math/prefer-number-max-value](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-max-value.html) | enforce the use of Number.MAX_VALUE instead of literal number | 🔧 | ⭐ |
 | [math/prefer-number-min-safe-integer](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-min-safe-integer.html) | enforce the use of Number.MIN_SAFE_INTEGER instead of other ways | 🔧 | ⭐ |
+| [math/prefer-number-min-value](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-min-value.html) | enforce the use of Number.MIN_VALUE instead of literal number | 🔧 | ⭐ |
 
 <!--RULES_TABLE_END-->
 <!--RULES_SECTION_END-->
