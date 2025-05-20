@@ -39,3 +39,4 @@ The rules with the following star ⭐ are included in the `plugin:math/recommend
 | [math/prefer-number-max-safe-integer](./prefer-number-max-safe-integer.md) | enforce the use of Number.MAX_SAFE_INTEGER instead of other ways | 🔧 | ⭐ |
 | [math/prefer-number-max-value](./prefer-number-max-value.md) | enforce the use of Number.MAX_VALUE instead of literal number | 🔧 | ⭐ |
 | [math/prefer-number-min-safe-integer](./prefer-number-min-safe-integer.md) | enforce the use of Number.MIN_SAFE_INTEGER instead of other ways | 🔧 | ⭐ |
+| [math/prefer-number-min-value](./prefer-number-min-value.md) | enforce the use of Number.MIN_VALUE instead of literal number | 🔧 | ⭐ |

@@ -1,0 +1,27 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: prefer-number-min-value >> invalid
+Filename: prefer-number-min-value/invalid/example-input.js
+
+Code:
+  1 | /*prefer-number-min-value/invalid/example-input.js*/
+  2 | // GOOD
+  3 | x = Number.MIN_VALUE;
+  4 |
+  5 | // BAD
+  6 | x = 5e-324;
+    |     ^~~~~~ [1]
+  7 |
+
+Output:
+  1 | /*prefer-number-min-value/invalid/example-input.js*/
+  2 | // GOOD
+  3 | x = Number.MIN_VALUE;
+  4 |
+  5 | // BAD
+  6 | x = Number.MIN_VALUE;
+  7 |
+
+[1] Can use 'Number.MIN_VALUE' instead of '5e-324'.
+---
