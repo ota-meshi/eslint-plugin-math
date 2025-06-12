@@ -88,7 +88,7 @@
     "eslint-compat-utils": "^0.6.5",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-eslint-plugin": "^6.4.0",
-    "eslint-plugin-jsdoc": "^50.6.17",
+    "eslint-plugin-jsdoc": "^51.0.0",
     "eslint-plugin-json-schema-validator": "^5.4.0",
     "eslint-plugin-jsonc": "^2.20.0",
     "eslint-plugin-markdown": "^5.1.0",
