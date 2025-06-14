@@ -48,7 +48,18 @@ if (n >= 0) {
 
 ## 🔧 Options
 
-Nothing.
+```json
+{
+  "math/prefer-math-trunc": [
+    "error",
+    {
+      "reportBitwise": true // false
+    }
+  ]
+}
+```
+
+- `reportBitwise` ... If `true`, the rule reports bitwise operations that are equivalent to `Math.trunc()`. Defaults to `true`.
 
 ## 📚 Further reading
 
