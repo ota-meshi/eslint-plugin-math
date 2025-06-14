@@ -4,11 +4,15 @@ import type { TypeName } from "../../../../src/utils/type-checker/types";
 import type { Rule } from "eslint";
 import { Linter } from "eslint";
 
+const describeIfESLintIsNew = Linter.version.startsWith("8.")
+  ? describe.skip
+  : describe;
+
 // -----------------------------------------------------------------------------
 // Tests
 // -----------------------------------------------------------------------------
 
-describe("object-type-checker", () => {
+describeIfESLintIsNew("object-type-checker", () => {
   describe("buildExpressionTypeProvider", () => {
     for (const { code, result, only } of [
       {
