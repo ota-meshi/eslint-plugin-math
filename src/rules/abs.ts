@@ -50,9 +50,7 @@ export default createRule("abs", {
       (context.options[0] as Option | undefined)?.prefer ?? "Math.abs";
 
     const objectTypeChecker =
-      prefer === "Math.abs"
-        ? buildObjectTypeChecker(context, { pluginNamespace: "math" })
-        : null;
+      prefer === "Math.abs" ? buildObjectTypeChecker(context) : null;
 
     /**
      * Verify if the given node can be converted to Number.isSafeInteger().
