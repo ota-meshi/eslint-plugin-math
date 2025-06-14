@@ -24,7 +24,18 @@ export default createRule("prefer-math-trunc", {
     },
     fixable: "code",
     hasSuggestions: true,
-    schema: [],
+    schema: [
+      {
+        type: "object",
+        properties: {
+          reportBitwise: {
+            type: "boolean",
+            default: true,
+          },
+        },
+        additionalProperties: false,
+      },
+    ],
     messages: {
       canUseTruncInsteadOfBitwise:
         "Can use 'Math.trunc({{id}})' instead of '{{expression}}'.",
@@ -36,6 +47,8 @@ export default createRule("prefer-math-trunc", {
   },
   create(context) {
     const sourceCode = context.sourceCode;
+    const options = context.options[0] || {};
+    const reportBitwise = options.reportBitwise !== false;
 
     const floorExpressions: MathMethodInfo<"floor">[] = [];
     const ceilExpressions: MathMethodInfo<"ceil">[] = [];
@@ -47,6 +60,7 @@ export default createRule("prefer-math-trunc", {
     function verifyForExpression(node: TSESTree.Expression) {
       const transform = getInfoForTransformingToMathTrunc(node, sourceCode);
       if (!transform) return;
+      if (transform.from === "bitwise" && !reportBitwise) return;
       reportedNodes.add(node);
       const hasComment = existComment(node, sourceCode);
 
