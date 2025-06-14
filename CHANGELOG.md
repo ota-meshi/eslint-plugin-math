@@ -1,5 +1,13 @@
 # eslint-plugin-math
 
+## 0.8.0
+
+### Minor Changes
+
+- [#102](https://github.com/ota-meshi/eslint-plugin-math/pull/102) [`beddad1`](https://github.com/ota-meshi/eslint-plugin-math/commit/beddad1576cc779c0bdd167f9677ff965bdb01c3) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat(abs): if operand is number, replace the negative expression with `abs()`
+
+- [#104](https://github.com/ota-meshi/eslint-plugin-math/pull/104) [`84bf7b3`](https://github.com/ota-meshi/eslint-plugin-math/commit/84bf7b318c42e733dd22886b425ff48cc6e79737) Thanks [@ota-meshi](https://github.com/ota-meshi)! - BREAKING(abs): change default to `prefer: Math.abs`
+
 ## 0.7.0
 
 ### Minor Changes
