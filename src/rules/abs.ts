@@ -47,7 +47,7 @@ export default createRule("abs", {
   create(context) {
     const sourceCode = context.sourceCode;
     const prefer: "Math.abs" | "expression" =
-      (context.options[0] as Option | undefined)?.prefer ?? "expression";
+      (context.options[0] as Option | undefined)?.prefer ?? "Math.abs";
 
     const objectTypeChecker =
       prefer === "Math.abs"

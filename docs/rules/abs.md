@@ -22,23 +22,6 @@ This rule aims to enforce the conversion to absolute values to be the method you
 <!-- eslint-skip -->
 
 ```js
-/* eslint math/abs: ["error", {"prefer": "expression"}] */
-
-/* ✓ GOOD */
-x = n < 0 ? -n : n;
-
-/* ✗ BAD */
-x = Math.abs(n);
-x = n < 0 ? n * -1 : n;
-```
-
-</eslint-code-block>
-
-<eslint-code-block fix>
-
-<!-- eslint-skip -->
-
-```js
 /* eslint math/abs: ["error", {"prefer": "Math.abs"}] */
 
 /* ✓ GOOD */
@@ -57,6 +40,23 @@ x = k < 0 ? -k : k; // `k` is clearly a number, so we cannot replace it with `Ma
 
 </eslint-code-block>
 
+<eslint-code-block fix>
+
+<!-- eslint-skip -->
+
+```js
+/* eslint math/abs: ["error", {"prefer": "expression"}] */
+
+/* ✓ GOOD */
+x = n < 0 ? -n : n;
+
+/* ✗ BAD */
+x = Math.abs(n);
+x = n < 0 ? n * -1 : n;
+```
+
+</eslint-code-block>
+
 ## 🔧 Options
 
 ```json
@@ -64,16 +64,16 @@ x = k < 0 ? -k : k; // `k` is clearly a number, so we cannot replace it with `Ma
   "math/abs": [
     "error",
     {
-      "prefer": "expression", // or "Math.abs"
+      "prefer": "Math.abs", // or "expression"
       "aggressive": false
     }
   ]
 }
 ```
 
-- `prefer` ... enforces the conversion to absolute values to be the method you prefer. (default: `"expression"`)
-  - `"expression"` ... enforces the conversion to absolute values to be the expression `n < 0 ? -n : n`.
+- `prefer` ... enforces the conversion to absolute values to be the method you prefer. (default: `"Math.abs"`)
   - `"Math.abs"` ... enforces the conversion to absolute values to be the method `Math.abs(n)`.
+  - `"expression"` ... enforces the conversion to absolute values to be the expression `n < 0 ? -n : n`.
 - `aggressive` ... configure the aggressive mode for only this rule. (default: `false`)
 
 ## The `aggressive` mode
