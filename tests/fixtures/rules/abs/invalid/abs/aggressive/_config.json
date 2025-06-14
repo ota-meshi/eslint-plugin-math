@@ -1,0 +1,8 @@
+{
+  "options": [
+    {
+      "prefer": "Math.abs",
+      "aggressive": true
+    }
+  ]
+}

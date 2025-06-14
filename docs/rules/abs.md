@@ -49,6 +49,10 @@ x = n < 0 ? n * -1 : n;
 
 /* Ignore */
 x = n < 0 ? -n : n; // `n` may be a `BigInt`, so we cannot replace it with `Math.abs(n)`.
+
+const k = -5;
+/* ✗ BAD */
+x = k < 0 ? -k : k; // `k` is clearly a number, so we cannot replace it with `Math.abs(k)`.
 ```
 
 </eslint-code-block>
@@ -60,15 +64,37 @@ x = n < 0 ? -n : n; // `n` may be a `BigInt`, so we cannot replace it with `Math
   "math/abs": [
     "error",
     {
-      "prefer": "expression" // or "Math.abs"
+      "prefer": "expression", // or "Math.abs"
+      "aggressive": false
     }
   ]
 }
 ```
 
-- `"prefer"` ... enforces the conversion to absolute values to be the method you prefer. (default: `"expression"`)
+- `prefer` ... enforces the conversion to absolute values to be the method you prefer. (default: `"expression"`)
   - `"expression"` ... enforces the conversion to absolute values to be the expression `n < 0 ? -n : n`.
   - `"Math.abs"` ... enforces the conversion to absolute values to be the method `Math.abs(n)`.
+- `aggressive` ... configure the aggressive mode for only this rule. (default: `false`)
+
+## The `aggressive` mode
+
+This plugin never reports negative expressions by default. Because it's hard to know the type of objects, it will cause false positives.
+
+If you configured the `aggressive` mode, this plugin reports negative expressions even if the rules couldn't know the type of operands.
+
+<eslint-code-block fix>
+
+<!-- eslint-skip -->
+
+```js
+/* eslint math/abs: ["error", {"prefer": "Math.abs", "aggressive": true}] */
+/* ✗ BAD */
+x = n < 0 ? -n : n; // `n` may be a `BigInt`, so we cannot replace it with `Math.abs(n)`.
+```
+
+</eslint-code-block>
+
+If using this plugin and TypeScript, this plugin reports negative expressions by default because we can easily know types.
 
 ## 📚 Further reading
 

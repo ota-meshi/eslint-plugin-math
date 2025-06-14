@@ -10,6 +10,7 @@ import {
 } from "../utils/ast";
 import type { Rule } from "eslint";
 import { getIdText } from "../utils/messages";
+import { buildObjectTypeChecker } from "../utils/type-checker/object-type-checker";
 
 type Option = {
   prefer: "Math.abs" | "expression";
@@ -32,6 +33,7 @@ export default createRule("abs", {
             type: "string",
             enum: ["Math.abs", "expression"],
           },
+          aggressive: { type: "boolean" },
         },
         additionalProperties: false,
       },
@@ -47,17 +49,41 @@ export default createRule("abs", {
     const prefer: "Math.abs" | "expression" =
       (context.options[0] as Option | undefined)?.prefer ?? "expression";
 
+    const objectTypeChecker =
+      prefer === "Math.abs"
+        ? buildObjectTypeChecker(context, { pluginNamespace: "math" })
+        : null;
+
     /**
      * Verify if the given node can be converted to Number.isSafeInteger().
      */
     function verifyForExpression(node: TSESTree.Expression) {
       const transform = getInfoForMathAbsOrLike(node, sourceCode);
       if (!transform) return;
-      const needTransform =
-        transform.from === "*-1" ||
-        (prefer === "expression" && transform.from === "abs");
-      if (!needTransform) return;
-      const hasComment = existComment(node, sourceCode);
+      if (
+        // If the transform is already Math.abs, skip.
+        (prefer === "Math.abs" && transform.from === "abs") ||
+        // If the transform is already expression, skip.
+        (prefer === "expression" && transform.from === "-")
+      ) {
+        return;
+      }
+      let canFix = true;
+      if (transform.from === "-" && objectTypeChecker) {
+        // Need type check
+        const result = objectTypeChecker(transform.node, "Number");
+        if (!result) {
+          return;
+        }
+        if (result === "aggressive") {
+          // If aggressive, allow to fix.
+          canFix = false;
+        }
+      }
+      if (existComment(node, sourceCode)) {
+        // If there is a comment, do not fix.
+        canFix = false;
+      }
 
       const n = sourceCode.getText(transform.argument);
       const fix =
@@ -89,8 +115,8 @@ export default createRule("abs", {
         node,
         messageId: "canUseX",
         data: getMessageData(transform),
-        fix: !hasComment ? fix : null,
-        suggest: hasComment
+        fix: canFix ? fix : null,
+        suggest: !canFix
           ? [
               {
                 messageId: "replace",
