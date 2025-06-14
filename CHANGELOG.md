@@ -1,5 +1,11 @@
 # eslint-plugin-math
 
+## 0.10.0
+
+### Minor Changes
+
+- [#107](https://github.com/ota-meshi/eslint-plugin-math/pull/107) [`8b938d2`](https://github.com/ota-meshi/eslint-plugin-math/commit/8b938d26649e9d6847e0ec383c84082f0b2e52b6) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: refactor to use eslint-type-tracer
+
 ## 0.9.0
 
 ### Minor Changes
