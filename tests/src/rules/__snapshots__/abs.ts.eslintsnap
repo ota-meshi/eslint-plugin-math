@@ -2,6 +2,95 @@
 
 
 Test: abs >> invalid
+Filename: abs/invalid/abs/aggressive/type-input.js
+Options:
+  - prefer: Math.abs
+    aggressive: true
+
+Code:
+  1 | /* abs/invalid/abs/aggressive/type-input.js */
+  2 | const n = -5;
+  3 | /* ✓ GOOD */
+  4 | x = Math.abs(n);
+  5 |
+  6 | /* ✗ BAD */
+  7 | x = n < 0 ? -n : n;
+    |     ^~~~~~~~~~~~~~ [1]
+  8 | x = n < 0 ? n * -1 : n;
+    |     ^~~~~~~~~~~~~~~~~~ [2]
+  9 |
+ 10 | /* ✗ BAD */
+ 11 | x = unknown < 0 ? -unknown : unknown;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [3]
+ 12 | /* ✗ BAD */
+ 13 | x = unknown < 0 ? unknown * -1 : unknown;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [4]
+ 14 |
+ 15 | const b = -5n;
+ 16 |
+ 17 | /* Ignore */
+ 18 | x = b < 0 ? -b : b;
+ 19 | /* ✗ BAD */
+ 20 | x = b < 0 ? b * -1 : b; // TypeError
+    |     ^~~~~~~~~~~~~~~~~~ [5]
+ 21 |
+
+Output:
+  1 | /* abs/invalid/abs/aggressive/type-input.js */
+  2 | const n = -5;
+  3 | /* ✓ GOOD */
+  4 | x = Math.abs(n);
+  5 |
+  6 | /* ✗ BAD */
+  7 | x = Math.abs(n);
+  8 | x = Math.abs(n);
+  9 |
+ 10 | /* ✗ BAD */
+ 11 | x = unknown < 0 ? -unknown : unknown;
+ 12 | /* ✗ BAD */
+ 13 | x = Math.abs(unknown);
+ 14 |
+ 15 | const b = -5n;
+ 16 |
+ 17 | /* Ignore */
+ 18 | x = b < 0 ? -b : b;
+ 19 | /* ✗ BAD */
+ 20 | x = Math.abs(b); // TypeError
+ 21 |
+
+[1] Can use 'Math.abs(n)' instead of n < 0 ? -n : n.
+[2] Can use 'Math.abs(n)' instead of n < 0 ? n * -1 : n.
+[3] Can use 'Math.abs(unknown)' instead of unknown < 0 ? -unknown : unknown.
+    Suggestions:
+      - Replace using 'Math.abs(unknown)'.
+        Output:
+          1 | /* abs/invalid/abs/aggressive/type-input.js */
+          2 | const n = -5;
+          3 | /* ✓ GOOD */
+          4 | x = Math.abs(n);
+          5 |
+          6 | /* ✗ BAD */
+          7 | x = n < 0 ? -n : n;
+          8 | x = n < 0 ? n * -1 : n;
+          9 |
+         10 | /* ✗ BAD */
+         11 | x = Math.abs(unknown);
+         12 | /* ✗ BAD */
+         13 | x = unknown < 0 ? unknown * -1 : unknown;
+         14 |
+         15 | const b = -5n;
+         16 |
+         17 | /* Ignore */
+         18 | x = b < 0 ? -b : b;
+         19 | /* ✗ BAD */
+         20 | x = b < 0 ? b * -1 : b; // TypeError
+         21 |
+[4] Can use 'Math.abs(unknown)' instead of unknown < 0 ? unknown * -1 : unknown.
+[5] Can use 'Math.abs(b)' instead of b < 0 ? b * -1 : b.
+---
+
+
+Test: abs >> invalid
 Filename: abs/invalid/abs/comment-input.js
 Options:
   - prefer: Math.abs
@@ -49,6 +138,68 @@ Output:
   7 |
 
 [1] Can use 'Math.abs(n)' instead of n < 0 ? n * -1 : n.
+---
+
+
+Test: abs >> invalid
+Filename: abs/invalid/abs/type-input.js
+Options:
+  - prefer: Math.abs
+
+Code:
+  1 | /* abs/invalid/abs/type-input.js */
+  2 | const n = -5;
+  3 | /* ✓ GOOD */
+  4 | x = Math.abs(n);
+  5 |
+  6 | /* ✗ BAD */
+  7 | x = n < 0 ? -n : n;
+    |     ^~~~~~~~~~~~~~ [1]
+  8 | x = n < 0 ? n * -1 : n;
+    |     ^~~~~~~~~~~~~~~~~~ [2]
+  9 |
+ 10 | /* Ignore */
+ 11 | x = unknown < 0 ? -unknown : unknown;
+ 12 | /* ✗ BAD */
+ 13 | x = unknown < 0 ? unknown * -1 : unknown;
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [3]
+ 14 |
+ 15 | const b = -5n;
+ 16 |
+ 17 | /* Ignore */
+ 18 | x = b < 0 ? -b : b;
+ 19 | /* ✗ BAD */
+ 20 | x = b < 0 ? b * -1 : b; // TypeError
+    |     ^~~~~~~~~~~~~~~~~~ [4]
+ 21 |
+
+Output:
+  1 | /* abs/invalid/abs/type-input.js */
+  2 | const n = -5;
+  3 | /* ✓ GOOD */
+  4 | x = Math.abs(n);
+  5 |
+  6 | /* ✗ BAD */
+  7 | x = Math.abs(n);
+  8 | x = Math.abs(n);
+  9 |
+ 10 | /* Ignore */
+ 11 | x = unknown < 0 ? -unknown : unknown;
+ 12 | /* ✗ BAD */
+ 13 | x = Math.abs(unknown);
+ 14 |
+ 15 | const b = -5n;
+ 16 |
+ 17 | /* Ignore */
+ 18 | x = b < 0 ? -b : b;
+ 19 | /* ✗ BAD */
+ 20 | x = Math.abs(b); // TypeError
+ 21 |
+
+[1] Can use 'Math.abs(n)' instead of n < 0 ? -n : n.
+[2] Can use 'Math.abs(n)' instead of n < 0 ? n * -1 : n.
+[3] Can use 'Math.abs(unknown)' instead of unknown < 0 ? unknown * -1 : unknown.
+[4] Can use 'Math.abs(b)' instead of b < 0 ? b * -1 : b.
 ---
 
 

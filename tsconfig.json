@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2022",
-    "module": "node16",
-    "lib": ["es2020", "DOM"],
+    "module": "ESNext",
+    "lib": ["DOM", "ESNext"],
     "allowJs": true,
     "checkJs": true,
     "declaration": true,
@@ -18,8 +18,9 @@
       "*": ["typings/*"]
     },
     "esModuleInterop": true,
+    "allowArbitraryExtensions": true,
+    "moduleResolution": "bundler",
     "outDir": "lib",
-    "resolveJsonModule": true,
     "noEmit": true,
 
     "skipLibCheck": true
