@@ -1,5 +1,11 @@
 # eslint-plugin-math
 
+## 0.9.0
+
+### Minor Changes
+
+- [#105](https://github.com/ota-meshi/eslint-plugin-math/pull/105) [`87fe73a`](https://github.com/ota-meshi/eslint-plugin-math/commit/87fe73af13d700e9cf74530ec0cc07769b22ed6d) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat(prefer-math-trunc): add `reportBitwise` option
+
 ## 0.8.0
 
 ### Minor Changes
