@@ -1,14 +1,14 @@
 import type { Rule } from "eslint";
 import type { ObjectTypeChecker } from "./utils";
 import { checkExpressionNodeType } from "./utils";
-import { createRequire } from "module";
+import * as module from "module";
 import type * as typescript from "typescript";
 import type { TypeName } from "./types";
 import type { TSESTree } from "@typescript-eslint/types";
 
 let ts: typeof typescript;
 try {
-  const require = createRequire(import.meta.url);
+  const require = module.createRequire(import.meta.url);
   ts = require("typescript");
 } catch {
   // ignore
