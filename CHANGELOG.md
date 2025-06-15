@@ -1,5 +1,11 @@
 # eslint-plugin-math
 
+## 0.10.1
+
+### Patch Changes
+
+- [#109](https://github.com/ota-meshi/eslint-plugin-math/pull/109) [`b9fd0be`](https://github.com/ota-meshi/eslint-plugin-math/commit/b9fd0be9b2dad3a83bddd4fdc34114e1f0e68894) Thanks [@renovate](https://github.com/apps/renovate)! - fix(deps): update dependency eslint-type-tracer to ^0.3.0
+
 ## 0.10.0
 
 ### Minor Changes
