@@ -5,14 +5,9 @@ import type { TSESTree } from "@typescript-eslint/types";
  */
 export function* processLR(
   node: TSESTree.BinaryExpression,
-): Iterable<
-  [
-    TSESTree.Expression | TSESTree.PrivateIdentifier,
-    TSESTree.Expression | TSESTree.PrivateIdentifier,
-  ]
-> {
+): Iterable<[TSESTree.Expression, TSESTree.Expression]> {
   const { left, right, operator } = node;
-  yield [left, right];
+  yield [left as TSESTree.Expression, right];
   if (
     operator === "*" ||
     operator === "+" ||
@@ -26,7 +21,7 @@ export function* processLR(
     operator === "|" ||
     operator === "^"
   ) {
-    yield [right, left];
+    yield [right, left as TSESTree.Expression];
   }
 }
 
@@ -35,8 +30,8 @@ export function* processLR(
  */
 export function processTwoOperands<A, B, R>(
   node: TSESTree.LogicalExpression,
-  a: (operand: TSESTree.Expression | TSESTree.PrivateIdentifier) => A | null,
-  b: (operand: TSESTree.Expression | TSESTree.PrivateIdentifier) => B | null,
+  a: (operand: TSESTree.Expression) => A | null,
+  b: (operand: TSESTree.Expression) => B | null,
   postprocess: (a: A, b: B) => R | null,
 ): R | null {
   const { left, right } = node;
@@ -48,9 +43,9 @@ export function processTwoOperands<A, B, R>(
  */
 export function processThreeOperands<A, B, C, R>(
   node: TSESTree.LogicalExpression,
-  a: (operand: TSESTree.Expression | TSESTree.PrivateIdentifier) => A | null,
-  b: (operand: TSESTree.Expression | TSESTree.PrivateIdentifier) => B | null,
-  c: (operand: TSESTree.Expression | TSESTree.PrivateIdentifier) => C | null,
+  a: (operand: TSESTree.Expression) => A | null,
+  b: (operand: TSESTree.Expression) => B | null,
+  c: (operand: TSESTree.Expression) => C | null,
   postprocess: (a: A, b: B, c: C) => R | null,
 ): R | null {
   const { operator } = node;
@@ -83,14 +78,69 @@ export function processThreeOperands<A, B, C, R>(
     },
   );
 }
+/**
+ * Processes four operand nodes.
+ */
+export function processFourOperands<A, B, C, D, R>(
+  node: TSESTree.LogicalExpression,
+  a: (operand: TSESTree.Expression) => A | null,
+  b: (operand: TSESTree.Expression) => B | null,
+  c: (operand: TSESTree.Expression) => C | null,
+  d: (operand: TSESTree.Expression) => D | null,
+  postprocess: (a: A, b: B, c: C, d: D) => R | null,
+): R | null {
+  const { operator } = node;
+  return processTwoOperands(
+    node,
+    (operand) =>
+      operand.type === "LogicalExpression" && operand.operator === operator
+        ? operand
+        : null,
+    (operand) => operand,
+    (x, y) => {
+      const operands = [x.left, x.right, y];
+      const logicalExprIndex = operands.findIndex(
+        (operand) =>
+          operand.type === "LogicalExpression" && operand.operator === operator,
+      );
+      if (logicalExprIndex < 0) return null;
+      const logicalExpr = operands[
+        logicalExprIndex
+      ] as TSESTree.LogicalExpression;
+      operands.splice(logicalExprIndex, 1, logicalExpr.left, logicalExpr.right);
+
+      const result: {
+        a: A | null;
+        b: B | null;
+        c: C | null;
+        d: D | null;
+      } = {
+        a: null,
+        b: null,
+        c: null,
+        d: null,
+      };
+      for (const operand of operands) {
+        if (!result.a) if ((result.a = a(operand))) continue;
+        if (!result.b) if ((result.b = b(operand))) continue;
+        if (!result.c) if ((result.c = c(operand))) continue;
+        if (!result.d) if ((result.d = d(operand))) continue;
+      }
+      if (result.a && result.b && result.c && result.d) {
+        return postprocess(result.a, result.b, result.c, result.d);
+      }
+      return null;
+    },
+  );
+}
 
 /**
  * Processes two parameter nodes.
  */
 export function processTwoParams<A, B, R>(
   node: TSESTree.CallExpression,
-  a: (operand: TSESTree.Expression | TSESTree.PrivateIdentifier) => A | null,
-  b: (operand: TSESTree.Expression | TSESTree.PrivateIdentifier) => B | null,
+  a: (operand: TSESTree.Expression) => A | null,
+  b: (operand: TSESTree.Expression) => B | null,
   postprocess: (a: A, b: B) => R | null,
 ): R | null {
   if (node.arguments.length < 2) return null;
@@ -104,8 +154,8 @@ export function processTwoParams<A, B, R>(
  */
 function processTwoNodes<A, B, R>(
   nodes: TSESTree.Expression[],
-  a: (operand: TSESTree.Expression | TSESTree.PrivateIdentifier) => A | null,
-  b: (operand: TSESTree.Expression | TSESTree.PrivateIdentifier) => B | null,
+  a: (operand: TSESTree.Expression) => A | null,
+  b: (operand: TSESTree.Expression) => B | null,
   postprocess: (a: A, b: B) => R | null,
 ): R | null {
   const result: {

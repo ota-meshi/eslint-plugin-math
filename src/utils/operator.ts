@@ -8,7 +8,7 @@ import {
 
 export type OperatorInfo<O extends TSESTree.BinaryExpression["operator"]> = {
   operator: O;
-  left: TSESTree.Expression | TSESTree.PrivateIdentifier;
+  left: TSESTree.Expression;
   right: TSESTree.Expression | number;
 };
 
@@ -32,7 +32,7 @@ export type TransformingToExponentiation =
  * Returns information if the given expression can be transformed to `x ** y`.
  */
 export function getInfoForTransformingToExponentiation(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ): null | TransformingToExponentiation {
   if (node.type === "BinaryExpression") {
@@ -90,14 +90,14 @@ export type ExponentiationOrLike =
  * Returns information if the given expression is `x ** y` or like.
  */
 export function getInfoForExponentiationOrLike(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ): ExponentiationOrLike | null {
   if (node.type === "BinaryExpression" && node.operator === "**") {
     return {
       from: "**",
       operator: "**",
-      left: node.left,
+      left: node.left as TSESTree.Expression,
       right: node.right,
     };
   }
@@ -105,7 +105,7 @@ export function getInfoForExponentiationOrLike(
 }
 
 type Exponentiation = {
-  left: TSESTree.Expression | TSESTree.PrivateIdentifier;
+  left: TSESTree.Expression;
   right: number;
 };
 
@@ -113,18 +113,13 @@ type Exponentiation = {
  * Parses the given expression and iterates over the unified exponentiation information.
  */
 function* parseExponentiation(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ): Iterable<Exponentiation> {
   if (node.type !== "BinaryExpression") return;
 
-  const cached = new Map<
-    TSESTree.Expression | TSESTree.PrivateIdentifier,
-    Exponentiation[]
-  >();
-  const iterateWithCache = function* (
-    op: TSESTree.Expression | TSESTree.PrivateIdentifier,
-  ) {
+  const cached = new Map<TSESTree.Expression, Exponentiation[]>();
+  const iterateWithCache = function* (op: TSESTree.Expression) {
     let cache = cached.get(op);
     if (cache) {
       yield* cache;
@@ -141,21 +136,24 @@ function* parseExponentiation(
   if (node.operator === "**") {
     const right = getStaticValue(node.right, sourceCode);
     if (typeof right?.value === "number") {
-      for (const leftOperand of iterateWithCache(node.left)) {
+      for (const leftOperand of iterateWithCache(
+        node.left as TSESTree.Expression,
+      )) {
         yield {
           left: leftOperand.left,
           right: leftOperand.right * right.value,
         };
       }
       yield {
-        left: node.left,
+        left: node.left as TSESTree.Expression,
         right: right.value,
       };
     }
     return;
   }
   if (node.operator === "*") {
-    const { left, right } = node;
+    const { right } = node;
+    const left = node.left as TSESTree.Expression;
 
     for (const leftOperand of iterateWithCache(left)) {
       for (const rightOperand of iterateWithCache(right)) {

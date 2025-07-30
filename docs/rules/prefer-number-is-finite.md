@@ -45,9 +45,7 @@ if (Number.isFinite(value)) {
 if (typeof value === 'number' && isFinite(value)) {
   console.log('Value is a finite number');
 }
-```
 
-<!--
 // Manual infinity and NaN checking
 if (typeof value === 'number' && value !== Infinity && value !== -Infinity && !isNaN(value)) {
   console.log('Value is a finite number');
@@ -57,7 +55,7 @@ if (typeof value === 'number' && value !== Infinity && value !== -Infinity && !i
 if (isFinite(value)) {
   console.log('Value might not actually be a number');
 }
--->
+```
 
 </eslint-code-block>
 
