@@ -1,14 +1,8 @@
 import type { TSESTree } from "@typescript-eslint/types";
 import { createRule } from "../utils";
-import {
-  existComment,
-  isGlobalObjectMethodCall,
-  isGlobalObjectProperty,
-  isStaticValue,
-} from "../utils/ast";
+import { existComment } from "../utils/ast";
 import type { Rule } from "eslint";
-import { getInfoForTransformingToMathSqrt } from "../utils/math";
-import { isTwo } from "../utils/number";
+import { getInfoForTransformingToMathSQRT2 } from "../utils/math";
 
 export default createRule("prefer-math-sqrt2", {
   meta: {
@@ -33,22 +27,16 @@ export default createRule("prefer-math-sqrt2", {
      */
     function verifyForExpression(node: TSESTree.Expression) {
       let expression: string;
-      const transform = getInfoForTransformingToMathSqrt(node, sourceCode);
-      if (transform) {
-        if (!isTwo(transform.argument, sourceCode)) return;
-        expression =
-          transform.from === "**" ? "2 ** (1 / 2)" : "Math.pow(2, 1 / 2)";
-      } else if (isGlobalObjectMethodCall(node, "Math", "sqrt", sourceCode)) {
-        if (node.arguments.length < 1 || !isTwo(node.arguments[0], sourceCode))
-          return;
+      const transform = getInfoForTransformingToMathSQRT2(node, sourceCode);
+      if (!transform) return;
+      if (transform.from === "2**1/2") {
+        expression = "2 ** (1 / 2)";
+      } else if (transform.from === "pow(2,1/2)") {
+        expression = "Math.pow(2, 1 / 2)";
+      } else if (transform.from === "sqrt(2)") {
         expression = "Math.sqrt(2)";
-      } else if (
-        isStaticValue(node, Math.SQRT2, sourceCode) &&
-        !isGlobalObjectProperty(node, "Math", "SQRT2", sourceCode)
-      ) {
-        expression = `${Math.SQRT2}`;
       } else {
-        return;
+        expression = `${Math.SQRT2}`;
       }
       const hasComment = existComment(node, sourceCode);
 

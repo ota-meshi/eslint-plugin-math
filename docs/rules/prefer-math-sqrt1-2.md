@@ -44,13 +44,10 @@ x = Math.sqrt(0.5);
 // Manual calculation with exponentiation
 x = (1 / 2) ** 0.5;
 x = 0.5 ** 0.5;
-```
 
-<!--
-TODO
 // Division by Math.SQRT2
 x = 1 / Math.SQRT2;
--->
+```
 
 </eslint-code-block>
 
