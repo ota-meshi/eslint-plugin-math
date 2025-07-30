@@ -63,13 +63,11 @@ x = 1.8e308;                      // Exceeds Number.MAX_VALUE
 x = Number.MAX_VALUE * 2;         // Multiplication overflow
 x = 1 / 0;                        // Division by zero
 x = -1 / 0;                       // Negative division by zero
-```
 
-<!-- 
 // Mathematical functions that produce infinity
 x = Math.pow(10, 1000);           // Exponentiation overflow
 x = Math.exp(1000);               // Exponential overflow
--->
+```
 
 </eslint-code-block>
 

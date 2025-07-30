@@ -268,6 +268,28 @@ export function getStaticValue(
         return typeof value === "number" ? { value } : null;
       }
     }
+    if (node.type === "CallExpression") {
+      if (
+        node.callee.type !== "MemberExpression" ||
+        !isGlobalObject(node.callee.object, "Math", sourceCode)
+      )
+        return null;
+      const name = getPropertyName(node.callee, sourceCode.getScope(node));
+      if (!name) return null;
+      const method = Math[name as unknown as keyof typeof Math];
+      if (typeof method !== "function") return null;
+      const argumentValues = [];
+      for (const arg of node.arguments) {
+        const v = getStaticValue(arg, sourceCode);
+        if (v == null) return null;
+        argumentValues.push(v.value);
+      }
+      const value = (method as (...args: unknown[]) => unknown).apply(
+        Math,
+        argumentValues,
+      );
+      return { value: value as never };
+    }
   } catch {
     // ignore
   }
