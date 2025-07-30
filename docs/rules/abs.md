@@ -76,7 +76,7 @@ x = n < 0 ? n * -1 : n;
   - `"expression"` ... enforces the conversion to absolute values to be the expression `n < 0 ? -n : n`.
 - `aggressive` ... configure the aggressive mode for only this rule. (default: `false`)
 
-## The `aggressive` mode
+### The `aggressive` mode
 
 This plugin never reports negative expressions by default. Because it's hard to know the type of objects, it will cause false positives.
 

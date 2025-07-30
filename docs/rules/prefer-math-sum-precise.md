@@ -55,7 +55,7 @@ x = sum;
 
 - `aggressive` ... configure the aggressive mode for only this rule. (default: `false`)
 
-## The `aggressive` mode
+### The `aggressive` mode
 
 This plugin never reports expressions with unknown type by default. Because it's hard to know the type of objects, it will cause false positives.
 
