@@ -16,7 +16,24 @@ since: "v0.2.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of `Number.isInteger()` instead of other checking ways.
+This rule aims to enforce the use of `Number.isInteger()` instead of other checking ways to determine if a value is an integer.
+
+`Number.isInteger()` provides several advantages over manual integer checking:
+
+- **Type safety**: Only returns `true` for actual numbers that are integers
+- **No type coercion**: Doesn't convert non-numbers to numbers before checking
+- **Clear semantics**: Explicitly designed for integer checking
+- **Performance**: Optimized native implementation
+- **Edge case handling**: Properly handles special values like `Infinity` and `NaN`
+
+### Why Manual Checks Are Problematic
+
+Manual integer checks using floor, ceil, trunc, or modulo operations can be:
+
+- Less readable and express intent poorly
+- Potentially less performant due to extra mathematical operations
+- Prone to edge case issues with very large numbers or special values
+- Not type-safe (may coerce non-numbers)
 
 <eslint-code-block fix>
 
@@ -26,15 +43,20 @@ This rule aims to enforce the use of `Number.isInteger()` instead of other check
 /* eslint math/prefer-number-is-integer: 'error' */
 
 /* ✓ GOOD */
+// Modern, type-safe integer checking
 x = Number.isInteger(n);
 
 /* ✗ BAD */
+// Verbose manual checks
 x = Math.floor(n) === n;
 x = Math.ceil(n) === n;
 x = Math.trunc(n) === n;
 x = Math.round(n) === n;
 
+// Modulo-based checking
 z = n % 1 ? a : b;
+
+// parseInt comparison (type coercion issues)
 x = parseInt(n, 10) === n;
 ```
 

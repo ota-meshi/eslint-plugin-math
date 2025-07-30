@@ -15,7 +15,14 @@ since: "v0.5.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of `Number.MAX_VALUE` instead of literal number.
+This rule aims to enforce the use of `Number.MAX_VALUE` instead of literal number representations of the maximum finite representable number.
+
+`Number.MAX_VALUE` provides several advantages over hardcoded literals:
+
+- **Clarity of intent**: Immediately obvious that you're using the maximum finite number
+- **Precision**: Guaranteed to be the exact maximum representable value
+- **Maintainability**: Avoids potential typos in extremely large literal values
+- **Standards compliance**: Uses the official IEEE 754 double-precision maximum
 
 <eslint-code-block fix>
 
@@ -28,8 +35,14 @@ This rule aims to enforce the use of `Number.MAX_VALUE` instead of literal numbe
 x = Number.MAX_VALUE;
 
 /* ✗ BAD */
+// Hardcoded literal (error-prone)
 x = 1.7976931348623157e+308;
+
+// Complex mathematical expression (unnecessary)
 x = 2 ** 1023 - 2 ** 971 + 2 ** 1023;
+
+// Using imprecise approximations
+x = 1.79e308; // Inaccurate
 ```
 
 </eslint-code-block>

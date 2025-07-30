@@ -16,7 +16,15 @@ since: "v0.4.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of `Math.SQRT1_2` instead of other ways.
+This rule aims to enforce the use of `Math.SQRT1_2` instead of other ways to represent the square root of 1/2.
+
+`Math.SQRT1_2` provides several advantages over manual calculations:
+
+- **Clarity of intent**: Immediately obvious that you're using √(1/2) or 1/√2
+- **Precision**: Provides the most accurate representation available in JavaScript
+- **Performance**: Direct constant access instead of function call overhead
+- **Mathematical significance**: Represents a fundamental constant in trigonometry and linear algebra
+- **Readability**: More expressive than complex calculations
 
 <eslint-code-block fix>
 
@@ -29,9 +37,20 @@ This rule aims to enforce the use of `Math.SQRT1_2` instead of other ways.
 x = Math.SQRT1_2;
 
 /* ✗ BAD */
+// Manual calculation with sqrt
 x = Math.sqrt(1/2);
+x = Math.sqrt(0.5);
+
+// Manual calculation with exponentiation
 x = (1 / 2) ** 0.5;
+x = 0.5 ** 0.5;
 ```
+
+<!--
+TODO
+// Division by Math.SQRT2
+x = 1 / Math.SQRT2;
+-->
 
 </eslint-code-block>
 

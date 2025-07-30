@@ -16,7 +16,15 @@ since: "v0.4.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of `Math.LOG2E` instead of other ways.
+This rule aims to enforce the use of `Math.LOG2E` instead of other ways to represent the base-2 logarithm of Euler's number (e).
+
+`Math.LOG2E` provides several advantages over manual calculations:
+
+- **Clarity of intent**: Immediately obvious that you're using the base-2 logarithm of e
+- **Precision**: Provides the most accurate representation available in JavaScript
+- **Performance**: Direct constant access instead of function call overhead
+- **Consistency**: Part of the standardized Math constants family
+- **Computational efficiency**: Avoids floating-point division operations
 
 <eslint-code-block fix>
 
@@ -26,10 +34,14 @@ This rule aims to enforce the use of `Math.LOG2E` instead of other ways.
 /* eslint math/prefer-math-log2e: 'error' */
 
 /* ✓ GOOD */
+// Using Math.LOG2E for binary logarithmic conversions
 x = Math.LOG2E;
 
 /* ✗ BAD */
+// Using Math.log2 function call
 x = Math.log2(Math.E);
+
+// Using mathematical relationship
 x = 1 / Math.LN2;
 
 /* ✓ GOOD */

@@ -16,7 +16,15 @@ since: "v0.5.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of `Math.E` instead of other ways.
+This rule aims to enforce the use of `Math.E` instead of other ways to represent Euler's number (e).
+
+`Math.E` provides several advantages over alternatives:
+
+- **Clarity of intent**: Immediately obvious that you're using Euler's number (e)
+- **Consistency**: Standardizes how mathematical constants are used across your codebase
+- **Precision**: `Math.E` provides the most accurate representation available in JavaScript
+- **Performance**: Direct constant access instead of function call overhead
+- **Maintainability**: Reduces the risk of typos in hardcoded values
 
 <eslint-code-block fix>
 
@@ -26,10 +34,15 @@ This rule aims to enforce the use of `Math.E` instead of other ways.
 /* eslint math/prefer-math-e: 'error' */
 
 /* ✓ GOOD */
+// Using the Math.E constant
 x = Math.E;
 
 /* ✗ BAD */
+// Using Math.exp(1) to get e
 x = Math.exp(1);
+
+// Using hardcoded literal value
+x = 2.718281828459045;
 ```
 
 </eslint-code-block>

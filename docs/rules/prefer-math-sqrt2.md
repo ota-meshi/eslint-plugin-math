@@ -16,7 +16,15 @@ since: "v0.4.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of `Math.SQRT2` instead of other ways.
+This rule aims to enforce the use of `Math.SQRT2` instead of other ways to calculate the square root of 2.
+
+`Math.SQRT2` provides several advantages over manual calculations:
+
+- **Clarity of intent**: Immediately obvious that you're using √2
+- **Precision**: Provides the most accurate representation available in JavaScript
+- **Performance**: Direct constant access instead of function call overhead
+- **Mathematical significance**: Represents a fundamental irrational constant
+- **Readability**: More expressive than complex calculations
 
 <eslint-code-block fix>
 
@@ -29,9 +37,15 @@ This rule aims to enforce the use of `Math.SQRT2` instead of other ways.
 x = Math.SQRT2;
 
 /* ✗ BAD */
+// Manual square root calculation
 x = Math.sqrt(2);
+
+// Manual exponentiation
 x = 2 ** (1 / 2);
 x = 2 ** 0.5;
+
+// Mathematical operations that equal √2
+x = Math.pow(2, 0.5);
 ```
 
 </eslint-code-block>

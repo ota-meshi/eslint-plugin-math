@@ -16,7 +16,15 @@ since: "v0.4.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of `Math.LOG10E` instead of other ways.
+This rule aims to enforce the use of `Math.LOG10E` instead of other ways to represent the base-10 logarithm of Euler's number (e).
+
+`Math.LOG10E` provides several advantages over manual calculations:
+
+- **Clarity of intent**: Immediately obvious that you're using the base-10 logarithm of e
+- **Precision**: Provides the most accurate representation available in JavaScript
+- **Performance**: Direct constant access instead of function call overhead
+- **Consistency**: Part of the standardized Math constants family
+- **Mathematical accuracy**: Avoids rounding errors from manual calculations
 
 <eslint-code-block fix>
 
@@ -26,10 +34,14 @@ This rule aims to enforce the use of `Math.LOG10E` instead of other ways.
 /* eslint math/prefer-math-log10e: 'error' */
 
 /* ✓ GOOD */
+// Using Math.LOG10E for logarithmic conversions
 x = Math.LOG10E;
 
 /* ✗ BAD */
+// Using Math.log10 function call
 x = Math.log10(Math.E);
+
+// Using mathematical relationship
 x = 1 / Math.LN10;
 
 /* ✓ GOOD */

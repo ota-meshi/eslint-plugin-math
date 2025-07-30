@@ -18,6 +18,14 @@ since: "v0.3.0"
 
 This rule aims to enforce the use of `Math.cbrt()` instead of other cube root calculations.
 
+`Math.cbrt()` provides several advantages over manual exponentiation:
+
+- **Clarity of intent**: Immediately obvious that you're calculating a cube root
+- **Performance**: Optimized native implementation for cube root calculations
+- **Precision**: More accurate for edge cases and special values
+- **Readability**: Shorter and more expressive than exponentiation syntax
+- **Consistency**: Part of the ES2015 Math API family
+
 <eslint-code-block fix>
 
 <!-- eslint-skip -->
@@ -26,16 +34,38 @@ This rule aims to enforce the use of `Math.cbrt()` instead of other cube root ca
 /* eslint math/prefer-math-cbrt: 'error' */
 
 /* ✓ GOOD */
-x = Math.cbrt(n);
+// Using Math.cbrt for clarity and performance
+cubeRoot = Math.cbrt(volume);
+scaleFactor = Math.cbrt(ratio);
+dimension = Math.cbrt(8); // = 2
+
+// In geometric calculations
+sideLength = Math.cbrt(cubeVolume);
+linearScale = Math.cbrt(volumeRatio);
 
 /* ✗ BAD */
-x = Math.pow(n, 1 / 3);
-x = n ** (1 / 3);
+// Using Math.pow with fractional exponent
+cubeRoot = Math.pow(volume, 1 / 3);
+scaleFactor = Math.pow(ratio, 1/3);
+
+// Using exponentiation operator
+dimension = 8 ** (1 / 3);
+sideLength = cubeVolume ** (1/3);
 ```
 
 </eslint-code-block>
 
-Note that the results are different when `n` is `-Infinity`. If you do not use `-Infinity` it is a safe replacement.
+### Important Edge Case Behavior
+
+Note that the results are different when the input is `-Infinity`:
+
+```js
+Math.cbrt(-Infinity)        // -Infinity
+Math.pow(-Infinity, 1/3)    // Infinity
+(-Infinity) ** (1/3)        // Infinity
+```
+
+If you do not use `-Infinity` in your calculations, it is a safe replacement. For most practical applications involving real numbers, `Math.cbrt()` provides the expected mathematical behavior.
 
 ## 🔧 Options
 

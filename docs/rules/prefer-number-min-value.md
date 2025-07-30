@@ -15,7 +15,14 @@ since: "v0.7.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of `Number.MIN_VALUE` instead of literal number.
+This rule aims to enforce the use of `Number.MIN_VALUE` instead of literal number representations of the smallest positive representable number.
+
+`Number.MIN_VALUE` provides several advantages over hardcoded literals:
+
+- **Clarity of intent**: Immediately obvious that you're using the smallest positive number
+- **Precision**: Guaranteed to be the exact minimum positive representable value
+- **Maintainability**: Avoids potential typos in extremely small literal values
+- **Standards compliance**: Uses the official IEEE 754 double-precision minimum
 
 <eslint-code-block fix>
 
@@ -28,6 +35,7 @@ This rule aims to enforce the use of `Number.MIN_VALUE` instead of literal numbe
 x = Number.MIN_VALUE;
 
 /* ✗ BAD */
+// Hardcoded literal
 x = 5e-324;
 ```
 

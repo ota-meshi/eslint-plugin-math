@@ -16,7 +16,15 @@ since: "v0.4.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of `Math.LN2` instead of other ways.
+This rule aims to enforce the use of `Math.LN2` instead of other ways to represent the natural logarithm of 2.
+
+`Math.LN2` provides several advantages over manual calculations:
+
+- **Clarity of intent**: Immediately obvious that you're using the natural logarithm of 2
+- **Precision**: Provides the most accurate representation available in JavaScript
+- **Performance**: Direct constant access instead of function call overhead
+- **Consistency**: Part of the standardized Math constants family
+- **Reliability**: Eliminates potential computational errors from manual calculations
 
 <eslint-code-block fix>
 
@@ -26,10 +34,14 @@ This rule aims to enforce the use of `Math.LN2` instead of other ways.
 /* eslint math/prefer-math-ln2: 'error' */
 
 /* ✓ GOOD */
+// Using Math.LN2 for logarithmic conversions
 x = Math.LN2;
 
 /* ✗ BAD */
+// Using Math.log function call
 x = Math.log(2);
+
+// Using mathematical relationship
 x = 1 / Math.LOG2E;
 
 /* ✓ GOOD */

@@ -15,7 +15,14 @@ since: "v0.5.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of `Number.EPSILON` instead of other ways.
+This rule aims to enforce the use of `Number.EPSILON` instead of other ways to represent the smallest floating point epsilon.
+
+`Number.EPSILON` provides several advantages over manual calculations:
+
+- **Clarity of intent**: Immediately obvious that you're using the machine epsilon value
+- **Precision**: Provides the exact IEEE 754 double-precision floating-point epsilon value
+- **Maintainability**: Avoids hardcoded values that might be incorrect or imprecise
+- **Readability**: Makes floating-point comparison code more understandable
 
 <eslint-code-block fix>
 
@@ -28,8 +35,13 @@ This rule aims to enforce the use of `Number.EPSILON` instead of other ways.
 x = Number.EPSILON;
 
 /* ✗ BAD */
+// Using manual exponentiation
 x = 2 ** -52;
+
+// Using Math.pow
 x = Math.pow(2, -52);
+
+// Using hardcoded literal value
 x = 2.220446049250313e-16;
 ```
 
