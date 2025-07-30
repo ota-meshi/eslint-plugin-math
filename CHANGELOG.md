@@ -1,5 +1,11 @@
 # eslint-plugin-math
 
+## 0.13.0
+
+### Minor Changes
+
+- [#128](https://github.com/ota-meshi/eslint-plugin-math/pull/128) [`b41d96d`](https://github.com/ota-meshi/eslint-plugin-math/commit/b41d96d091fa3ddacd7c2429d1fa61afc9f136e5) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat(prefer-math-sqrt1-2): improve rule
+
 ## 0.12.0
 
 ### Minor Changes
