@@ -16,7 +16,15 @@ since: "v0.1.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of `Math.trunc()` instead of other truncations.
+This rule aims to enforce the use of `Math.trunc()` instead of other truncation methods for removing the fractional part of numbers.
+
+`Math.trunc()` provides several advantages over alternative approaches:
+
+- **Clarity of intent**: Immediately obvious that you're truncating to an integer
+- **Simplicity**: Single function call instead of conditional logic
+- **Consistency**: Standardized approach across all numeric ranges
+- **Performance**: Optimized native implementation
+- **Reliability**: Works correctly with all finite numbers, including very large values
 
 <eslint-code-block fix>
 
@@ -29,19 +37,22 @@ This rule aims to enforce the use of `Math.trunc()` instead of other truncations
 x = Math.trunc(n);
 
 /* ✗ BAD */
+// Verbose conditional approach
 x = n >= 0 ? Math.floor(n) : Math.ceil(n);
 
-x = ~~n;    // Same as `Math.trunc(n)` if `-(2 ** 31) - 1 < n < (2 ** 31)`.
-x = n & -1; // Same as `Math.trunc(n)` if `-(2 ** 31) - 1 < n < (2 ** 31)`.
-x = n | 0;  // Same as `Math.trunc(n)` if `-(2 ** 31) - 1 < n < (2 ** 31)`.
-x = n ^ 0;  // Same as `Math.trunc(n)` if `-(2 ** 31) - 1 < n < (2 ** 31)`.
-x = n >> 0; // Same as `Math.trunc(n)` if `-(2 ** 31) - 1 < n < (2 ** 31)`.
-
+// Complex conditional statements
 if (n >= 0) {
     x = Math.floor(n);
 } else {
     x = Math.ceil(n);
 }
+
+// Bitwise operations (limited range and unclear intent)
+x = ~~n;    // Same as Math.trunc(n) only if -(2³¹) - 1 < n < (2³¹)
+x = n & -1; // Bitwise AND with -1
+x = n | 0;  // Bitwise OR with 0
+x = n ^ 0;  // Bitwise XOR with 0
+x = n >> 0; // Right shift by 0
 ```
 
 </eslint-code-block>
@@ -60,6 +71,39 @@ if (n >= 0) {
 ```
 
 - `reportBitwise` ... If `true`, the rule reports bitwise operations that are equivalent to `Math.trunc()`. Defaults to `true`.
+
+### `reportBitwise` (boolean)
+
+- **Default**: `true`
+- **Description**: Controls whether the rule reports bitwise operations that can be replaced with `Math.trunc()`
+
+When `true`, the rule will flag bitwise operations like:
+
+- `~~x` (double bitwise NOT)
+- `x | 0` (bitwise OR with zero)
+- `x >> 0` (right shift by zero)
+- `x << 0` (left shift by zero)
+- `x ^ 0` (bitwise XOR with zero)
+
+When `false`, the rule only reports conditional expressions and other non-bitwise patterns.
+
+#### Why Bitwise Operations Are Problematic
+
+While bitwise operations can truncate numbers, they have significant limitations:
+
+- **Limited range**: Only work correctly for 32-bit signed integers (approximately ±2.1 billion)
+- **Unexpected behavior**: Large numbers get converted to different values
+- **Poor readability**: Intent is not immediately clear
+- **Platform dependency**: Behavior may vary across JavaScript engines
+
+```js
+// Demonstrating bitwise operation limitations
+const largeNumber = 3000000000;
+
+Math.trunc(largeNumber);  // 3000000000 (correct)
+~~largeNumber;           // -1294967296 (wrong! 32-bit overflow)
+largeNumber | 0;         // -1294967296 (wrong! 32-bit overflow)
+```
 
 ## 📚 Further reading
 

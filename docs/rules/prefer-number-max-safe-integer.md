@@ -16,7 +16,14 @@ since: "v0.3.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of `Number.MAX_SAFE_INTEGER` instead of other ways.
+This rule aims to enforce the use of `Number.MAX_SAFE_INTEGER` instead of other ways to represent the maximum safe integer value.
+
+`Number.MAX_SAFE_INTEGER` provides several advantages over hardcoded values:
+
+- **Clarity of intent**: Immediately obvious that you're using the maximum safe integer
+- **Precision**: Guaranteed to be the exact maximum safe integer value (2⁵³ - 1)
+- **Maintainability**: Avoids potential typos in hexadecimal or decimal literals
+- **Self-documenting**: Makes the code intention clear without comments
 
 <eslint-code-block fix>
 
@@ -29,7 +36,14 @@ This rule aims to enforce the use of `Number.MAX_SAFE_INTEGER` instead of other 
 x = Number.MAX_SAFE_INTEGER;
 
 /* ✗ BAD */
+// Hardcoded hexadecimal value (error-prone)
 x = 0x1FFFFFFFFFFFFF;
+
+// Hardcoded decimal value (hard to verify)
+x = 9007199254740991;
+
+// Mathematical expression (unnecessary complexity)
+x = Math.pow(2, 53) - 1;
 ```
 
 </eslint-code-block>

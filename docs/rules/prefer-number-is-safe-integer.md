@@ -16,7 +16,15 @@ since: "v0.3.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of `Number.isSafeInteger()` instead of other checking ways.
+This rule aims to enforce the use of `Number.isSafeInteger()` instead of other checking ways to determine if a value is a safe integer.
+
+`Number.isSafeInteger()` provides several advantages over manual range checking:
+
+- **Type safety**: Only returns `true` for actual numbers that are safe integers
+- **Comprehensive checking**: Combines integer checking with safe range validation
+- **Clear semantics**: Explicitly designed for safe integer validation
+- **Performance**: Single optimized function call instead of multiple checks
+- **Precision awareness**: Accounts for JavaScript's floating-point precision limits
 
 <eslint-code-block fix>
 
@@ -26,11 +34,15 @@ This rule aims to enforce the use of `Number.isSafeInteger()` instead of other c
 /* eslint math/prefer-number-is-safe-integer: 'error' */
 
 /* ✓ GOOD */
+// Clear and comprehensive safe integer checking
 x = Number.isSafeInteger(n);
 
 /* ✗ BAD */
-x = Number.isInteger(n) && Number.MIN_SAFE_INTEGER <= n && n<= Number.MAX_SAFE_INTEGER;
+// Verbose manual range checking
+x = Number.isInteger(n) && Number.MIN_SAFE_INTEGER <= n && n <= Number.MAX_SAFE_INTEGER;
 x = Number.isInteger(n) && Math.abs(n) <= Number.MAX_SAFE_INTEGER;
+
+// Hardcoded hex values (less readable)
 x = Number.isInteger(n) && Math.abs(n) <= 0x1FFFFFFFFFFFFF;
 ```
 

@@ -16,7 +16,15 @@ since: "v0.4.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of `Math.log10()` instead of other calculation methods.
+This rule aims to enforce the use of `Math.log10()` instead of other calculation methods for computing base-10 logarithms.
+
+`Math.log10()` provides several advantages over manual calculations:
+
+- **Clarity of intent**: Immediately obvious that you're calculating a base-10 logarithm
+- **Performance**: Optimized native implementation, potentially faster than manual calculations
+- **Precision**: More accurate for edge cases and special values
+- **Readability**: Shorter and more expressive than conversion formulas
+- **Consistency**: Part of the ES2015 Math API family
 
 <eslint-code-block fix>
 
@@ -26,9 +34,11 @@ This rule aims to enforce the use of `Math.log10()` instead of other calculation
 /* eslint math/prefer-math-log10: 'error' */
 
 /* ✓ GOOD */
+// Using Math.log10 for clarity and performance
 x = Math.log10(n);
 
 /* ✗ BAD */
+// Manual conversion using natural logarithm and constants
 x = Math.log(n) * Math.LOG10E;
 x = Math.log(n) / Math.LN10;
 ```

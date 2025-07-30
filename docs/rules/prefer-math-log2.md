@@ -16,7 +16,15 @@ since: "v0.4.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of `Math.log2()` instead of other calculation methods.
+This rule aims to enforce the use of `Math.log2()` instead of other calculation methods for computing base-2 logarithms.
+
+`Math.log2()` provides several advantages over manual calculations:
+
+- **Clarity of intent**: Immediately obvious that you're calculating a base-2 logarithm
+- **Performance**: Optimized native implementation, potentially faster than manual calculations
+- **Precision**: More accurate for edge cases and special values
+- **Computer science relevance**: Base-2 is fundamental in computing and algorithms
+- **Consistency**: Part of the ES2015 Math API family
 
 <eslint-code-block fix>
 
@@ -26,9 +34,11 @@ This rule aims to enforce the use of `Math.log2()` instead of other calculation 
 /* eslint math/prefer-math-log2: 'error' */
 
 /* ✓ GOOD */
+// Using Math.log2 for clarity and performance
 x = Math.log2(n);
 
 /* ✗ BAD */
+// Manual conversion using natural logarithm and constants
 x = Math.log(n) * Math.LOG2E;
 x = Math.log(n) / Math.LN2;
 ```
