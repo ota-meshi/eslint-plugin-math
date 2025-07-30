@@ -18,6 +18,13 @@ since: "v0.3.0"
 
 This rule aims to enforce the use of `Math.sqrt()` instead of other square root calculations.
 
+Using `Math.sqrt()` provides several advantages:
+
+- **Clarity of intent**: Immediately obvious that you're calculating a square root
+- **Performance**: Optimized native implementation
+- **Reliability**: Handles edge cases consistently
+- **Standard practice**: Widely recognized mathematical function
+
 <eslint-code-block fix>
 
 <!-- eslint-skip -->
@@ -26,18 +33,31 @@ This rule aims to enforce the use of `Math.sqrt()` instead of other square root 
 /* eslint math/prefer-math-sqrt: 'error' */
 
 /* ✓ GOOD */
-x = Math.sqrt(n);
+distance = Math.sqrt(x * x + y * y);
+standardDeviation = Math.sqrt(variance);
+magnitude = Math.sqrt(vector.x ** 2 + vector.y ** 2);
+quadraticRoot = Math.sqrt(discriminant);
 
 /* ✗ BAD */
-x = Math.pow(n, 1 / 2);
-x = Math.pow(n, 0.5);
-x = n ** (1 / 2);
-x = n ** 0.5;
+distance = Math.pow(x * x + y * y, 0.5);
+standardDeviation = Math.pow(variance, 1 / 2);
+magnitude = (vector.x ** 2 + vector.y ** 2) ** 0.5;
+quadraticRoot = discriminant ** (1 / 2);
 ```
 
 </eslint-code-block>
 
-Note that the results are different when `n` is `-Infinity`. If you do not use `-Infinity` it is a safe replacement.
+### Important Edge Case
+
+Note that the results are different when the input is `-Infinity`:
+
+```js
+Math.sqrt(-Infinity)        // NaN
+Math.pow(-Infinity, 1/2)    // Infinity  
+(-Infinity) ** 1/2          // Infinity
+```
+
+If you do not use `-Infinity` in your calculations, it is a safe replacement.
 
 ## 🔧 Options
 

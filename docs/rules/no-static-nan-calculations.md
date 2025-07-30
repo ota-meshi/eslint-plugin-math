@@ -15,7 +15,19 @@ since: "v0.5.0"
 
 ## 📖 Rule Details
 
-This rule disallow static calculations that result in NaN.
+This rule disallows static calculations that result in NaN (Not a Number).
+
+This rule enforces explicit use of `NaN` or `Number.NaN` instead of calculations that implicitly produce NaN values.
+
+Using explicit NaN values provides several benefits:
+
+- **Clear intent**: Makes it obvious that NaN is the intended result
+- **Better readability**: Reduces cognitive load when reading code
+- **Consistency**: Standardizes how NaN values are represented
+- **Debugging clarity**: Easier to identify intentional vs accidental NaN values
+- **Code maintainability**: Explicit NaN usage is more self-documenting
+
+This rule helps catch expressions that will always evaluate to NaN at development time and suggests using explicit NaN constants instead.
 
 <eslint-code-block>
 
@@ -25,26 +37,44 @@ This rule disallow static calculations that result in NaN.
 /* eslint math/no-static-nan-calculations: 'error' */
 
 /* ✓ GOOD */
+// Explicit NaN usage (when intentional)
 x = NaN;
 x = Number.NaN;
-x = Number("42");
-x = parseInt("a", 16);
-x = Number.parseInt("a", 16);
-x = Infinity + Infinity;
+
+// Dynamic parsing (runtime dependent)
+x = Number(userInput);
+x = parseInt(userInput, 16);
+x = Number.parseInt(dynamicValue, 16);
+
+// Valid mathematical operations
+x = Infinity + Infinity;  // Results in Infinity
+x = Math.sqrt(4);         // Results in 2
+x = Math.pow(2, 3);       // Results in 8
 
 /* ✗ BAD */
+// Infinity arithmetic that produces NaN
 x = Infinity - Infinity;
 x = Number.POSITIVE_INFINITY - Number.POSITIVE_INFINITY;
-x = Number("a");
-x = parseFloat("a");
-x = parseInt("a");
-x = Number.parseFloat("a");
-x = Number.parseInt("a");
-x = Math.pow();
-x = Math.pow(-4, 0.5);
-x = Math.sqrt(-4);
-x = (-4) ** 0.5;
+x = Infinity / Infinity;
+x = 0 / 0;
+
+// Invalid string parsing
+x = Number("invalid");
+x = parseFloat("not-a-number");
+x = parseInt("abc");         // No radix, invalid string
+x = Number.parseFloat("xyz");
+x = Number.parseInt("def");
+
+// Invalid Math operations
+x = Math.pow();              // No arguments
+x = Math.pow(-4, 0.5);       // Square root of negative number
+x = Math.sqrt(-4);           // Square root of negative number
+x = (-4) ** 0.5;             // Exponentiation with negative base and fractional exponent
+
+// Operations with NaN
 x = NaN + 1;
+x = NaN * 5;
+x = NaN / 2;
 ```
 
 </eslint-code-block>

@@ -18,19 +18,46 @@ since: "v0.4.0"
 
 This rule aims to enforce the use of `Number.isFinite()` instead of other checking ways.
 
+`Number.isFinite()` is the preferred method for checking if a value is a finite number because:
+
+- **Type safety**: Only returns `true` for actual finite numbers, not for strings that can be converted
+- **No type coercion**: Unlike global `isFinite()`, it doesn't convert values to numbers first
+- **Clear semantics**: Explicitly checks for finite numeric values
+- **Performance**: Direct type and value checking without conversion overhead
+- **Consistency**: Part of the modern Number API family
+
 <eslint-code-block fix>
 
 <!-- eslint-skip -->
 
 ```js
 /* eslint math/prefer-number-is-finite: 'error' */
+const value = 42;
 
 /* ✓ GOOD */
-x = Math.isFinite(n);
+// Modern, type-safe approach
+if (Number.isFinite(value)) {
+  console.log('Value is a finite number');
+}
 
 /* ✗ BAD */
-x = typeof n == 'number' && isFinite(n);
+// Verbose type checking with global isFinite
+if (typeof value === 'number' && isFinite(value)) {
+  console.log('Value is a finite number');
+}
 ```
+
+<!--
+// Manual infinity and NaN checking
+if (typeof value === 'number' && value !== Infinity && value !== -Infinity && !isNaN(value)) {
+  console.log('Value is a finite number');
+}
+
+// Using global isFinite directly (type coercion issues)
+if (isFinite(value)) {
+  console.log('Value might not actually be a number');
+}
+-->
 
 </eslint-code-block>
 

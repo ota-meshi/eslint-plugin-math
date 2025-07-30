@@ -18,6 +18,14 @@ since: "v0.6.0"
 
 This rule aims to enforce the use of `Math.hypot()` instead of other hypotenuse calculations.
 
+`Math.hypot()` provides several advantages over manual Pythagorean theorem calculations:
+
+- **Overflow protection**: Avoids intermediate overflow when dealing with large numbers
+- **Underflow protection**: Prevents precision loss with very small numbers
+- **Numerical stability**: Uses algorithms optimized for floating-point arithmetic
+- **Clarity**: Expresses the mathematical intent more clearly
+- **Variable arguments**: Supports any number of dimensions, not just 2D
+
 <eslint-code-block fix>
 
 <!-- eslint-skip -->
@@ -26,20 +34,55 @@ This rule aims to enforce the use of `Math.hypot()` instead of other hypotenuse 
 /* eslint math/prefer-math-hypot: 'error' */
 
 /* ✓ GOOD */
-x = Math.hypot(a, b);
+// 2D distance calculation
+distance2D = Math.hypot(x2 - x1, y2 - y1);
+
+// 3D distance calculation  
+distance3D = Math.hypot(x2 - x1, y2 - y1, z2 - z1);
+
+// Vector magnitude
+magnitude = Math.hypot(vector.x, vector.y, vector.z);
+
+// Complex number absolute value
+complexAbs = Math.hypot(real, imaginary);
+
+// Root mean square
+rms = Math.hypot(...values) / Math.sqrt(values.length);
 
 /* ✗ BAD */
-x = Math.sqrt(a * a + b * b);
-x = (a * a + b * b) ** (1 / 2);
-x = Math.sqrt(a ** 2 + b ** 2);
-x = (a ** 2 + b ** 2) ** (1 / 2);
-x = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
-x = Math.pow(a ** 2 + b ** 2, 1 / 2);
+// Manual 2D calculation (overflow/underflow risk)
+distance2D = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+distance2D_alt = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+
+// Manual 3D calculation (more complex, error-prone)
+distance3D = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2 + (z2 - z1) ** 2);
+
+// Verbose exponentiation
+magnitude = (vector.x ** 2 + vector.y ** 2 + vector.z ** 2) ** 0.5;
+
+// Mixed operators (harder to read)
+complexAbs = Math.sqrt(Math.pow(real, 2) + Math.pow(imaginary, 2));
 ```
 
 </eslint-code-block>
 
-Note that the results are different when dealing with strictly non-finite numbers.
+### The Numerical Stability Problem
+
+Manual calculations can suffer from overflow/underflow issues:
+
+```js
+// These can overflow with large numbers
+const large = 1e200;
+Math.sqrt(large * large + large * large)  // Infinity (overflow)
+
+// Math.hypot handles this correctly
+Math.hypot(large, large)  // 1.4142135623730951e+200 (correct)
+
+// Similarly for very small numbers (underflow)
+const small = 1e-200;
+Math.sqrt(small * small + small * small)  // 0 (underflow)
+Math.hypot(small, small)  // 1.4142135623730951e-200 (correct)
+```
 
 ## 🔧 Options
 
