@@ -1,5 +1,11 @@
 # eslint-plugin-math
 
+## 0.11.0
+
+### Minor Changes
+
+- [#118](https://github.com/ota-meshi/eslint-plugin-math/pull/118) [`72a9181`](https://github.com/ota-meshi/eslint-plugin-math/commit/72a91813fb6f6a35fdd41230992d6df9c058b5bd) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `math/prefer-math-sum-precise` rule
+
 ## 0.10.1
 
 ### Patch Changes
