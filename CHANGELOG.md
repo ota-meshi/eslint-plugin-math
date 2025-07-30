@@ -1,5 +1,13 @@
 # eslint-plugin-math
 
+## 0.12.0
+
+### Minor Changes
+
+- [#126](https://github.com/ota-meshi/eslint-plugin-math/pull/126) [`2ff873f`](https://github.com/ota-meshi/eslint-plugin-math/commit/2ff873fd4b5a8efac0ae403bc151cd7487b1bf61) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat(prefer-number-is-finite): improve rule
+
+- [#125](https://github.com/ota-meshi/eslint-plugin-math/pull/125) [`d689b47`](https://github.com/ota-meshi/eslint-plugin-math/commit/d689b47dbaa9327572a14aafa5bc9bbdfecdc4d6) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat(no-static-infinity-calculations): improve rule
+
 ## 0.11.0
 
 ### Minor Changes
