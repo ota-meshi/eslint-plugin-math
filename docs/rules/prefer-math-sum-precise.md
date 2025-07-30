@@ -3,13 +3,13 @@ pageClass: "rule-details"
 sidebarDepth: 0
 title: "math/prefer-math-sum-precise"
 description: "enforce the use of Math.sumPrecise() instead of other summation methods"
+since: "v0.11.0"
 ---
 
 # math/prefer-math-sum-precise
 
 > enforce the use of Math.sumPrecise() instead of other summation methods
 
-- ❗ <badge text="This rule has not been released yet." vertical="middle" type="error"> **_This rule has not been released yet._** </badge>
 - 🔧 The `--fix` option on the [command line](https://eslint.org/docs/user-guide/command-line-interface#fixing-problems) can automatically fix some of the problems reported by this rule.
 - 💡 Some problems reported by this rule are manually fixable by editor [suggestions](https://eslint.org/docs/developer-guide/working-with-rules#providing-suggestions).
 
@@ -65,6 +65,10 @@ If you configured the `aggressive` mode, this plugin reports expressions with un
 
 - [Math.sumPrecise() proposal](https://github.com/tc39/proposal-math-sum)
 - [MDN - Math.sumPrecise()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sumPrecise)
+
+## 🚀 Version
+
+This rule was introduced in eslint-plugin-math v0.11.0
 
 ## 🔍 Implementation
 
