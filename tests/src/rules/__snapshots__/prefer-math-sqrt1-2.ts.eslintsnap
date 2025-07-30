@@ -2,6 +2,30 @@
 
 
 Test: prefer-math-sqrt1-2 >> invalid
+Filename: prefer-math-sqrt1-2/invalid/1_sqrt2-input.js
+
+Code:
+  1 | /*prefer-math-sqrt1-2/invalid/1_sqrt2-input.js*/
+  2 | // Division by Math.SQRT2
+  3 | x = 1 / Math.SQRT2;
+    |     ^~~~~~~~~~~~~~ [1]
+  4 | x = 1 / Math.sqrt(2);
+    |     ^~~~~~~~~~~~~~~~ [2]
+  5 |
+
+Output:
+  1 | /*prefer-math-sqrt1-2/invalid/1_sqrt2-input.js*/
+  2 | // Division by Math.SQRT2
+  3 | x = Math.SQRT1_2;
+  4 | x = Math.SQRT1_2;
+  5 |
+
+[1] Can use 'Math.SQRT1_2' instead of '1 / Math.SQRT2'.
+[2] Can use 'Math.SQRT1_2' instead of '1 / Math.SQRT2'.
+---
+
+
+Test: prefer-math-sqrt1-2 >> invalid
 Filename: prefer-math-sqrt1-2/invalid/example-input.js
 
 Code:

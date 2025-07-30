@@ -322,6 +322,7 @@ export function getInfoForTransformingToMathSqrt(
   }
   return null;
 }
+
 export type TransformingToMathAbs = MathMethodInfo<"abs"> & {
   from: "*-1" | "-";
   node: TSESTree.ConditionalExpression;
@@ -478,6 +479,71 @@ export function getInfoForTransformingToMathLog2(
       }
     }
     return null;
+  }
+  return null;
+}
+
+export type TransformingToMathSQRT2 =
+  // 2 ** (1 / 2);
+  | (MathPropertyInfo<"SQRT2"> & {
+      from: "2**1/2";
+      node: TSESTree.Expression;
+    })
+  // Math.pow(2, 1 / 2);
+  | (MathPropertyInfo<"SQRT2"> & {
+      from: "pow(2,1/2)";
+      node: TSESTree.Expression;
+    })
+  // Math.sqrt(2);
+  | (MathPropertyInfo<"SQRT2"> & {
+      from: "sqrt(2)";
+      node: TSESTree.Expression;
+    })
+  // Literal
+  | (MathPropertyInfo<"SQRT2"> & {
+      from: "literal";
+      node: TSESTree.Expression;
+    });
+/**
+ * Returns information if the given expression can be transformed to Math.SQRT2.
+ */
+export function getInfoForTransformingToMathSQRT2(
+  node: TSESTree.Expression,
+  sourceCode: SourceCode,
+): null | TransformingToMathSQRT2 {
+  const transform = getInfoForTransformingToMathSqrt(node, sourceCode);
+  if (transform) {
+    if (!isTwo(transform.argument, sourceCode)) return null;
+    if (transform.from === "**") {
+      return {
+        property: "SQRT2",
+        node,
+        from: "2**1/2",
+      };
+    } else if (transform.from === "pow") {
+      return {
+        property: "SQRT2",
+        node,
+        from: "pow(2,1/2)",
+      };
+    }
+  } else if (isGlobalObjectMethodCall(node, "Math", "sqrt", sourceCode)) {
+    if (node.arguments.length < 1 || !isTwo(node.arguments[0], sourceCode))
+      return null;
+    return {
+      property: "SQRT2",
+      node,
+      from: "sqrt(2)",
+    };
+  } else if (
+    isStaticValue(node, Math.SQRT2, sourceCode) &&
+    !isGlobalObjectProperty(node, "Math", "SQRT2", sourceCode)
+  ) {
+    return {
+      property: "SQRT2",
+      node,
+      from: "literal",
+    };
   }
   return null;
 }

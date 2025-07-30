@@ -7,8 +7,11 @@ import {
   isStaticValue,
 } from "../utils/ast";
 import type { Rule } from "eslint";
-import { getInfoForTransformingToMathSqrt } from "../utils/math";
-import { isHalf } from "../utils/number";
+import {
+  getInfoForTransformingToMathSqrt,
+  getInfoForTransformingToMathSQRT2,
+} from "../utils/math";
+import { isHalf, isOne } from "../utils/number";
 
 export default createRule("prefer-math-sqrt1-2", {
   meta: {
@@ -44,6 +47,13 @@ export default createRule("prefer-math-sqrt1-2", {
         if (node.arguments.length < 1 || !isHalf(node.arguments[0], sourceCode))
           return;
         expression = "Math.sqrt(1 / 2)";
+      } else if (node.type === "BinaryExpression" && node.operator === "/") {
+        if (!isOne(node.left as TSESTree.Expression, sourceCode)) return;
+        const sqrt2 =
+          isGlobalObjectProperty(node.right, "Math", "SQRT2", sourceCode) ||
+          getInfoForTransformingToMathSQRT2(node.right, sourceCode);
+        if (!sqrt2) return;
+        expression = "1 / Math.SQRT2";
       } else if (
         isStaticValue(node, Math.SQRT1_2, sourceCode) &&
         !isGlobalObjectProperty(node, "Math", "SQRT1_2", sourceCode)
