@@ -487,3 +487,50 @@ Code:
          10 | x = Number.NEGATIVE_INFINITY;
          11 |
 ---
+
+
+Test: no-static-infinity-calculations >> invalid
+Filename: no-static-infinity-calculations/invalid/math-methods-input.js
+
+Code:
+  1 | /*no-static-infinity-calculations/invalid/math-methods-input.js*/
+  2 | // Mathematical functions that produce infinity
+  3 | x = Math.pow(10, 1000); // Exponentiation overflow
+    |     ^~~~~~~~~~~~~~~~~~ [1]
+  4 | x = Math.exp(1000); // Exponential overflow
+    |     ^~~~~~~~~~~~~~ [2]
+  5 |
+
+[1] This calculation will always result in infinity, use explicit `Infinity` or `Number.POSITIVE_INFINITY` instead.
+    Suggestions:
+      - Replace using 'Infinity'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/math-methods-input.js*/
+          2 | // Mathematical functions that produce infinity
+          3 | x = Infinity; // Exponentiation overflow
+          4 | x = Math.exp(1000); // Exponential overflow
+          5 |
+      - Replace using 'Number.POSITIVE_INFINITY'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/math-methods-input.js*/
+          2 | // Mathematical functions that produce infinity
+          3 | x = Number.POSITIVE_INFINITY; // Exponentiation overflow
+          4 | x = Math.exp(1000); // Exponential overflow
+          5 |
+[2] This calculation will always result in infinity, use explicit `Infinity` or `Number.POSITIVE_INFINITY` instead.
+    Suggestions:
+      - Replace using 'Infinity'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/math-methods-input.js*/
+          2 | // Mathematical functions that produce infinity
+          3 | x = Math.pow(10, 1000); // Exponentiation overflow
+          4 | x = Infinity; // Exponential overflow
+          5 |
+      - Replace using 'Number.POSITIVE_INFINITY'.
+        Output:
+          1 | /*no-static-infinity-calculations/invalid/math-methods-input.js*/
+          2 | // Mathematical functions that produce infinity
+          3 | x = Math.pow(10, 1000); // Exponentiation overflow
+          4 | x = Number.POSITIVE_INFINITY; // Exponential overflow
+          5 |
+---
