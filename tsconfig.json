@@ -27,6 +27,7 @@
   },
   "include": [
     "src/**/*",
+    "env.d.ts",
     "tests/src/**/*",
     "tests/utils/**/*",
     "tools/**/*",

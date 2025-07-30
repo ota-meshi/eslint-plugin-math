@@ -129,6 +129,7 @@ The rules with the following star ⭐ are included in the configs.
 | [math/prefer-math-sqrt](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-sqrt.html) | enforce the use of Math.sqrt() instead of other square root calculations | 🔧 | ⭐ |
 | [math/prefer-math-sqrt1-2](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-sqrt1-2.html) | enforce the use of Math.SQRT1_2 instead of other ways | 🔧 | ⭐ |
 | [math/prefer-math-sqrt2](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-sqrt2.html) | enforce the use of Math.SQRT2 instead of other ways | 🔧 | ⭐ |
+| [math/prefer-math-sum-precise](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-sum-precise.html) | enforce the use of Math.sumPrecise() instead of other summation methods | 🔧 |  |
 | [math/prefer-math-trunc](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-math-trunc.html) | enforce the use of Math.trunc() instead of other truncations | 🔧 | ⭐ |
 | [math/prefer-number-epsilon](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-epsilon.html) | enforce the use of Number.EPSILON instead of other ways | 🔧 | ⭐ |
 | [math/prefer-number-is-finite](https://ota-meshi.github.io/eslint-plugin-math/rules/prefer-number-is-finite.html) | enforce the use of Number.isFinite() instead of other checking ways | 🔧 | ⭐ |
