@@ -19,6 +19,7 @@ import preferMathPi from "../rules/prefer-math-pi";
 import preferMathSqrt from "../rules/prefer-math-sqrt";
 import preferMathSqrt12 from "../rules/prefer-math-sqrt1-2";
 import preferMathSqrt2 from "../rules/prefer-math-sqrt2";
+import preferMathSumPrecise from "../rules/prefer-math-sum-precise";
 import preferMathTrunc from "../rules/prefer-math-trunc";
 import preferNumberEpsilon from "../rules/prefer-number-epsilon";
 import preferNumberIsFinite from "../rules/prefer-number-is-finite";
@@ -48,6 +49,7 @@ export const rules = [
   preferMathSqrt,
   preferMathSqrt12,
   preferMathSqrt2,
+  preferMathSumPrecise,
   preferMathTrunc,
   preferNumberEpsilon,
   preferNumberIsFinite,
