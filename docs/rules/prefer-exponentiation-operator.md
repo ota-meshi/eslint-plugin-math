@@ -17,6 +17,13 @@ since: "v0.6.0"
 
 This rule aims to enforce the use of exponentiation (`**`) operator instead of other calculations.
 
+The exponentiation operator (`**`) provides several advantages over alternatives:
+
+- **Readability**: More concise and mathematically intuitive
+- **Performance**: Often better optimized by JavaScript engines
+- **Consistency**: Standard ES2016+ syntax for exponentiation
+- **Type Safety**: Better behavior with edge cases compared to `Math.pow`
+
 This rule was inspired by ESLint Core's [prefer-exponentiation-operator], but additionally detects multiplication with the same operands.
 
 <eslint-code-block fix>
@@ -27,16 +34,28 @@ This rule was inspired by ESLint Core's [prefer-exponentiation-operator], but ad
 /* eslint math/prefer-exponentiation-operator: 'error' */
 
 /* ✓ GOOD */
-x = a ** b;
+square = a ** 2;
+cube = a ** 3;
+power = a ** b;
+squareRoot = a ** 0.5;
+inverseSquare = a ** -2;
 
 /* ✗ BAD */
-x = Math.pow(a, b);
+square = Math.pow(a, 2);
+cube = Math.pow(a, 3);
+power = Math.pow(a, b);
+squareRoot = Math.pow(a, 0.5);
+inverseSquare = Math.pow(a, -2);
 
 /* ✓ GOOD */
-x = a ** 3;
+square = a ** 2;
+cube = a ** 3;
+fourthPower = a ** 4;
 
 /* ✗ BAD */
-x = a * a * a;
+square = a * a;
+cube = a * a * a;
+fourthPower = a * a * a * a;
 ```
 
 </eslint-code-block>

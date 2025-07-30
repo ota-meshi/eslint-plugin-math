@@ -15,7 +15,23 @@ since: "v0.3.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the conversion to absolute values to be the method you prefer.
+This rule aims to enforce the conversion to absolute values to be the method you prefer, promoting consistency and clarity in your codebase.
+
+The rule supports two different approaches for calculating absolute values:
+
+1. **`Math.abs()` method**: The standard JavaScript function for absolute values
+2. **Conditional expression**: Using ternary operators like `n < 0 ? -n : n`
+
+### Why This Rule Matters
+
+Different approaches to calculating absolute values can lead to:
+
+- **Inconsistency**: Mixed patterns make code harder to read and maintain
+- **Type safety issues**: Some methods don't work with all numeric types (e.g., BigInt)
+- **Performance variations**: Different approaches may have different performance characteristics
+- **Readability concerns**: Some patterns are more explicit about their intent than others
+
+### Default Behavior: Prefer `Math.abs()`
 
 <eslint-code-block fix>
 
@@ -39,6 +55,8 @@ x = k < 0 ? -k : k; // `k` is clearly a number, so we cannot replace it with `Ma
 ```
 
 </eslint-code-block>
+
+### Alternative: Prefer Conditional Expressions
 
 <eslint-code-block fix>
 

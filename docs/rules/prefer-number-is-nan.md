@@ -18,6 +18,14 @@ since: "v0.4.0"
 
 This rule aims to enforce the use of `Number.isNaN()` instead of other checking ways.
 
+`Number.isNaN()` is the most reliable way to check for NaN values because:
+
+- **Type safety**: Only returns `true` for actual NaN values, not for non-numeric types
+- **No type coercion**: Unlike global `isNaN()`, it doesn't convert values to numbers first
+- **Clear intent**: Explicitly shows you're checking for the NaN value
+- **Performance**: Direct comparison without type conversion overhead
+- **Consistency**: Part of the modern Number API alongside other type-checking methods
+
 <eslint-code-block fix>
 
 <!-- eslint-skip -->
@@ -26,12 +34,29 @@ This rule aims to enforce the use of `Number.isNaN()` instead of other checking 
 /* eslint math/prefer-number-is-nan: 'error' */
 
 /* ✓ GOOD */
-x = Number.isNaN(n);
+// Clear and explicit NaN checking
+if (Number.isNaN(value)) {
+  console.log('Value is NaN');
+}
+
+const result = Number.isNaN(calculation);
+const hasNaN = values.some(Number.isNaN);
 
 /* ✗ BAD */
-x = typeof n == 'number' && isNaN(n);
-x = n !== n;
-x = Object.is(n, NaN);
+// Global isNaN with type checking workaround
+if (typeof value === 'number' && isNaN(value)) {
+  console.log('Value is NaN');
+}
+
+// Self-comparison (cryptic)
+if (value !== value) {
+  console.log('Value is NaN');
+}
+
+// Object.is comparison (unnecessary complexity)
+if (Object.is(value, NaN)) {
+  console.log('Value is NaN');
+}
 ```
 
 </eslint-code-block>

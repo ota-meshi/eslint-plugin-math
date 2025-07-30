@@ -15,9 +15,15 @@ since: "v0.11.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of [`Math.sumPrecise()`] instead of other ways.
+This rule aims to enforce the use of [`Math.sumPrecise()`] instead of other summation methods.
 
 [`Math.sumPrecise()`]: https://github.com/tc39/proposal-math-sum
+
+`Math.sumPrecise()` addresses floating-point precision issues that occur with traditional summation approaches:
+
+- **More precise algorithm**: Uses a more precise algorithm than naive summation
+- **Consistency**: Standardized approach to precise summation
+- **Performance**: Optimized implementation in the JavaScript engine
 
 <eslint-code-block fix>
 
@@ -25,17 +31,22 @@ This rule aims to enforce the use of [`Math.sumPrecise()`] instead of other ways
 
 ```js
 /* eslint math/prefer-math-sum-precise: 'error' */
+const values = [1.1, 2.2, 3.3];
 
 /* ✓ GOOD */
-x = Math.sumPrecise([1, 2, 3]);
+// Using Math.sumPrecise for accurate summation
+total = Math.sumPrecise(values);
 
 /* ✗ BAD */
-x = [1, 2, 3].reduce((a, b) => a + b, 0);
+// Traditional reduce
+total = values.reduce((a, b) => a + b, 0);
+
+// Manual loop accumulation
 let sum = 0;
-for (const value of [1, 2, 3]) {
+for (const value of values) {
   sum += value;
 }
-x = sum;
+total = sum;
 ```
 
 </eslint-code-block>

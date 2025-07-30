@@ -15,7 +15,14 @@ since: "v0.5.0"
 
 ## 📖 Rule Details
 
-This rule aims to enforce the use of `Math.PI` instead of literal number.
+This rule aims to enforce the use of `Math.PI` instead of literal number representations of π (pi).
+
+Using `Math.PI` instead of hardcoded numeric literals improves:
+
+- **Readability**: Makes the intention clear that you're using the mathematical constant π
+- **Maintainability**: Centralized definition reduces the risk of typos
+- **Precision**: `Math.PI` provides the most accurate representation available in JavaScript
+- **Consistency**: Standardizes how mathematical constants are used across your codebase
 
 <eslint-code-block fix>
 

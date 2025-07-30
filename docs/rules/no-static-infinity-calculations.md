@@ -15,7 +15,19 @@ since: "v0.5.0"
 
 ## 📖 Rule Details
 
-This rule disallow static calculations that result in infinity.
+This rule disallows static calculations that result in infinity.
+
+This rule enforces explicit use of `Infinity` or `Number.POSITIVE_INFINITY`/`Number.NEGATIVE_INFINITY` instead of calculations that implicitly produce infinity values.
+
+Using explicit infinity values provides several benefits:
+
+- **Clear intent**: Makes it obvious that infinity is the intended result
+- **Better readability**: Reduces cognitive load when reading code
+- **Consistency**: Standardizes how infinite values are represented
+- **Debugging clarity**: Easier to identify intentional vs accidental infinity values
+- **JSON compatibility awareness**: Explicit infinity usage makes serialization behavior clear
+
+This rule helps catch expressions that will always evaluate to positive or negative infinity at development time and suggests using explicit infinity constants instead.
 
 <eslint-code-block>
 
@@ -25,18 +37,39 @@ This rule disallow static calculations that result in infinity.
 /* eslint math/no-static-infinity-calculations: 'error' */
 
 /* ✓ GOOD */
+// Explicit infinity usage (when intentional)
 x = Infinity;
 x = -Infinity;
 x = Number.POSITIVE_INFINITY;
 x = Number.NEGATIVE_INFINITY;
-x = 2 ** 1023 - 2 ** 971 + 2 ** 1023;
+
+// Complex calculations that don't overflow
+x = 2 ** 1023 - 2 ** 971 + 2 ** 1023;  // Large but finite
+x = Math.pow(10, 308);  // Close to but not exceeding limit
+
+// Dynamic calculations (runtime dependent)  
+x = Math.pow(base, exponent);  // Values not known at compile time
+x = userInput ** power;
 
 /* ✗ BAD */
-x = 2 ** 1024;
-x = 2 ** 1024 - 2 ** 971;
-x = 2 ** 1023 + 2 ** 1023;
-x = 2 ** 1023 - 2 ** 970 + 2 ** 1023;
+// Calculations that exceed JavaScript's number limits
+x = 2 ** 1024;                    // Exceeds max safe exponent
+x = 2 ** 1024 - 2 ** 971;         // Still overflows
+x = 2 ** 1023 + 2 ** 1023;        // Addition overflow
+x = 2 ** 1023 - 2 ** 970 + 2 ** 1023;  // Complex overflow
+
+// Large number calculations that always overflow
+x = 1.8e308;                      // Exceeds Number.MAX_VALUE
+x = Number.MAX_VALUE * 2;         // Multiplication overflow
+x = 1 / 0;                        // Division by zero
+x = -1 / 0;                       // Negative division by zero
 ```
+
+<!-- 
+// Mathematical functions that produce infinity
+x = Math.pow(10, 1000);           // Exponentiation overflow
+x = Math.exp(1000);               // Exponential overflow
+-->
 
 </eslint-code-block>
 
