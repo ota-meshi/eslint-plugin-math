@@ -47,10 +47,7 @@ export function existCommentBetween(
  * Checks whether the given node is a global object.
  */
 export function isGlobalObject<G extends keyof typeof globalThis>(
-  node:
-    | TSESTree.Expression
-    | TSESTree.PrivateIdentifier
-    | TSESTree.SpreadElement,
+  node: TSESTree.Expression | TSESTree.SpreadElement,
   name: G,
   sourceCode: SourceCode,
 ): node is TSESTree.Identifier | TSESTree.MemberExpression {
@@ -73,10 +70,7 @@ export function isGlobalObjectMethodCall<
   G extends keyof typeof globalThis,
   N extends ExtractFunctionKeys<G>,
 >(
-  node:
-    | TSESTree.Expression
-    | TSESTree.PrivateIdentifier
-    | TSESTree.SpreadElement,
+  node: TSESTree.Expression | TSESTree.SpreadElement,
   name: G,
   method: N,
   sourceCode: SourceCode,
@@ -92,10 +86,7 @@ export function isGlobalObjectProperty<
   G extends keyof typeof globalThis,
   N extends keyof (typeof globalThis)[G],
 >(
-  node:
-    | TSESTree.Expression
-    | TSESTree.PrivateIdentifier
-    | TSESTree.SpreadElement,
+  node: TSESTree.Expression | TSESTree.SpreadElement,
   name: G,
   property: N,
   sourceCode: SourceCode,
@@ -110,7 +101,7 @@ export function isGlobalObjectProperty<
  * Checks whether the given node is a global method call.
  */
 export function isGlobalMethodCall(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   name: ExtractFunctionKeys<typeof globalThis>,
   sourceCode: SourceCode,
 ): node is TSESTree.CallExpression {
@@ -133,6 +124,13 @@ export function equalNodeTokens(
   c: TSESTree.Node,
   sourceCode: SourceCode,
 ): boolean;
+export function equalNodeTokens(
+  a: TSESTree.Node,
+  b: TSESTree.Node,
+  c: TSESTree.Node,
+  d: TSESTree.Node,
+  sourceCode: SourceCode,
+): boolean;
 /**
  * Checks whether or not the tokens of two given nodes are same.
  */
@@ -140,14 +138,17 @@ export function equalNodeTokens(
   a: TSESTree.Node,
   b: TSESTree.Node,
   c: TSESTree.Node | SourceCode,
-  d?: SourceCode,
+  d?: TSESTree.Node | SourceCode,
+  e?: SourceCode,
 ): boolean {
-  const sourceCode = d ?? (c as SourceCode);
+  const sourceCode = e ?? (d as SourceCode) ?? (c as SourceCode);
   const tokensA = sourceCode.getTokens(a);
-  const tokensB = sourceCode.getTokens(b);
-  if (!equalTokens(tokensA, tokensB)) return false;
+  if (!equalTokens(tokensA, sourceCode.getTokens(b))) return false;
   if (!d) return true;
-  return equalTokens(tokensA, sourceCode.getTokens(c as TSESTree.Node));
+  if (!equalTokens(tokensA, sourceCode.getTokens(c as TSESTree.Node)))
+    return false;
+  if (!e) return true;
+  return equalTokens(tokensA, sourceCode.getTokens(d as TSESTree.Node));
 }
 
 /**
@@ -170,10 +171,7 @@ export function equalTokens(
  * Checks whether the given node is a expression with the given static value.
  */
 export function isStaticValue<V extends TSESTree.Literal["value"]>(
-  node:
-    | TSESTree.Expression
-    | TSESTree.SpreadElement
-    | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression | TSESTree.SpreadElement,
   value: V,
   sourceCode: SourceCode,
 ): node is TSESTree.Expression {
@@ -300,10 +298,7 @@ function isGlobal(
  * Checks whether the given node is a global namespace.
  */
 function isGlobalNamespace(
-  node:
-    | TSESTree.Expression
-    | TSESTree.PrivateIdentifier
-    | TSESTree.SpreadElement,
+  node: TSESTree.Expression | TSESTree.SpreadElement,
   sourceCode: SourceCode,
 ): node is TSESTree.Identifier | TSESTree.MemberExpression {
   if (node.type === "Identifier") {

@@ -7,6 +7,7 @@ import {
 import { existComment } from "../utils/ast";
 import type { Rule } from "eslint";
 import { getIdText } from "../utils/messages";
+import { buildObjectTypeChecker } from "../utils/type-checker/object-type-checker";
 
 export default createRule("prefer-number-is-nan", {
   meta: {
@@ -29,11 +30,17 @@ export default createRule("prefer-number-is-nan", {
   create(context) {
     const sourceCode = context.sourceCode;
 
+    const objectTypeChecker = buildObjectTypeChecker(context);
+
     /**
      * Verify if the given node can be converted to Number.isNaN().
      */
     function verifyForExpression(node: TSESTree.Expression) {
-      const transform = getInfoForTransformingToNumberIsNaN(node, sourceCode);
+      const transform = getInfoForTransformingToNumberIsNaN(
+        node,
+        sourceCode,
+        objectTypeChecker,
+      );
       if (!transform) return;
       const hasComment = existComment(node, sourceCode);
 
@@ -61,10 +68,13 @@ export default createRule("prefer-number-is-nan", {
       const id = getIdText(info.argument, "n");
       let expression = "";
       switch (info.from) {
-        case "global.isNaN":
+        case "global.isNaN with number":
           expression = !info.not
             ? `'typeof ${id} === "number" && isNaN(${id})'`
             : `'typeof ${id} !== "number" || !isNaN(${id})'`;
+          break;
+        case "global.isNaN":
+          expression = `isNaN(${id})'`;
           break;
         case "notEquals":
           expression = `'${id} !== ${id}'`;

@@ -18,17 +18,19 @@ import {
 } from "./ast";
 import type { ExtractFunctionKeys } from "./type";
 import {
+  processFourOperands,
   processLR,
   processThreeOperands,
   processTwoOperands,
   processTwoParams,
 } from "./process";
+import type { TypeChecker } from "eslint-type-tracer";
 
 export type NumberMethod = ExtractFunctionKeys<NumberConstructor>;
 export type NumberMethodInfo<M extends NumberMethod> = {
   method: M;
   node: TSESTree.Expression;
-  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
+  argument: TSESTree.Expression;
 };
 export type NumberPropertyInfo<M extends keyof NumberConstructor> = {
   property: M;
@@ -41,7 +43,7 @@ export function getInfoForIsPositive(
   node: TSESTree.Expression,
   sourceCode: SourceCode,
 ): null | {
-  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
+  argument: TSESTree.Expression;
 } {
   return getArgumentFromBinaryExpression(
     node,
@@ -59,7 +61,7 @@ export function getInfoForIsNegative(
   node: TSESTree.Expression,
   sourceCode: SourceCode,
 ): null | {
-  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
+  argument: TSESTree.Expression;
 } {
   return getArgumentFromBinaryExpression(
     node,
@@ -74,11 +76,11 @@ export function getInfoForIsNegative(
  * Returns information if the given expression is a to negative number.
  */
 export function getInfoForToNegative(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ): null | {
   from: "*-1" | "-";
-  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
+  argument: TSESTree.Expression;
 } {
   if (node.type === "UnaryExpression" && node.operator === "-") {
     return { from: "-", argument: node.argument };
@@ -97,7 +99,7 @@ export function getInfoForToNegative(
  * Checks whether the given node is a `0`.
  */
 export function isZero(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ): node is TSESTree.Expression {
   return isStaticValue(node, 0, sourceCode);
@@ -106,10 +108,7 @@ export function isZero(
  * Checks whether the given node is a `1`.
  */
 export function isOne(
-  node:
-    | TSESTree.Expression
-    | TSESTree.PrivateIdentifier
-    | TSESTree.SpreadElement,
+  node: TSESTree.Expression | TSESTree.SpreadElement,
   sourceCode: SourceCode,
 ): node is TSESTree.Expression {
   return isStaticValue(node, 1, sourceCode);
@@ -118,10 +117,7 @@ export function isOne(
  * Checks whether the given node is a `2`.
  */
 export function isTwo(
-  node:
-    | TSESTree.Expression
-    | TSESTree.PrivateIdentifier
-    | TSESTree.SpreadElement,
+  node: TSESTree.Expression | TSESTree.SpreadElement,
   sourceCode: SourceCode,
 ): node is TSESTree.Expression {
   return isStaticValue(node, 2, sourceCode);
@@ -130,10 +126,7 @@ export function isTwo(
  * Checks whether the given node is a `10`.
  */
 export function isTen(
-  node:
-    | TSESTree.Expression
-    | TSESTree.PrivateIdentifier
-    | TSESTree.SpreadElement,
+  node: TSESTree.Expression | TSESTree.SpreadElement,
   sourceCode: SourceCode,
 ): node is TSESTree.Expression {
   return isStaticValue(node, 10, sourceCode);
@@ -142,7 +135,7 @@ export function isTen(
  * Checks whether the given node is a `-1`.
  */
 export function isMinusOne(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ): node is TSESTree.Expression {
   return isStaticValue(node, -1, sourceCode);
@@ -151,10 +144,7 @@ export function isMinusOne(
  * Checks whether the given node is a `1/2`.
  */
 export function isHalf(
-  node:
-    | TSESTree.Expression
-    | TSESTree.SpreadElement
-    | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression | TSESTree.SpreadElement,
   sourceCode: SourceCode,
 ): node is TSESTree.Expression {
   return isStaticValue(node, 0.5, sourceCode);
@@ -163,10 +153,7 @@ export function isHalf(
  * Checks whether the given node is a `1/3`.
  */
 export function isOneThird(
-  node:
-    | TSESTree.Expression
-    | TSESTree.SpreadElement
-    | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression | TSESTree.SpreadElement,
   sourceCode: SourceCode,
 ): node is TSESTree.Expression {
   return isStaticValue(node, 1 / 3, sourceCode);
@@ -175,7 +162,7 @@ export function isOneThird(
  * Checks whether the given node is a Number.MAX_SAFE_INTEGER.
  */
 export function isMaxSafeInteger(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ): node is TSESTree.Expression {
   return isStaticValue(node, Number.MAX_SAFE_INTEGER, sourceCode);
@@ -184,7 +171,7 @@ export function isMaxSafeInteger(
  * Checks whether the given node is a Number.MIN_SAFE_INTEGER.
  */
 export function isMinSafeInteger(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ): node is TSESTree.Expression {
   return isStaticValue(node, Number.MIN_SAFE_INTEGER, sourceCode);
@@ -232,7 +219,7 @@ export type TransformingToNumberIsInteger =
  * Returns information if the given expression can be transformed to Number.isInteger().
  */
 export function getInfoForTransformingToNumberIsInteger(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ): null | TransformingToNumberIsInteger {
   if (node.type === "BinaryExpression") {
@@ -258,7 +245,7 @@ export function getInfoForTransformingToNumberIsInteger(
             method: "isInteger",
             not,
             node,
-            argument: left.left,
+            argument: left.left as TSESTree.Expression,
           };
         }
       }
@@ -279,7 +266,7 @@ export function getInfoForTransformingToNumberIsInteger(
           method: "isInteger",
           not: true,
           node,
-          argument: node.left,
+          argument: node.left as TSESTree.Expression,
         };
       }
     }
@@ -295,7 +282,7 @@ export function getInfoForTransformingToNumberIsInteger(
       method: "isInteger",
       not: false,
       node,
-      argument: argument.left,
+      argument: argument.left as TSESTree.Expression,
     };
   }
   if (node.type === "CallExpression") {
@@ -308,7 +295,7 @@ export function getInfoForTransformingToNumberIsInteger(
       method: "isInteger",
       not: true,
       node,
-      argument: argument.left,
+      argument: argument.left as TSESTree.Expression,
     };
   }
   return null;
@@ -316,9 +303,7 @@ export function getInfoForTransformingToNumberIsInteger(
   /**
    * Get way to convert to an integer.
    */
-  function getToIntegerWay(
-    a: TSESTree.Expression | TSESTree.PrivateIdentifier,
-  ) {
+  function getToIntegerWay(a: TSESTree.Expression) {
     const trunc = getInfoForMathTrunc(a, sourceCode);
     if (trunc) return { ...trunc, type: "trunc" as const };
     const floor = getInfoForMathFloor(a, sourceCode);
@@ -443,9 +428,14 @@ export function getInfoForTransformingToNumberIsSafeInteger(
 }
 export type TransformingToNumberIsNaN =
   | (NumberMethodInfo<"isNaN"> & {
-      from: "global.isNaN";
+      from: "global.isNaN with number";
       node: TSESTree.LogicalExpression;
       not: boolean;
+    })
+  | (NumberMethodInfo<"isNaN"> & {
+      from: "global.isNaN";
+      node: TSESTree.Expression;
+      not?: undefined;
     })
   | (NumberMethodInfo<"isNaN"> & {
       from: "notEquals";
@@ -463,6 +453,7 @@ export type TransformingToNumberIsNaN =
 export function getInfoForTransformingToNumberIsNaN(
   node: TSESTree.Expression,
   sourceCode: SourceCode,
+  objectTypeChecker: TypeChecker,
 ): null | TransformingToNumberIsNaN {
   if (node.type === "LogicalExpression") {
     const { operator } = node;
@@ -475,6 +466,7 @@ export function getInfoForTransformingToNumberIsNaN(
       (operand) => getInfoForGlobalIsNaN(operand, sourceCode),
       (typeofNumber, globalIsNaN) => {
         if (
+          typeofNumber.not !== not ||
           globalIsNaN.not !== not ||
           !equalNodeTokens(
             typeofNumber.argument,
@@ -484,7 +476,7 @@ export function getInfoForTransformingToNumberIsNaN(
         )
           return null;
         return {
-          from: "global.isNaN",
+          from: "global.isNaN with number",
           node,
           argument: typeofNumber.argument,
           not,
@@ -505,6 +497,20 @@ export function getInfoForTransformingToNumberIsNaN(
       not: false,
       method: "isNaN",
     };
+  }
+  if (node.type === "CallExpression") {
+    const info = getInfoForGlobalIsNaN(node, sourceCode);
+    if (
+      info &&
+      !info.not &&
+      objectTypeChecker(info.argument, "Number") === true
+    ) {
+      return {
+        ...info,
+        from: "global.isNaN",
+        not: undefined,
+      };
+    }
   }
   if (!isGlobalObjectMethodCall(node, "Object", "is", sourceCode)) return null;
 
@@ -547,7 +553,7 @@ export function getInfoForTransformingToNumberEPSILON(
   if (node.type === "BinaryExpression") {
     if (
       node.operator === "**" &&
-      isTwo(node.left, sourceCode) &&
+      isTwo(node.left as TSESTree.Expression, sourceCode) &&
       isStaticValue(node.right, -52, sourceCode)
     ) {
       return {
@@ -587,46 +593,105 @@ export function getInfoForTransformingToNumberEPSILON(
   return null;
 }
 
-export type TransformingToNumberIsFinite = NumberMethodInfo<"isFinite"> & {
-  from: "global.isFinite";
-  node: TSESTree.LogicalExpression;
-  not: boolean;
-};
+export type TransformingToNumberIsFinite =
+  | (NumberMethodInfo<"isFinite"> & {
+      from: "global.isFinite with number";
+      node: TSESTree.LogicalExpression;
+      not: boolean;
+    })
+  | (NumberMethodInfo<"isFinite"> & {
+      from: "global.isFinite";
+      node: TSESTree.Expression;
+      not?: undefined;
+    })
+  | (NumberMethodInfo<"isFinite"> & {
+      from: "conditional";
+      node: TSESTree.LogicalExpression;
+      not: boolean;
+    });
 /**
  * Returns information if the given expression can be transformed to Number.isNaN().
  */
 export function getInfoForTransformingToNumberIsFinite(
   node: TSESTree.Expression,
   sourceCode: SourceCode,
+  objectTypeChecker: TypeChecker,
 ): null | TransformingToNumberIsFinite {
   if (node.type === "LogicalExpression") {
     const { operator } = node;
     if (operator !== "&&" && operator !== "||") return null;
 
     const not = operator === "||";
-    return processTwoOperands(
-      node,
-      (operand) => getInfoForTypeOfNumber(operand, sourceCode),
-      (operand) => getInfoForGlobalIsFinite(operand, sourceCode),
-      (typeofNumber, globalIsFinite) => {
-        if (
-          globalIsFinite.not !== not ||
-          !equalNodeTokens(
-            typeofNumber.argument,
-            globalIsFinite.argument,
-            sourceCode,
+    return (
+      processTwoOperands(
+        node,
+        (operand) => getInfoForTypeOfNumber(operand, sourceCode),
+        (operand) => getInfoForGlobalIsFinite(operand, sourceCode),
+        (typeofNumber, globalIsFinite) => {
+          if (
+            typeofNumber.not !== not ||
+            globalIsFinite.not !== not ||
+            !equalNodeTokens(
+              typeofNumber.argument,
+              globalIsFinite.argument,
+              sourceCode,
+            )
           )
-        )
-          return null;
-        return {
-          from: "global.isFinite",
-          node,
-          argument: typeofNumber.argument,
-          not,
-          method: "isFinite",
-        };
-      },
+            return null;
+          return {
+            from: "global.isFinite with number",
+            node,
+            argument: typeofNumber.argument,
+            not,
+            method: "isFinite",
+          };
+        },
+      ) ||
+      processFourOperands(
+        node,
+        (operand) => getInfoForTypeOfNumber(operand, sourceCode),
+        (operand) => getInfoForEqualValue(operand, Infinity, sourceCode),
+        (operand) => getInfoForEqualValue(operand, -Infinity, sourceCode),
+        (operand) => getInfoForGlobalIsNaN(operand, sourceCode),
+        (typeofNumber, eqInf, eqNInf, globalIsNaN) => {
+          if (
+            typeofNumber.not !== not ||
+            eqInf.not === not ||
+            eqNInf.not === not ||
+            globalIsNaN.not === not ||
+            !equalNodeTokens(
+              typeofNumber.argument,
+              eqInf.argument,
+              eqNInf.argument,
+              globalIsNaN.argument,
+              sourceCode,
+            )
+          )
+            return null;
+          return {
+            from: "conditional",
+            node,
+            argument: typeofNumber.argument,
+            not,
+            method: "isFinite",
+          };
+        },
+      )
     );
+  }
+  if (node.type === "CallExpression") {
+    const info = getInfoForGlobalIsFinite(node, sourceCode);
+    if (
+      info &&
+      !info.not &&
+      objectTypeChecker(info.argument, "Number") === true
+    ) {
+      return {
+        ...info,
+        from: "global.isFinite",
+        not: undefined,
+      };
+    }
   }
   return null;
 }
@@ -635,10 +700,7 @@ export function getInfoForTransformingToNumberIsFinite(
  * Checks whether the given node is a `n % 1`.
  */
 function isModuloOne(
-  node:
-    | TSESTree.Expression
-    | TSESTree.SpreadElement
-    | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression | TSESTree.SpreadElement,
   sourceCode: SourceCode,
 ): node is TSESTree.BinaryExpression {
   return (
@@ -652,7 +714,7 @@ function isModuloOne(
  * Returns information if the given expression is Number.isInteger().
  */
 function getInfoFoNumberIsInteger(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ): null | NumberMethodInfo<"isInteger"> {
   if (
@@ -673,10 +735,10 @@ function getInfoFoNumberIsInteger(
  * Returns information if the condition checks whether the given expression is less than or equal Number.MAX_SAFE_INTEGER.
  */
 function getInfoForIsLTEMaxSafeInteger(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ): null | {
-  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
+  argument: TSESTree.Expression;
 } {
   return getArgumentFromBinaryExpression(
     node,
@@ -691,10 +753,10 @@ function getInfoForIsLTEMaxSafeInteger(
  * Returns information if the condition checks whether the given expression is greater than Number.MAX_SAFE_INTEGER.
  */
 function getInfoForIsGTMaxSafeInteger(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ): null | {
-  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
+  argument: TSESTree.Expression;
 } {
   return getArgumentFromBinaryExpression(
     node,
@@ -709,10 +771,10 @@ function getInfoForIsGTMaxSafeInteger(
  * Returns information if the condition checks whether the given expression is greater than or equal Number.MIN_SAFE_INTEGER.
  */
 function getInfoForIsGTEMinSafeInteger(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ): null | {
-  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
+  argument: TSESTree.Expression;
 } {
   return getArgumentFromBinaryExpression(
     node,
@@ -727,10 +789,10 @@ function getInfoForIsGTEMinSafeInteger(
  * Returns information if the condition checks whether the given expression is less than Number.MIN_SAFE_INTEGER.
  */
 function getInfoForIsLTMinSafeInteger(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ): null | {
-  argument: TSESTree.Expression | TSESTree.PrivateIdentifier;
+  argument: TSESTree.Expression;
 } {
   return getArgumentFromBinaryExpression(
     node,
@@ -745,7 +807,7 @@ function getInfoForIsLTMinSafeInteger(
  * Returns information if the given expression is `typeof x === 'number'`.
  */
 function getInfoForTypeOfNumber(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ): null | {
   argument: TSESTree.Expression;
@@ -777,22 +839,19 @@ function getInfoForTypeOfNumber(
  * Get the argument from the binary expression.
  */
 function getArgumentFromBinaryExpression(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   operators: Partial<
     Record<
       TSESTree.BinaryExpression["operator"],
-      (
-        right: TSESTree.Expression | TSESTree.PrivateIdentifier,
-        sourceCode: SourceCode,
-      ) => boolean
+      (right: TSESTree.Expression, sourceCode: SourceCode) => boolean
     >
   >,
   sourceCode: SourceCode,
-): null | { argument: TSESTree.Expression | TSESTree.PrivateIdentifier } {
+): null | { argument: TSESTree.Expression } {
   if (node.type !== "BinaryExpression") return null;
   const { left, right, operator } = node;
   if (operators[operator]?.(right, sourceCode)) {
-    return { argument: left };
+    return { argument: left as TSESTree.Expression };
   }
   const reverse =
     operator === "<"
@@ -805,7 +864,7 @@ function getArgumentFromBinaryExpression(
             ? "<="
             : null;
   if (!reverse) return null;
-  if (operators[reverse]?.(left, sourceCode)) {
+  if (operators[reverse]?.(left as TSESTree.Expression, sourceCode)) {
     return { argument: right };
   }
   return null;
@@ -815,7 +874,7 @@ function getArgumentFromBinaryExpression(
  * Returns information if the condition checks whether the given expression is Number.isInteger() or like.
  */
 function getInfoForNumberIsIntegerOrLike(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ):
   | (NumberMethodInfo<"isInteger"> & {
@@ -838,7 +897,7 @@ function getInfoForNumberIsIntegerOrLike(
  * Returns information if the condition checks whether the given expression is isNaN().
  */
 function getInfoForGlobalIsNaN(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ):
   | (NumberMethodInfo<"isNaN"> & {
@@ -878,7 +937,7 @@ function getInfoForGlobalIsNaN(
  * Returns information if the condition checks whether the given expression is isFinite().
  */
 function getInfoForGlobalIsFinite(
-  node: TSESTree.Expression | TSESTree.PrivateIdentifier,
+  node: TSESTree.Expression,
   sourceCode: SourceCode,
 ):
   | (NumberMethodInfo<"isFinite"> & {
@@ -909,6 +968,38 @@ function getInfoForGlobalIsFinite(
       node,
       argument: argument.arguments[0],
       not: true,
+    };
+  }
+  return null;
+}
+
+/**
+ * Returns information if the given expression is `x === value` or `x !== value`.
+ */
+function getInfoForEqualValue(
+  node: TSESTree.Expression,
+  value: number,
+  sourceCode: SourceCode,
+): null | {
+  argument: TSESTree.Expression;
+  not: boolean;
+} {
+  if (
+    node.type !== "BinaryExpression" ||
+    (node.operator !== "===" &&
+      node.operator !== "==" &&
+      node.operator !== "!==" &&
+      node.operator !== "!=")
+  )
+    return null;
+
+  const { operator } = node;
+  const not = operator === "!==" || operator === "!=";
+  for (const [left, right] of processLR(node)) {
+    if (!isStaticValue(left, value, sourceCode)) continue;
+    return {
+      argument: right,
+      not,
     };
   }
   return null;

@@ -23,6 +23,32 @@ Output: unchanged
 
 
 Test: prefer-number-is-finite >> invalid
+Filename: prefer-number-is-finite/invalid/conditional-input.js
+
+Code:
+  1 | /*prefer-number-is-finite/invalid/conditional-input.js*/
+  2 | const n = 42;
+  3 | x = typeof n !== "number" || n === Infinity || n === -Infinity || isNaN(n);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+  4 | x = typeof n === "number" && n !== Infinity && n !== -Infinity && !isNaN(n);
+    |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [2]
+  5 | x = typeof n === "number" && n !== Infinity && n === -Infinity && !isNaN(n); // -Infinity
+  6 |
+
+Output:
+  1 | /*prefer-number-is-finite/invalid/conditional-input.js*/
+  2 | const n = 42;
+  3 | x = !Number.isFinite(n);
+  4 | x = Number.isFinite(n);
+  5 | x = typeof n === "number" && n !== Infinity && n === -Infinity && !isNaN(n); // -Infinity
+  6 |
+
+[1] Can use '!Number.isFinite(n)' instead of 'typeof n !== "number" || n === Infinity || n === -Infinity || isNaN(n)'.
+[2] Can use 'Number.isFinite(n)' instead of 'typeof n === "number" && n !== Infinity && n !== -Infinity && !isNaN(n)'.
+---
+
+
+Test: prefer-number-is-finite >> invalid
 Filename: prefer-number-is-finite/invalid/example-input.js
 
 Code:
@@ -47,6 +73,78 @@ Output:
   8 |
 
 [1] Can use 'Number.isFinite(n)' instead of 'typeof n === "number" && isFinite(n)'.
+---
+
+
+Test: prefer-number-is-finite >> invalid
+Filename: prefer-number-is-finite/invalid/example2-input.js
+
+Code:
+  1 | /*prefer-number-is-finite/invalid/example2-input.js*/
+  2 | const value = 42;
+  3 |
+  4 | // Manual infinity and NaN checking
+  5 | if (
+  6 |   typeof value === "number" &&
+    |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~\ [1]
+  7 |   value !== Infinity &&
+    | ~~~~~~~~~~~~~~~~~~~~~~~\ [1]
+  8 |   value !== -Infinity &&
+    | ~~~~~~~~~~~~~~~~~~~~~~~~\ [1]
+  9 |   !isNaN(value)
+    | ~~~~~~~~~~~~~~~ [1]
+ 10 | ) {
+ 11 |   console.log("Value is a finite number");
+ 12 | }
+ 13 |
+ 14 | // Using global isFinite directly (type coercion issues)
+ 15 | if (isFinite(value)) {
+    |     ^~~~~~~~~~~~~~~ [2]
+ 16 |   console.log("Value might not actually be a number");
+ 17 | }
+ 18 |
+
+Output:
+  1 | /*prefer-number-is-finite/invalid/example2-input.js*/
+  2 | const value = 42;
+  3 |
+  4 | // Manual infinity and NaN checking
+  5 | if (
+  6 |   Number.isFinite(value)
+  7 | ) {
+  8 |   console.log("Value is a finite number");
+  9 | }
+ 10 |
+ 11 | // Using global isFinite directly (type coercion issues)
+ 12 | if (Number.isFinite(value)) {
+ 13 |   console.log("Value might not actually be a number");
+ 14 | }
+ 15 |
+
+[1] Can use 'Number.isFinite(value)' instead of 'typeof value === "number" && value !== Infinity && value !== -Infinity && !isNaN(value)'.
+[2] Can use 'Number.isFinite(value)' instead of isFinite(value)'.
+---
+
+
+Test: prefer-number-is-finite >> invalid
+Filename: prefer-number-is-finite/invalid/is-finite-input.js
+
+Code:
+  1 | /*prefer-number-is-finite/invalid/is-finite-input.js*/
+  2 | const n = 42;
+  3 | x = isFinite(n);
+    |     ^~~~~~~~~~~ [1]
+  4 | x = isFinite(u);
+  5 |
+
+Output:
+  1 | /*prefer-number-is-finite/invalid/is-finite-input.js*/
+  2 | const n = 42;
+  3 | x = Number.isFinite(n);
+  4 | x = isFinite(u);
+  5 |
+
+[1] Can use 'Number.isFinite(n)' instead of isFinite(n)'.
 ---
 
 

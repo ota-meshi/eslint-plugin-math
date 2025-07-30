@@ -2,9 +2,7 @@ import type { TSESTree } from "@typescript-eslint/types";
 /**
  * Get the id list text in the message for the given expressions.
  */
-export function getIdTextList(
-  nodes: (TSESTree.Expression | TSESTree.PrivateIdentifier)[],
-): string[] {
+export function getIdTextList(nodes: TSESTree.Expression[]): string[] {
   const list = nodes.map((node) => getIdText(node, null));
 
   const used = new Set<string>(list.filter((id): id is string => id !== null));

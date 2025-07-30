@@ -83,6 +83,28 @@ Output:
 
 
 Test: prefer-number-is-nan >> invalid
+Filename: prefer-number-is-nan/invalid/is-nan-input.js
+
+Code:
+  1 | /*prefer-number-is-nan/invalid/is-nan-input.js*/
+  2 | const n = 42;
+  3 | x = isNaN(n);
+    |     ^~~~~~~~ [1]
+  4 | x = isNaN(u);
+  5 |
+
+Output:
+  1 | /*prefer-number-is-nan/invalid/is-nan-input.js*/
+  2 | const n = 42;
+  3 | x = Number.isNaN(n);
+  4 | x = isNaN(u);
+  5 |
+
+[1] Can use 'Number.isNaN(n)' instead of isNaN(n)'.
+---
+
+
+Test: prefer-number-is-nan >> invalid
 Filename: prefer-number-is-nan/invalid/not-input.js
 
 Code:

@@ -5,6 +5,7 @@ import { getInfoForTransformingToNumberIsFinite } from "../utils/number";
 import { existComment } from "../utils/ast";
 import type { Rule } from "eslint";
 import { getIdText } from "../utils/messages";
+import { buildObjectTypeChecker } from "../utils/type-checker/object-type-checker";
 
 export default createRule("prefer-number-is-finite", {
   meta: {
@@ -28,6 +29,8 @@ export default createRule("prefer-number-is-finite", {
   create(context) {
     const sourceCode = context.sourceCode;
 
+    const objectTypeChecker = buildObjectTypeChecker(context);
+
     /**
      * Verify if the given node can be converted to Number.isFinite().
      */
@@ -35,6 +38,7 @@ export default createRule("prefer-number-is-finite", {
       const transform = getInfoForTransformingToNumberIsFinite(
         node,
         sourceCode,
+        objectTypeChecker,
       );
       if (!transform) return;
       const hasComment = existComment(node, sourceCode);
@@ -63,10 +67,18 @@ export default createRule("prefer-number-is-finite", {
       const id = getIdText(info.argument, "n");
       let expression = "";
       switch (info.from) {
-        case "global.isFinite":
+        case "global.isFinite with number":
           expression = !info.not
             ? `'typeof ${id} === "number" && isFinite(${id})'`
             : `'typeof ${id} !== "number" || !isFinite(${id})'`;
+          break;
+        case "global.isFinite":
+          expression = `isFinite(${id})'`;
+          break;
+        case "conditional":
+          expression = !info.not
+            ? `'typeof ${id} === "number" && ${id} !== Infinity && ${id} !== -Infinity && !isNaN(${id})'`
+            : `'typeof ${id} !== "number" || ${id} === Infinity || ${id} === -Infinity || isNaN(${id})'`;
           break;
       }
       return {
