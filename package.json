@@ -70,7 +70,7 @@
     "@changesets/get-release-plan": "^4.0.13",
     "@eslint-community/eslint-plugin-eslint-comments": "^4.5.0",
     "@eslint-community/regexpp": "^4.12.1",
-    "@ota-meshi/eslint-plugin": "^0.17.6",
+    "@ota-meshi/eslint-plugin": "^0.18.0",
     "@ota-meshi/site-kit-eslint-editor-vue": "^0.2.4",
     "@ota-meshi/site-kit-monaco-editor": "^0.8.0",
     "@types/eslint": "^9.6.1",
