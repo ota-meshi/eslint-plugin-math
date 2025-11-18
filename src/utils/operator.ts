@@ -97,7 +97,7 @@ export function getInfoForExponentiationOrLike(
     return {
       from: "**",
       operator: "**",
-      left: node.left as TSESTree.Expression,
+      left: node.left,
       right: node.right,
     };
   }
@@ -136,16 +136,14 @@ function* parseExponentiation(
   if (node.operator === "**") {
     const right = getStaticValue(node.right, sourceCode);
     if (typeof right?.value === "number") {
-      for (const leftOperand of iterateWithCache(
-        node.left as TSESTree.Expression,
-      )) {
+      for (const leftOperand of iterateWithCache(node.left)) {
         yield {
           left: leftOperand.left,
           right: leftOperand.right * right.value,
         };
       }
       yield {
-        left: node.left as TSESTree.Expression,
+        left: node.left,
         right: right.value,
       };
     }
@@ -153,7 +151,7 @@ function* parseExponentiation(
   }
   if (node.operator === "*") {
     const { right } = node;
-    const left = node.left as TSESTree.Expression;
+    const left = node.left;
 
     for (const leftOperand of iterateWithCache(left)) {
       for (const rightOperand of iterateWithCache(right)) {

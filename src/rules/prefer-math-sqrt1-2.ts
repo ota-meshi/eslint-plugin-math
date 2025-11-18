@@ -48,7 +48,7 @@ export default createRule("prefer-math-sqrt1-2", {
           return;
         expression = "Math.sqrt(1 / 2)";
       } else if (node.type === "BinaryExpression" && node.operator === "/") {
-        if (!isOne(node.left as TSESTree.Expression, sourceCode)) return;
+        if (!isOne(node.left, sourceCode)) return;
         const sqrt2 =
           isGlobalObjectProperty(node.right, "Math", "SQRT2", sourceCode) ||
           getInfoForTransformingToMathSQRT2(node.right, sourceCode);

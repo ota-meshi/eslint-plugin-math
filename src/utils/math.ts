@@ -602,7 +602,7 @@ export function getInfoForTransformingToMathLN2(
       );
       if (!mathLOG2E || mathLOG2E.inverse) return null;
     }
-    if (isOne(node.left as TSESTree.Expression, sourceCode)) {
+    if (isOne(node.left, sourceCode)) {
       return {
         property: "LN2",
         node,
@@ -684,7 +684,7 @@ export function getInfoForTransformingToMathLOG2E(
       if (!mathLN2 || mathLN2.inverse) return null;
     }
 
-    if (isOne(node.left as TSESTree.Expression, sourceCode)) {
+    if (isOne(node.left, sourceCode)) {
       return {
         property: "LOG2E",
         node,
@@ -851,7 +851,7 @@ export function getInfoForTransformingToMathLN10(
       );
       if (!mathLOG10E || mathLOG10E.inverse) return null;
     }
-    if (isOne(node.left as TSESTree.Expression, sourceCode)) {
+    if (isOne(node.left, sourceCode)) {
       return {
         property: "LN10",
         node,
@@ -933,7 +933,7 @@ export function getInfoForTransformingToMathLOG10E(
       if (!mathLN10 || mathLN10.inverse) return null;
     }
 
-    if (isOne(node.left as TSESTree.Expression, sourceCode)) {
+    if (isOne(node.left, sourceCode)) {
       return {
         property: "LOG10E",
         node,

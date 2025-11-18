@@ -21,7 +21,7 @@ export function* processLR(
     operator === "|" ||
     operator === "^"
   ) {
-    yield [right, left as TSESTree.Expression];
+    yield [right, left];
   }
 }
 

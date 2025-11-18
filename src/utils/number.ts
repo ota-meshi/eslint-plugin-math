@@ -553,7 +553,7 @@ export function getInfoForTransformingToNumberEPSILON(
   if (node.type === "BinaryExpression") {
     if (
       node.operator === "**" &&
-      isTwo(node.left as TSESTree.Expression, sourceCode) &&
+      isTwo(node.left, sourceCode) &&
       isStaticValue(node.right, -52, sourceCode)
     ) {
       return {
