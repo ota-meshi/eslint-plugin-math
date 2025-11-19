@@ -1,5 +1,11 @@
 # eslint-plugin-math
 
+## 0.13.1
+
+### Patch Changes
+
+- [#163](https://github.com/ota-meshi/eslint-plugin-math/pull/163) [`ceb7b33`](https://github.com/ota-meshi/eslint-plugin-math/commit/ceb7b333a88e2523180fc3f5b1f7589bb805a77b) Thanks [@ota-meshi](https://github.com/ota-meshi)! - chore: use trusted publisher
+
 ## 0.13.0
 
 ### Minor Changes
