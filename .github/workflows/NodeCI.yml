@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
       - name: Install Packages
         run: pnpm install -f
       - name: Lint
@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install Packages
@@ -45,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
       - name: Install Target Packages
         run: |+
           pnpm install -f
