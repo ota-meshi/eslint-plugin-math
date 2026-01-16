@@ -568,12 +568,12 @@ export function isWrappedInParenOrComma(
   const afterToken = sourceCode.getTokenAfter(node);
   return Boolean(
     beforeToken &&
-      afterToken &&
-      (beforeToken.value === "(" ||
-        beforeToken.value === "[" ||
-        beforeToken.value === ",") &&
-      (afterToken.value === ")" ||
-        afterToken.value === "]" ||
-        afterToken.value === ","),
+    afterToken &&
+    (beforeToken.value === "(" ||
+      beforeToken.value === "[" ||
+      beforeToken.value === ",") &&
+    (afterToken.value === ")" ||
+      afterToken.value === "]" ||
+      afterToken.value === ","),
   );
 }
