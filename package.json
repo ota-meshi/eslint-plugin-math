@@ -74,7 +74,7 @@
     "@ota-meshi/site-kit-eslint-editor-vue": "^0.2.4",
     "@ota-meshi/site-kit-monaco-editor": "^0.8.1",
     "@types/eslint": "^9.6.1",
-    "@types/eslint-scope": "^8.3.2",
+    "@types/eslint-scope": "^9.0.0",
     "@types/eslint-utils": "^3.0.5",
     "@types/estree": "^1.0.8",
     "@types/json-schema": "^7.0.15",
