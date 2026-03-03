@@ -65,7 +65,7 @@
     "eslint": ">=8.57.0"
   },
   "devDependencies": {
-    "@changesets/changelog-github": "^0.5.2",
+    "@changesets/changelog-github": "^0.6.0",
     "@changesets/cli": "^2.29.8",
     "@changesets/get-release-plan": "^4.0.14",
     "@eslint-community/eslint-plugin-eslint-comments": "^4.6.0",
