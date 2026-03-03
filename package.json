@@ -59,7 +59,7 @@
   "homepage": "https://ota-meshi.github.io/eslint-plugin-math/",
   "dependencies": {
     "@eslint-community/eslint-utils": "^4.7.0",
-    "eslint-type-tracer": "^0.4.0"
+    "eslint-type-tracer": "^0.5.0"
   },
   "peerDependencies": {
     "eslint": ">=8.57.0"
